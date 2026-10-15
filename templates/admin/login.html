@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin — BestOne Education</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/login.css') }}">
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-container">
+      
+      <!-- Kotak Login -->
+      <div class="login-card">
+        <!-- Logo & Judul -->
+        <div class="login-header">
+          <div class="admin-logo">
+            <span class="logo-text">B</span>
+          </div>
+          <h1>BestOne Education</h1>
+          <p class="sub-judul">Panel Administrator</p>
+        </div>
+
+        <!-- Form Login -->
+        <form action="/admin/proses-login" method="POST" class="login-form">
+          
+          <!-- Pesan Error (jika salah) -->
+          {% if error %}
+          <div class="pesan-error">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ error }}
+          </div>
+          {% endif %}
+
+          <!-- Username -->
+          <div class="form-group">
+            <label for="username">
+              <i class="fa fa-user"></i> Nama Pengguna
+            </label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username" 
+              required
+              autocomplete="username"
+              placeholder="Masukkan nama pengguna"
+            >
+          </div>
+
+          <!-- Kata Sandi -->
+          <div class="form-group">
+            <label for="password">
+              <i class="fa fa-lock"></i> Kata Sandi
+            </label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              required
+              autocomplete="current-password"
+              placeholder="Masukkan kata sandi"
+            >
+          </div>
+
+          <!-- Tombol Masuk -->
+          <button type="submit" class="btn-masuk">
+            <i class="fa fa-sign-in"></i> Masuk ke Panel
+          </button>
+        </form>
+
+        <!-- Kembali ke Situs -->
+        <div class="login-footer">
+          <a href="/" class="link-kembali">
+            <i class="fa fa-arrow-left"></i> Kembali ke Halaman Utama
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

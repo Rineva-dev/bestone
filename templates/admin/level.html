@@ -1,0 +1,194 @@
+{% extends "admin/base_admin.html" %}
+{% block judul %}Level Kursus — BestOne{% endblock %}
+{% block judul_halaman %}Daftar Level{% endblock %}
+{% block isi %}
+
+{# PANGGIL NOTIFIKASI #}
+{% include "notif.html" %}
+
+<!-- Bar Atas -->
+<div class="bar-atas">
+  <button class="btn-utama" id="btnBukaTambah">+ Tambah Level</button>
+  <div class="pencarian">
+    <input type="text" id="cariLevel" placeholder="Cari level..." class="form-input">
+  </div>
+</div>
+
+<!-- Tabel Daftar -->
+<div class="kartu-biasa">
+  <div class="tabel-wrapper">
+    <table class="tabel-data" id="tabelLevel">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Kode</th>
+          <th>Nama Level</th>
+          <th>Keterangan</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lv in daftar_level %}
+        <tr class="baris-level">
+          <td>{{ loop.index }}</td>
+          <td><span class="kode-level">{{ lv.kode }}</span></td>
+          <td><strong>{{ lv.nama }}</strong></td>
+          <td><small>{{ lv.keterangan[:60] ~ '...' if lv.keterangan and lv.keterangan|length > 60 else (lv.keterangan or '-') }}</small></td>
+          <td>
+            <div class="tombol-aksi">
+              <button class="btn-sm btn-abu" 
+                data-id="{{ lv.id }}" 
+                data-kode="{{ lv.kode }}"
+                data-nama="{{ lv.nama }}" 
+                data-keterangan="{{ lv.keterangan or '' }}"
+                onclick="bukaModalEdit(this)">Ubah</button>
+              <form method="POST" action="{{ url_for('admin_level.hapus', level_id=lv.id) }}" class="form-hapus" onsubmit="return confirm('Yakin hapus level ini?')">
+                <button type="submit" class="btn-sm btn-merah">Hapus</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" class="kosong">Belum ada level. Klik "Tambah Level" untuk memulai.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Tambah -->
+<div id="modalTambah" class="modal-latar">
+  <div class="modal-kotak">
+    <div class="modal-judul">
+      <h3>Tambah Level</h3>
+      <button class="tombol-tutup" onclick="tutupModalTambah()">&times;</button>
+    </div>
+    <form method="POST" action="{{ url_for('admin_level.tambah') }}" id="formTambah">
+      <div class="form-kelompok">
+        <label>Kode Level <span class="wajib">*</span></label>
+        <input type="text" name="kode" id="tambah-kode" required class="form-input" placeholder="Contoh: A1, A2, B1, B2">
+      </div>
+      <div class="form-kelompok">
+        <label>Nama Level <span class="wajib">*</span></label>
+        <input type="text" name="nama" id="tambah-nama" required class="form-input" placeholder="Contoh: Beginner, Intermediate, Advanced">
+      </div>
+      <div class="form-kelompok">
+        <label>Keterangan</label>
+        <textarea name="keterangan" rows="3" class="form-input" placeholder="Singkat tentang level ini..."></textarea>
+      </div>
+      <div class="modal-tombol">
+        <button type="button" class="btn-abu" onclick="tutupModalTambah()">Batal</button>
+        <button type="submit" class="btn-utama">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Edit -->
+<div id="modalEdit" class="modal-latar">
+  <div class="modal-kotak">
+    <div class="modal-judul">
+      <h3>Ubah Level</h3>
+      <button class="tombol-tutup" onclick="tutupModalEdit()">&times;</button>
+    </div>
+    <form method="POST" id="formEdit">
+      <div class="form-kelompok">
+        <label>Kode Level <span class="wajib">*</span></label>
+        <input type="text" name="kode" id="edit-kode" required class="form-input">
+      </div>
+      <div class="form-kelompok">
+        <label>Nama Level <span class="wajib">*</span></label>
+        <input type="text" name="nama" id="edit-nama" required class="form-input">
+      </div>
+      <div class="form-kelompok">
+        <label>Keterangan</label>
+        <textarea name="keterangan" id="edit-keterangan" rows="3" class="form-input"></textarea>
+      </div>
+      <div class="modal-tombol">
+        <button type="button" class="btn-abu" onclick="tutupModalEdit()">Batal</button>
+        <button type="submit" class="btn-utama">Perbarui</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.pencarian { max-width: 300px; width: 100%; }
+.form-kelompok { margin-bottom: 14px; }
+.form-kelompok label { display: block; margin-bottom: 6px; font-weight: 500; color: #333; font-size: 14px; }
+.form-input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+.wajib { color: #e11d48; }
+.kode-level { 
+  font-family: monospace; 
+  font-weight: bold; 
+  color: #991e32; 
+  background: #fef2f4; 
+  padding: 3px 8px; 
+  border-radius: 4px; 
+  font-size: 13px;
+}
+.tombol-aksi { display: flex; gap: 6px; align-items: center; }
+.form-hapus { margin: 0; }
+.btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-block; }
+.btn-utama { background: #991e32; color: white; border: none; cursor: pointer; padding: 10px 16px; border-radius: 6px; }
+.btn-abu { background: #e5e7eb; color: #4b5563; min-width: 64px; }
+.btn-merah { background: #ef4444; color: white; min-width: 64px; }
+.modal-latar { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
+.modal-latar.tampil { display: flex; }
+.modal-kotak { background: white; border-radius: 12px; width: 90%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 24px; }
+.modal-judul { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-judul h3 { margin: 0; font-size: 18px; color: #1f2937; }
+.tombol-tutup { background: none; border: none; font-size: 22px; cursor: pointer; color: #6b7280; }
+.modal-tombol { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+.modal-tombol button { padding: 10px 24px; border-radius: 8px; font-size: 14px; }
+</style>
+
+<script>
+// === Pencarian ===
+const cari = document.getElementById('cariLevel');
+const daftarBaris = document.querySelectorAll('.baris-level');
+cari.addEventListener('input', () => {
+  const kata = cari.value.toLowerCase();
+  daftarBaris.forEach(baris => {
+    const teks = baris.textContent.toLowerCase();
+    baris.style.display = teks.includes(kata) ? '' : 'none';
+  });
+});
+
+// === Modal Tambah ===
+const modalTambah = document.getElementById('modalTambah');
+document.getElementById('btnBukaTambah').addEventListener('click', () => modalTambah.classList.add('tampil'));
+function tutupModalTambah() { modalTambah.classList.remove('tampil'); }
+modalTambah.addEventListener('click', e => { if (e.target === modalTambah) tutupModalTambah(); });
+
+// === Modal Edit ===
+const modalEdit = document.getElementById('modalEdit');
+function bukaModalEdit(btn) {
+  document.getElementById('formEdit').action = `/admin/level/edit/${btn.dataset.id}`;
+  document.getElementById('edit-kode').value = btn.dataset.kode;
+  document.getElementById('edit-nama').value = btn.dataset.nama;
+  document.getElementById('edit-keterangan').value = btn.dataset.keterangan;
+  modalEdit.classList.add('tampil');
+}
+function tutupModalEdit() { modalEdit.classList.remove('tampil'); }
+modalEdit.addEventListener('click', e => { if (e.target === modalEdit) tutupModalEdit(); });
+
+// === TETAP BUKA MODAL JIKA ADA ERROR ===
+document.addEventListener('DOMContentLoaded', () => {
+  // Cek apakah ada notifikasi error
+  const adaError = document.querySelector('.notif-error');
+  if (!adaError) return;
+
+  // Buka kembali modal yang sesuai
+  const url = window.location.href;
+  if (url.includes('/level/tambah')) {
+    modalTambah.classList.add('tampil');
+  } else if (url.includes('/edit')) {
+    modalEdit.classList.add('tampil');
+  }
+});
+</script>
+{% endblock %}

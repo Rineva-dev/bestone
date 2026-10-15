@@ -1,0 +1,32 @@
+{% extends "admin/base_admin.html" %}
+
+{% block judul %}Dashboard — BestOne Admin{% endblock %}
+{% block judul_halaman %}Dashboard{% endblock %}
+
+{% block isi %}
+<div class="kartu-biasa">
+  <h3>Selamat Datang! 👋</h3>
+  <p>Panel ini digunakan untuk mengelola semua konten dan data pendaftaran situs BestOne Education.</p>
+  <p class="petunjuk">Gunakan menu di sebelah kiri untuk membuka halaman lain.</p>
+</div>
+
+<div class="grid-statistik">
+  <div class="kartu-statistik">
+    <p class="label">Total Pendaftar</p>
+    <p class="angka">{{ total_pendaftar or 0 }}</p>
+  </div>
+  <div class="kartu-statistik">
+    <p class="label">Bulan Ini</p>
+    <p class="angka">{{ pendaftar_bulan_ini or 0 }}</p>
+  </div>
+  <div class="kartu-statistik">
+    <p class="label">Program Aktif</p>
+    <p class="angka">{{ total_program or 3 }}</p>
+  </div>
+  <div class="kartu-statistik">
+    <p class="label">Foto Galeri</p>
+    <p class="angka">{{ total_foto or 0 }}</p>
+  </div>
+</div>
+
+{% endblock %}

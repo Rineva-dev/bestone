@@ -1,0 +1,1055 @@
+```html
+{% extends "base.html" %}
+{% block isi %}
+
+<section class="bo-konfirmasi">
+  <div class="bo-konfirmasi-bg"></div>
+  <div class="bo-orb bo-orb-satu"></div>
+  <div class="bo-orb bo-orb-dua"></div>
+
+  <div class="bo-konfirmasi-container">
+
+    <!-- Header sukses -->
+    <header class="bo-success-header">
+      <div class="bo-success-icon-wrap">
+        <div class="bo-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12.5L9.5 17L19 7.5"
+                  stroke="currentColor"
+                  stroke-width="2.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="bo-success-ring"></span>
+      </div>
+
+      <span class="bo-success-label">
+        <span class="bo-status-dot"></span>
+        PENDAFTARAN BERHASIL
+      </span>
+
+      <h1>Terima Kasih,<br>
+        <span>{{ pendaftar.nama }}!</span>
+      </h1>
+
+      <p class="bo-success-description">
+        Selamat! Data pendaftaran Anda telah kami terima dan tersimpan
+        di sistem BestOne Education.
+      </p>
+
+      <div class="bo-success-decoration">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </header>
+
+    <!-- Konten utama -->
+    <div class="bo-konfirmasi-content">
+
+      <!-- Ringkasan pendaftaran -->
+      <article class="bo-card bo-summary-card">
+        <div class="bo-card-heading">
+          <div class="bo-heading-icon bo-icon-maroon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="5" y="3" width="14" height="18" rx="2"
+                    stroke="currentColor" stroke-width="1.8"/>
+              <path d="M8 8H16M8 12H16M8 16H13"
+                    stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h2>Ringkasan Pendaftaran</h2>
+            <p>Periksa kembali informasi pendaftaran Anda.</p>
+          </div>
+        </div>
+
+        <div class="bo-summary-number">
+          <span>Nomor Pendaftaran</span>
+          <strong>{{ pendaftar.id_pendaftar }}</strong>
+        </div>
+
+        <div class="bo-summary-list">
+          <div class="bo-summary-row">
+            <span class="bo-summary-label">Nama Lengkap</span>
+            <span class="bo-summary-value">{{ pendaftar.nama }}</span>
+          </div>
+
+          <div class="bo-summary-row">
+            <span class="bo-summary-label">Program</span>
+            <span class="bo-summary-value">{{ pendaftar.program }}</span>
+          </div>
+
+          {% if pendaftar.level %}
+          <div class="bo-summary-row">
+            <span class="bo-summary-label">Level</span>
+            <span class="bo-summary-value">{{ pendaftar.level }}</span>
+          </div>
+          {% endif %}
+
+          <div class="bo-summary-row">
+            <span class="bo-summary-label">Waktu Daftar</span>
+            <span class="bo-summary-value">
+              {{ pendaftar.waktu_daftar.strftime('%d %B %Y — %H:%M') }}
+            </span>
+          </div>
+
+          <div class="bo-summary-row">
+            <span class="bo-summary-label">Status Pendaftaran</span>
+            <span class="bo-status-pending">
+              <span></span>
+              Menunggu Konfirmasi
+            </span>
+          </div>
+        </div>
+
+        <div class="bo-summary-note">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"
+                    stroke="currentColor" stroke-width="1.8"/>
+            <path d="M12 11V16M12 8H12.01"
+                  stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round"/>
+          </svg>
+          Simpan nomor pendaftaran ini untuk referensi Anda.
+        </div>
+      </article>
+
+      <!-- Grup WhatsApp -->
+      {% if link_grup_wa %}
+      <article class="bo-card bo-wa-card">
+        <div class="bo-wa-top">
+          <div class="bo-wa-icon">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <span class="bo-wa-badge">LANGKAH BERIKUTNYA</span>
+        </div>
+
+        <h2>Bergabung ke Grup Komunikasi</h2>
+        <p>
+          Dapatkan informasi jadwal belajar, materi, dan pengumuman
+          penting dengan bergabung ke grup WhatsApp resmi program Anda.
+        </p>
+
+        <a href="{{ link_grup_wa }}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="bo-wa-button">
+           <i class="fa-brands fa-whatsapp"></i>
+          Bergabung ke Grup WhatsApp
+          <span class="bo-wa-arrow">↗</span>
+        </a>
+
+        <div class="bo-wa-caption">
+          <span class="bo-wa-caption-dot"></span>
+          Pastikan Anda bergabung dengan grup yang sesuai.
+        </div>
+      </article>
+      {% else %}
+      <article class="bo-card bo-wa-unavailable">
+        <div class="bo-wa-unavailable-icon">i</div>
+        <div>
+          <h3>Informasi Grup WhatsApp</h3>
+          <p>
+            Link grup belum tersedia. Tim BestOne Education akan
+            mengirimkan informasi melalui nomor WhatsApp Anda.
+          </p>
+        </div>
+      </article>
+      {% endif %}
+
+      <!-- Langkah selanjutnya -->
+      <article class="bo-card bo-next-card">
+        <div class="bo-card-heading">
+          <div class="bo-heading-icon bo-icon-soft">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3L14.8 8.7L21 9.6L16.5 14L17.6 20.2L12 17.2L6.4 20.2L7.5 14L3 9.6L9.2 8.7L12 3Z"
+                    stroke="currentColor" stroke-width="1.7"
+                    stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <h2>Langkah Selanjutnya</h2>
+            <p>Berikut yang perlu Anda ketahui setelah mendaftar.</p>
+          </div>
+        </div>
+
+        <div class="bo-timeline">
+          <div class="bo-timeline-item">
+            <div class="bo-timeline-number">01</div>
+            <div class="bo-timeline-text">
+              <h3>Verifikasi Data</h3>
+              <p>Tim kami akan memverifikasi data Anda dalam 1×24 jam kerja.</p>
+            </div>
+          </div>
+
+          <div class="bo-timeline-item">
+            <div class="bo-timeline-number">02</div>
+            <div class="bo-timeline-text">
+              <h3>Konfirmasi WhatsApp</h3>
+              <p>
+                Kami akan menghubungi Anda melalui nomor
+                <strong>{{ pendaftar.whatsapp }}</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div class="bo-timeline-item">
+            <div class="bo-timeline-number">03</div>
+            <div class="bo-timeline-text">
+              <h3>Siap Memulai Belajar</h3>
+              <p>Bersiaplah memulai perjalanan belajar bahasa Inggris bersama BestOne Education.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Kembali ke beranda -->
+      <div class="bo-back-home">
+        <a href="{{ url_for('beranda.beranda') }}" class="bo-home-button">
+          <span aria-hidden="true">←</span>
+          Kembali ke Halaman Utama
+        </a>
+        <p>Terima kasih telah memilih BestOne Education.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+/* ==========================================
+   BESTONE EDUCATION — KONFIRMASI PENDAFTARAN
+   CSS khusus halaman ini
+========================================== */
+
+.bo-konfirmasi {
+  --bo-maroon: #991e32;
+  --bo-maroon-dark: #701528;
+  --bo-maroon-light: #b92f49;
+  --bo-ink: #28212a;
+  --bo-muted: #77717d;
+  --bo-line: #eee8eb;
+  --bo-green: #16865d;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 76px 22px 86px;
+  background:
+    radial-gradient(ellipse at 10% 40%, rgba(153,30,50,.055), transparent 35%),
+    linear-gradient(180deg, #fffafb 0%, #fff 48%, #faf7f8 100%);
+  font-family: Inter, "Segoe UI", sans-serif;
+  color: var(--bo-ink);
+}
+
+.bo-konfirmasi *,
+.bo-konfirmasi *::before,
+.bo-konfirmasi *::after {
+  box-sizing: border-box;
+}
+
+.bo-konfirmasi-bg {
+  position: absolute;
+  z-index: -2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 505px;
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(255,255,255,.13), transparent 35%),
+    linear-gradient(130deg, #591020 0%, #80182c 48%, #a62540 100%);
+  clip-path: ellipse(115% 100% at 50% 0%);
+}
+
+.bo-orb {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.bo-orb-satu {
+  width: 270px;
+  height: 270px;
+  top: 35px;
+  right: -90px;
+}
+
+.bo-orb-dua {
+  width: 170px;
+  height: 170px;
+  top: 120px;
+  left: -75px;
+}
+
+.bo-konfirmasi-container {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.bo-success-header {
+  text-align: center;
+  padding: 0 12px 35px;
+  color: white;
+}
+
+.bo-success-icon-wrap {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 23px;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.bo-success-icon {
+  width: 78px;
+  height: 78px;
+  display: grid;
+  place-items: center;
+  border-radius: 25px;
+  color: #fff;
+  background: linear-gradient(145deg, #1eb980, #10845c);
+  box-shadow: 0 12px 32px rgba(7, 74, 48, .35);
+  transform: rotate(-5deg);
+  animation: bo-pop-in .65s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.bo-success-icon svg {
+  width: 39px;
+  height: 39px;
+  transform: rotate(5deg);
+}
+
+.bo-success-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255,255,255,.32);
+  border-radius: 31px;
+  transform: rotate(8deg);
+}
+
+.bo-success-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 30px;
+  background: rgba(255,255,255,.1);
+  color: #ffe3e8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.bo-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #55e2a5;
+  box-shadow: 0 0 0 4px rgba(85,226,165,.12);
+}
+
+.bo-success-header h1 {
+  margin: 18px 0 13px;
+  color: #fff;
+  font-size: clamp(30px, 5vw, 43px);
+  font-weight: 850;
+  letter-spacing: -1.6px;
+  line-height: 1.18;
+}
+
+.bo-success-header h1 span {
+  color: #ffd7df;
+}
+
+.bo-success-description {
+  max-width: 490px;
+  margin: 0 auto;
+  color: rgba(255,255,255,.78);
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.bo-success-decoration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 23px;
+}
+
+.bo-success-decoration span {
+  height: 4px;
+  width: 20px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.27);
+}
+
+.bo-success-decoration span:nth-child(2) {
+  width: 38px;
+  background: #ffd7df;
+}
+
+.bo-konfirmasi-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bo-card {
+  position: relative;
+  background: rgba(255,255,255,.97);
+  border: 1px solid rgba(235,226,230,.9);
+  border-radius: 22px;
+  box-shadow: 0 12px 40px rgba(65,25,39,.055);
+  padding: 27px 30px;
+  min-width: 0;
+}
+
+.bo-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 23px;
+}
+
+.bo-heading-icon {
+  width: 47px;
+  height: 47px;
+  flex: 0 0 47px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+}
+
+.bo-heading-icon svg {
+  width: 23px;
+  height: 23px;
+}
+
+.bo-icon-maroon {
+  color: var(--bo-maroon);
+  background: #fbecf0;
+}
+
+.bo-icon-soft {
+  color: #956027;
+  background: #fff4e5;
+}
+
+.bo-card-heading h2,
+.bo-wa-card h2 {
+  margin: 0 0 5px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.35px;
+  color: #29212a;
+}
+
+.bo-card-heading p {
+  margin: 0;
+  color: var(--bo-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.bo-summary-number {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 17px 18px;
+  margin-bottom: 13px;
+  border: 1px solid #f0dce2;
+  border-radius: 15px;
+  background: linear-gradient(110deg, #fff6f8, #fffafb);
+}
+
+.bo-summary-number > span {
+  color: #7b6b72;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.bo-summary-number strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: var(--bo-maroon);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+
+.bo-summary-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.bo-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 15px 2px;
+  border-bottom: 1px solid #f2edf0;
+}
+
+.bo-summary-row:last-child {
+  border-bottom: none;
+}
+
+.bo-summary-label {
+  flex: 0 0 40%;
+  color: #827984;
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 550;
+}
+
+.bo-summary-value {
+  min-width: 0;
+  max-width: 60%;
+  color: #302832;
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 750;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.bo-status-pending {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  color: #96600d;
+  background: #fff5d9;
+  font-size: 11px;
+  font-weight: 750;
+  text-align: center;
+}
+
+.bo-status-pending span {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: #d99b21;
+}
+
+.bo-summary-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 17px;
+  padding: 12px 13px;
+  border-radius: 11px;
+  background: #faf7f8;
+  color: #786e77;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.bo-summary-note svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: var(--bo-maroon);
+  margin-top: 1px;
+}
+
+/* WhatsApp */
+.bo-wa-card {
+  overflow: hidden;
+  text-align: center;
+  border-color: rgba(37,211,102,.2);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(37,211,102,.09), transparent 38%),
+    #fff;
+  padding: 29px 30px 26px;
+}
+
+.bo-wa-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-bottom: 16px;
+}
+
+.bo-wa-icon {
+  width: 57px;
+  height: 57px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border-radius: 19px;
+  background: linear-gradient(145deg, #35df78, #16a95a);
+  box-shadow: 0 8px 22px rgba(37,211,102,.22);
+}
+
+.bo-wa-icon i {
+  font-size: 28px; /* Sesuaikan ukuran */
+}
+
+.bo-wa-button i {
+  font-size: 18px;
+}
+
+.bo-wa-badge {
+  padding: 7px 10px;
+  color: #16844b;
+  background: #e9faef;
+  border-radius: 7px;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.1px;
+}
+
+.bo-wa-card h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.bo-wa-card > p {
+  max-width: 460px;
+  margin: 0 auto 22px;
+  color: #77717d;
+  font-size: 13px;
+  line-height: 1.85;
+}
+
+.bo-wa-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 19px;
+  border-radius: 13px;
+  background: linear-gradient(110deg, #159e50, #20c768);
+  color: #fff !important;
+  text-decoration: none !important;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(31,185,94,.2);
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.bo-wa-icon svg,
+.bo-wa-button svg {
+  display: none !important;
+}
+
+/* Tampilkan ikon Font Awesome */
+.bo-wa-icon i.fa-whatsapp {
+  font-size: 28px;
+  color: #fff;
+  display: block;
+}
+
+.bo-wa-button i.fa-whatsapp {
+  font-size: 18px;
+  color: #fff;
+  display: inline-block;
+}
+
+.bo-wa-arrow {
+  margin-left: auto;
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.bo-wa-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(31,185,94,.28);
+  filter: saturate(1.07);
+}
+
+.bo-wa-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 14px;
+  color: #827984;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.bo-wa-caption-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #21b965;
+}
+
+/* Jika link belum tersedia */
+.bo-wa-unavailable {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  background: #fffaf0;
+  border-color: #f4e6c9;
+}
+
+.bo-wa-unavailable-icon {
+  flex: 0 0 37px;
+  width: 37px;
+  height: 37px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #fff0d2;
+  color: #96600d;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.bo-wa-unavailable h3 {
+  margin: 0 0 6px;
+  color: #493a24;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.bo-wa-unavailable p {
+  margin: 0;
+  color: #796c58;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* Langkah berikutnya */
+.bo-next-card .bo-card-heading {
+  margin-bottom: 25px;
+}
+
+.bo-timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.bo-timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding-bottom: 23px;
+}
+
+.bo-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.bo-timeline-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 42px;
+  bottom: 4px;
+  left: 19px;
+  width: 1px;
+  background: #eadde2;
+}
+
+.bo-timeline-number {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 39px;
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #fbecf0;
+  color: var(--bo-maroon);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.bo-timeline-text {
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.bo-timeline-text h3 {
+  margin: 0 0 5px;
+  color: #302832;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.bo-timeline-text p {
+  margin: 0;
+  color: #77717d;
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.bo-timeline-text strong {
+  color: #45313b;
+  font-weight: 750;
+}
+
+/* Kembali ke beranda */
+.bo-back-home {
+  text-align: center;
+  padding-top: 2px;
+}
+
+.bo-home-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 49px;
+  padding: 13px 24px;
+  border: 1px solid #e9d4da;
+  border-radius: 12px;
+  color: var(--bo-maroon) !important;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(65,25,39,.04);
+  text-decoration: none !important;
+  font-size: 12px;
+  font-weight: 800;
+  transition: all .2s ease;
+}
+
+.bo-home-button span {
+  font-size: 18px;
+}
+
+.bo-home-button:hover {
+  color: #fff !important;
+  background: var(--bo-maroon);
+  border-color: var(--bo-maroon);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(153,30,50,.18);
+}
+
+.bo-back-home p {
+  margin: 13px 0 0;
+  color: #948a92;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+@keyframes bo-pop-in {
+  0% { opacity: 0; transform: scale(.65) rotate(-12deg); }
+  70% { opacity: 1; transform: scale(1.08) rotate(-3deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-5deg); }
+}
+
+/* Tablet dan HP */
+@media (max-width: 640px) {
+  .bo-konfirmasi {
+    padding: 48px 15px 55px;
+  }
+
+  .bo-konfirmasi-bg {
+    height: 360px;
+    clip-path: ellipse(145% 100% at 50% 0%);
+  }
+
+  .bo-success-header {
+    padding: 0 5px 27px;
+  }
+
+  .bo-success-icon-wrap {
+    width: 82px;
+    height: 82px;
+    margin-bottom: 19px;
+  }
+
+  .bo-success-icon {
+    width: 66px;
+    height: 66px;
+    border-radius: 22px;
+  }
+
+  .bo-success-icon svg {
+    width: 33px;
+    height: 33px;
+  }
+
+  .bo-success-label {
+    font-size: 9px;
+    letter-spacing: 1.2px;
+  }
+
+  .bo-success-header h1 {
+    font-size: clamp(28px, 8vw, 36px);
+    letter-spacing: -1px;
+    margin-top: 16px;
+  }
+
+  .bo-success-description {
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .bo-konfirmasi-content {
+    gap: 15px;
+  }
+
+  .bo-card {
+    padding: 22px 18px;
+    border-radius: 18px;
+  }
+
+  .bo-card-heading {
+    gap: 11px;
+    margin-bottom: 19px;
+  }
+
+  .bo-heading-icon {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+    border-radius: 13px;
+  }
+
+  .bo-card-heading h2 {
+    font-size: 15px;
+  }
+
+  .bo-card-heading p {
+    font-size: 11px;
+  }
+
+  .bo-summary-number {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+    padding: 14px;
+  }
+
+  .bo-summary-number strong {
+    font-size: 13px;
+  }
+
+  .bo-summary-row {
+    flex-direction: column;
+    gap: 5px;
+    padding: 12px 1px;
+  }
+
+  .bo-summary-label,
+  .bo-summary-value {
+    max-width: 100%;
+    width: 100%;
+    flex-basis: auto;
+    text-align: left;
+  }
+
+  .bo-summary-label {
+    font-size: 11px;
+  }
+
+  .bo-summary-value {
+    font-size: 13px;
+  }
+
+  .bo-status-pending {
+    align-self: flex-start;
+  }
+
+  .bo-wa-card {
+    padding: 24px 18px;
+  }
+
+  .bo-wa-card h2 {
+    font-size: 18px;
+  }
+
+  .bo-wa-card > p {
+    font-size: 12px;
+  }
+
+  .bo-wa-button {
+    gap: 8px;
+    padding: 13px 12px;
+    font-size: 11px;
+  }
+
+  .bo-wa-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .bo-wa-caption {
+    font-size: 9px;
+  }
+
+  .bo-timeline-item {
+    gap: 12px;
+  }
+
+  .bo-timeline-text p {
+    font-size: 11px;
+  }
+
+  .bo-home-button {
+    width: 100%;
+    padding: 13px 15px;
+    font-size: 11px;
+  }
+}
+
+/* Force Font Awesome WhatsApp icon */
+.bo-wa-icon i.fa-brands.fa-whatsapp {
+  font-family: "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
+  font-size: 28px;
+  color: #fff;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.bo-wa-button i.fa-brands.fa-whatsapp {
+  font-family: "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
+  font-size: 18px;
+  color: #fff;
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* Pastikan tidak ada pseudo-element atau border yang mengganggu */
+.bo-wa-icon i::before,
+.bo-wa-button i::before {
+  content: "\f232" !important;
+  font-family: "Font Awesome 6 Brands" !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bo-success-icon {
+    animation: none;
+  }
+
+  .bo-wa-button,
+  .bo-home-button {
+    transition: none;
+  }
+}
+</style>
+
+{% endblock %}
+```

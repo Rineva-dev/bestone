@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block judul %}Panel Admin — BestOne{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/base.css') }}">
+</head>
+<body>
+  <div class="admin-wrapper">
+    
+    <!-- ===== SIDEBAR KIRI ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+        <!-- Logo -->
+        <div class="sidebar-logo">
+          <span class="logo-mark">B</span>
+          <span class="logo-text">BestOne</span>
+        </div>
+
+        <!-- Menu Navigasi -->
+        <nav class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="{{ url_for('admin_dashboard.dashboard') }}" class="menu-link {% if halaman == 'dashboard' %}aktif{% endif %}">
+                    <i class="fa fa-tachometer"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <!-- Pendaftar — sementara pakai '#' dulu sampai dibuat filenya -->
+                <a href="{{ url_for('admin_pendaftar.pendaftar') }}" class="menu-link {% if halaman == 'pendaftar' %}aktif{% endif %}">
+                    <i class="fa fa-list-alt"></i>
+                    <span>Pendaftar</span>
+                </a>
+
+                <!-- Program — sementara pakai '#' dulu -->
+                <a href="{{ url_for('admin_program.daftar_program') }}" class="menu-link {% if halaman == 'program' %}aktif{% endif %}">
+                    <i class="fa fa-book"></i>
+                    <span>Program Kursus</span>
+                </a>
+
+                <a href="{{ url_for('admin_level.daftar_level') }}" class="menu-link {% if halaman == 'level' %}aktif{% endif %}">
+                    <i class="fa fa-list"></i>
+                    <span>Daftar Level</span>
+                </a>
+
+                <!-- Galeri — sementara pakai '#' dulu -->
+                <a href="#" class="menu-link">
+                    <i class="fa fa-picture-o"></i>
+                    <span>Galeri & Foto</span>
+                </a>
+
+                <li class="menu-pemisah"></li>
+
+                <!-- Lihat Situs -->
+                <a href="/" class="menu-link">
+                    <i class="fa fa-external-link"></i>
+                    <span>Lihat Situs</span>
+                </a>
+
+                <!-- Keluar -->
+                <a href="{{ url_for('login.login') }}" class="menu-link keluar">
+                    <i class="fa fa-sign-out"></i>
+                    <span>Keluar</span>
+                </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- ===== BAGIAN KANAN: HEADER + ISI ===== -->
+    <div class="konten-wrapper">
+      
+      <!-- Header Atas -->
+      <header class="header-atas">
+        <div class="header-inner">
+          <!-- Tombol buka/tutup sidebar di HP -->
+          <button class="tombol-sidebar" id="tombolSidebar">
+            <i class="fa fa-bars"></i>
+          </button>
+          
+          <!-- Judul Halaman -->
+          <h2 class="judul-halaman">{% block judul_halaman %}Dashboard{% endblock %}</h2>
+          
+          <!-- Info Admin Kanan -->
+          <div class="admin-info">
+            <span class="admin-nama">Admin</span>
+            <div class="admin-avatar">A</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ISI HALAMAN — INI YANG BERUBAH SAAT GANTI MENU -->
+      <main class="isi-halaman">
+        {% block isi %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/admin/base.js') }}"></script>
+</body>
+</html>

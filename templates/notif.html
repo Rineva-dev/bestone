@@ -1,0 +1,74 @@
+{# === KOMPONEN NOTIFIKASI — BISA DIPAKAI DI SEMUA HALAMAN === #}
+{% with
+  pesan_sukses = get_flashed_messages(category_filter=["sukses"]),
+  pesan_error = get_flashed_messages(category_filter=["error"])
+%}
+  {% if pesan_error or pesan_sukses %}
+    <div class="notif-wadah">
+      {% for p in pesan_error %}
+        <div class="notif notif-error" onclick="this.remove()">
+          <strong>❌ Gagal</strong> {{ p }}
+        </div>
+      {% endfor %}
+      {% for p in pesan_sukses %}
+        <div class="notif notif-sukses" onclick="this.remove()">
+          <strong>✅ Berhasil</strong> {{ p }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<style>
+.notif-wadah {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+}
+.notif {
+  padding: 14px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  animation: notifMasuk 0.3s ease-out;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.notif-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-left: 5px solid #ef4444;
+}
+.notif-sukses {
+  background: #f0fdf4;
+  color: #15803d;
+  border-left: 5px solid #22c55e;
+}
+.notif strong {
+  display: block;
+  margin-bottom: 2px;
+}
+@keyframes notifMasuk {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+</style>
+
+<script>
+// Otomatis hilang setelah 5 detik
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.notif').forEach(n => {
+    setTimeout(() => {
+      n.style.opacity = '0';
+      n.style.transform = 'translateX(100%)';
+      n.style.transition = 'all 0.3s ease';
+      setTimeout(() => n.remove(), 300);
+    }, 5000);
+  });
+});
+</script>

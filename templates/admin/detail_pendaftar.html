@@ -1,0 +1,131 @@
+{% extends "admin/base_admin.html" %}
+{% block judul %}{{ periode.nama }} — Pendaftar{% endblock %}
+{% block judul_halaman %}Detail: {{ periode.nama }}{% endblock %}
+{% block isi %}
+<!-- === KEMBALI + INFO GELOMBANG === -->
+<div class="bar-atas">
+  <a href="{{ url_for('admin_pendaftar.pendaftar') }}" class="btn-sm btn-abu">← Kembali ke Daftar Gelombang</a>
+  {% if periode.link_grup_wa %}
+    <a href="{{ periode.link_grup_wa }}" target="_blank" class="btn-sm btn-wa">💬 Buka Grup WA</a>
+  {% endif %}
+</div>
+
+<!-- === INFO GELOMBANG === -->
+<div class="kartu-biasa mb-6">
+  <div class="grid md:grid-cols-2 gap-6">
+    <div>
+      <h3 class="text-lg font-semibold mb-3">Informasi Gelombang</h3>
+      <table class="tabel-info">
+        <tr><th>Nama</th><td>{{ periode.nama }}</td></tr>
+        <tr><th>Tanggal Daftar</th><td>
+          {% if periode.mulai and periode.selesai %}
+            {{ periode.mulai.strftime('%d %b %Y') }} s.d {{ periode.selesai.strftime('%d %b %Y') }}
+          {% else %}-{% endif %}
+        </td></tr>
+        <tr><th>Program Dibuka</th><td>{{ periode.program_dibuka }}</td></tr>
+        <tr><th>Status</th><td>
+          {% if periode.sedang_aktif %}
+            <span class="label-status aktif">Sedang Dibuka</span>
+          {% else %}
+            <span class="label-status tutup">Tertutup / Belum Mulai</span>
+          {% endif %}
+        </td></tr>
+      </table>
+    </div>
+    <div>
+      <h3 class="text-lg font-semibold mb-3">Biaya</h3>
+      <table class="tabel-info">
+        <tr><th>Biaya Asli</th><td>Rp {{ "{:,}".format(periode.biaya or 0) }}</td></tr>
+        <tr><th>Diskon</th><td>{% if periode.diskon %}{{ periode.diskon }}%{% else %}-{% endif %}</td></tr>
+        <tr class="baris-total"><th>Biaya Akhir</th><td><strong>Rp {{ "{:,}".format(periode.biaya_akhir) }}</strong></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- === DAFTAR PENDAFTAR === -->
+<div class="kartu-biasa">
+  <div class="baris-atas mb-4">
+    <h3 class="text-lg font-semibold">Daftar Pendaftar ({{ daftar_pendaftar|length }} orang)</h3>
+  </div>
+  <div class="tabel-wrapper">
+    <table class="tabel-data">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>ID Pendaftar</th>
+          <th>Nama Lengkap</th>
+          <th>WhatsApp</th>
+          <th>Program</th>
+          <th>Waktu Daftar</th>
+          <th>Pembayaran</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if daftar_pendaftar %}
+        {% for p in daftar_pendaftar %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td class="id-pendaftar">
+            {% if p.sudah_bayar %}
+              <strong>{{ p.id_pendaftar }}</strong>
+            {% else %}
+              <span class="belum-bayar">Belum Bayar</span>
+            {% endif %}
+          </td>
+          <td><strong>{{ p.nama }}</strong></td>
+          <td><a href="https://wa.me/{{ p.whatsapp | replace('-','') | replace(' ','') }}" target="_blank">{{ p.whatsapp }}</a></td>
+          <td>{{ p.program }}</td>
+          <td>{{ p.waktu_daftar.strftime('%d/%m/%Y %H:%M') if p.waktu_daftar else '-' }}</td>
+          <td>
+            {% if p.sudah_bayar %}
+              <span class="label-status sudah-bayar">✓ Sudah Dibayar</span>
+            {% else %}
+              <span class="label-status belum-bayar">Belum Dibayar</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if not p.sudah_bayar %}
+            <form method="POST" action="{{ url_for('admin_pendaftar.konfirmasi_bayar', pendaftar_id=p.id) }}" onsubmit="return confirm('Konfirmasi sudah dibayar? ID akan dibuat otomatis!')">
+              <button type="submit" class="btn-sm btn-hijau">Konfirmasi Bayar</button>
+            </form>
+            {% else %}
+            <span class="btn-sm btn-abu-sudah">Selesai</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+          <td colspan="8" class="kosong">Belum ada pendaftar di periode ini</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+.bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.mb-6 { margin-bottom: 24px; }
+.grid { display: grid; }
+.md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gap-6 { gap: 24px; }
+.tabel-info { width: 100%; border-collapse: collapse; }
+.tabel-info th, .tabel-info td { padding: 8px 4px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+.tabel-info th { font-weight: 500; color: #555; width: 120px; }
+.baris-total { font-weight: bold; color: #991e32; }
+.id-pendaftar { font-family: monospace; font-weight: bold; }
+.belum-bayar { color: #ef4444; font-style: italic; }
+.label-status.sudah-bayar { background: #dcfce7; color: #166534; }
+.label-status.belum-bayar { background: #fef3c7; color: #92400e; }
+.btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-block; }
+.btn-abu { background: #e5e7eb; color: #4b5563; }
+.btn-hijau { background: #16a34a; color: white; }
+.btn-abu-sudah { background: #e5e7eb; color: #6b7280; }
+.btn-wa { background: #25D366; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; }
+.label-status.aktif { background: #dcfce7; color: #166534; border-radius: 4px; }
+.label-status.tutup { background: #fef3c7; color: #92400e; border-radius: 4px; }
+</style>
+{% endblock %}

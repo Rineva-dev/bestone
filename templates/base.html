@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block title %}BestOne Education — Kursus Bahasa Inggris{% endblock %}</title>
+  <meta name="description" content="BestOne Education — kembangkan kemampuan bahasa Inggris melalui pembelajaran yang praktis, terarah, dan menyenangkan.">
+  <meta name="theme-color" content="#991E32">
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind untuk halaman yang sudah menggunakannya -->
+  <script>
+    tailwind = window.tailwind || {};
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            maroon: {
+              DEFAULT: '#991E32',
+              dark: '#7A1828',
+              light: '#B82A40'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CSS Global -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+  {% block head %}{% endblock %}
+</head>
+
+<body>
+  <a href="#konten-utama" class="bo-skip-link">Langsung ke konten</a>
+
+  <!-- HEADER -->
+  <header class="bo-header" id="main-header">
+    <div class="bo-header-inner">
+
+      <!-- Logo -->
+      <a href="/" class="bo-brand" aria-label="BestOne Education — Beranda">
+        <span class="bo-brand-mark">
+          <span>B</span>
+          <i class="fa-solid fa-graduation-cap"></i>
+        </span>
+
+        <span class="bo-brand-copy">
+          <strong>BestOne<span>Education</span></strong>
+          <small>Yes For A Bright Future</small>
+        </span>
+      </a>
+
+      <!-- Navigasi Desktop -->
+      <nav class="bo-nav" aria-label="Navigasi utama">
+        <a href="/#beranda"
+           class="bo-nav-link"
+           data-nav-path="/">Beranda</a>
+
+        <div class="bo-program-menu-wrapper">
+          <span class="bo-nav-link bo-program-toggle">
+            Program
+          </span>
+          <div class="bo-program-dropdown" id="programDropdown">
+            <div class="bo-program-daftar" id="programDaftar">
+              <div class="bo-program-memuat">Memuat daftar program...</div>
+            </div>
+          </div>
+        </div>
+
+        <a href="/galeri"
+           class="bo-nav-link"
+           data-nav-path="/galeri">Galeri</a>
+
+        <a href="/kelas"
+           class="bo-nav-link"
+           data-nav-path="/kelas">Kelas</a>
+
+        <a href="/kontak"
+           class="bo-nav-link"
+           data-nav-path="/kontak">Kontak</a>
+      </nav>
+
+      <!-- Aksi Header -->
+      <div class="bo-header-actions">
+        <a href="{{ url_for('form.pilih_program') }}" class="bo-header-cta">
+          <span>Mulai Daftar</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+        <a href="/admin/login" class="bo-admin-link" aria-label="Login administrator" title="Login Admin">
+          <i class="fa-solid fa-lock"></i>
+        </a>
+
+        <button
+          type="button"
+          class="bo-menu-toggle"
+          id="menu-toggle"
+          aria-label="Buka menu navigasi"
+          aria-controls="mobile-menu"
+          aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigasi Mobile -->
+    <div class="bo-mobile-menu" id="mobile-menu" hidden>
+      <div class="bo-mobile-menu-inner">
+        <div class="bo-mobile-menu-heading">
+          <span>Jelajahi BestOne</span>
+          <span class="bo-mobile-menu-label">MENU</span>
+        </div>
+
+        <a href="/#beranda" class="bo-mobile-link" data-nav-path="/">
+          <span class="bo-mobile-link-icon"><i class="fa-solid fa-house"></i></span>
+          <span>Beranda</span>
+          <i class="fa-solid fa-arrow-up-right-from-square bo-mobile-arrow"></i>
+        </a>
+
+        <a href="/program" class="bo-mobile-link" data-nav-path="/program">
+          <span class="bo-mobile-link-icon"><i class="fa-solid fa-book-open"></i></span>
+          <span>Program</span>
+          <i class="fa-solid fa-arrow-up-right-from-square bo-mobile-arrow"></i>
+        </a>
+
+        <a href="/galeri" class="bo-mobile-link" data-nav-path="/galeri">
+          <span class="bo-mobile-link-icon"><i class="fa-regular fa-images"></i></span>
+          <span>Galeri</span>
+          <i class="fa-solid fa-arrow-up-right-from-square bo-mobile-arrow"></i>
+        </a>
+
+        <a href="/kelas" class="bo-mobile-link" data-nav-path="/kelas">
+          <span class="bo-mobile-link-icon"><i class="fa-solid fa-users"></i></span>
+          <span>Kelas</span>
+          <i class="fa-solid fa-arrow-up-right-from-square bo-mobile-arrow"></i>
+        </a>
+
+        <a href="/kontak" class="bo-mobile-link" data-nav-path="/kontak">
+          <span class="bo-mobile-link-icon"><i class="fa-regular fa-comment-dots"></i></span>
+          <span>Kontak</span>
+          <i class="fa-solid fa-arrow-up-right-from-square bo-mobile-arrow"></i>
+        </a>
+
+        <div class="bo-mobile-menu-bottom">
+          <a href="{{ url_for('form.pilih_program') }}" class="bo-mobile-cta">
+            Daftar Sekarang
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+
+          <a href="/admin/login" class="bo-mobile-admin">
+            <i class="fa-solid fa-lock"></i>
+            Masuk sebagai Admin
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- KONTEN HALAMAN -->
+  <main id="konten-utama" class="bo-main">
+    {% block isi %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bo-footer">
+    <div class="bo-footer-glow"></div>
+
+    <div class="bo-footer-container">
+
+      <!-- Identitas -->
+      <div class="bo-footer-top">
+        <div class="bo-footer-brand-column">
+          <a href="/" class="bo-brand bo-brand-footer">
+            <span class="bo-brand-mark">
+              <span>B</span>
+              <i class="fa-solid fa-graduation-cap"></i>
+            </span>
+
+            <span class="bo-brand-copy">
+              <strong>BestOne<span>Education</span></strong>
+              <small>Learn Today, Lead Tomorrow</small>
+            </span>
+          </a>
+
+          <p class="bo-footer-description">
+            Tempat mengembangkan kemampuan bahasa Inggris, membangun kepercayaan diri,
+            dan mempersiapkan langkah menuju masa depan yang lebih baik.
+          </p>
+
+          <div class="bo-footer-tagline">
+            <span class="bo-footer-tagline-dot"></span>
+            <span>Grow your skills. Expand your world.</span>
+          </div>
+        </div>
+
+        <!-- Tautan -->
+        <div class="bo-footer-column">
+          <h3>Jelajahi</h3>
+          <a href="/#beranda">Beranda</a>
+          <a href="/program">Program Kursus</a>
+          <a href="/galeri">Galeri Kegiatan</a>
+          <a href="/kelas">Informasi Kelas</a>
+        </div>
+
+        <!-- Bantuan -->
+        <div class="bo-footer-column">
+          <h3>Informasi</h3>
+          <a href="/kontak">Hubungi Kami</a>
+          <a href="{{ url_for('form.pilih_program') }}">Pendaftaran</a>
+          <a href="/admin/login">Login Admin</a>
+        </div>
+
+        <!-- Kontak -->
+        <div class="bo-footer-column bo-footer-contact">
+          <h3>Terhubung dengan Kami</h3>
+
+          <div class="bo-contact-item">
+            <span class="bo-contact-icon"><i class="fa-solid fa-phone"></i></span>
+            <div>
+              <small>Telepon / WhatsApp</small>
+              <p>[Nomor Telepon/WA]</p>
+            </div>
+          </div>
+
+          <div class="bo-contact-item">
+            <span class="bo-contact-icon"><i class="fa-regular fa-envelope"></i></span>
+            <div>
+              <small>Email</small>
+              <p>[Alamat Email]</p>
+            </div>
+          </div>
+
+          <div class="bo-contact-item">
+            <span class="bo-contact-icon"><i class="fa-solid fa-location-dot"></i></span>
+            <div>
+              <small>Lokasi</small>
+              <p>[Alamat Lengkap]</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Footer -->
+      <div class="bo-footer-banner">
+        <div>
+          <span class="bo-footer-banner-label">YOUR NEXT CHAPTER STARTS HERE</span>
+          <h3>Siap meningkatkan kemampuan bahasa Inggrismu?</h3>
+          <p>Mulai perjalanan belajarmu bersama BestOne Education.</p>
+        </div>
+
+        <a href="{{ url_for('form.pilih_program') }}" class="bo-footer-banner-button">
+          Mulai Pendaftaran
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Copyright -->
+      <div class="bo-footer-bottom">
+        <p>&copy; 2026 <strong>BestOne Education</strong>. Seluruh hak cipta dilindungi.</p>
+
+        <a href="/admin/login" class="bo-footer-login">
+          <i class="fa-solid fa-shield-halved"></i>
+          Portal Admin
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Tombol Kembali ke Atas -->
+  <button type="button" id="bo-back-to-top" class="bo-back-to-top" aria-label="Kembali ke atas">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- JS Global -->
+  <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const wadah = document.getElementById('programDaftar');
+    if (!wadah) return;
+
+    try {
+      const res = await fetch('/admin/daftar-untuk-header');
+      if (!res.ok) throw new Error('Gagal memuat');
+      
+      const data = await res.json();
+      if (data.programs.length === 0) {
+        wadah.innerHTML = `<div class="bo-program-kosong">
+          Belum ada program tersedia.<br>
+          <a href="/program" style="color:#991E32; font-weight:500;">Lihat halaman Program</a>
+        </div>`;
+        return;
+      }
+      
+      wadah.innerHTML = data.programs.map(p => `
+        <a href="/program/${p.kode}" class="bo-program-item">
+          <div class="bo-program-item-nama">${p.nama}</div>
+          ${p.deskripsi ? `<div class="bo-program-item-desc">${p.deskripsi.length > 50 ? p.deskripsi.substring(0,50)+'...' : p.deskripsi}</div>` : ''}
+          ${p.durasi_nilai && p.durasi_satuan ? `<span class="bo-program-item-durasi">${p.durasi_nilai} ${p.durasi_satuan}</span>` : ''}
+        </a>
+      `).join('');
+      
+    } catch (err) {
+      console.error('Gagal:', err);
+      wadah.innerHTML = `<div class="bo-program-kosong">
+        Gagal memuat.<br>
+        <a href="/program" style="color:#991E32; font-weight:500;">Lihat Semua Program</a>
+      </div>`;
+    }
+  });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

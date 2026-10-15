@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+{% block judul %}BestOne Education — Belajar Hari Ini, Bersinar Esok Hari{% endblock %}
+
+{% block isi %}
+<main class="bo-home">
+
+  <!-- HERO -->
+  <section class="bo-hero">
+    <div class="bo-hero-glow bo-glow-a"></div>
+    <div class="bo-hero-glow bo-glow-b"></div>
+    <div class="bo-container bo-hero-grid">
+
+      <div class="bo-hero-copy">
+        <div class="bo-eyebrow">
+          <span class="bo-live-dot"></span>
+          LEARN WITH PURPOSE. GROW WITH CONFIDENCE.
+        </div>
+
+        <h1 class="bo-hero-title">
+          Bahasa Inggris Lebih Percaya Diri,
+          <span>Masa Depan Lebih Berarti.</span>
+        </h1>
+
+        <p class="bo-hero-description">
+          Temukan cara belajar bahasa Inggris yang lebih praktis,
+          interaktif, dan menyenangkan bersama BestOne Education.
+          Mulai dari langkah kecil, wujudkan kemampuan yang lebih besar.
+        </p>
+
+        <div class="bo-hero-actions">
+          <a href="{{ url_for('form.pilih_program') }}"
+             class="bo-btn bo-btn-primary">
+            Mulai Pendaftaran
+            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </a>
+
+          <a href="#program" class="bo-btn bo-btn-glass">
+            <i class="fa fa-play-circle" aria-hidden="true"></i>
+            Jelajahi Program
+          </a>
+        </div>
+
+        <div class="bo-trust-line">
+          <span class="bo-trust-icon">
+            <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+          </span>
+          <p>
+            <strong>Belajar dengan tujuan yang jelas.</strong>
+            <span>Temukan program yang sesuai dengan kebutuhanmu.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="bo-hero-visual">
+        <div class="bo-visual-orbit bo-orbit-1"></div>
+        <div class="bo-visual-orbit bo-orbit-2"></div>
+
+        <div class="bo-photo-frame">
+          <div class="bo-photo-topline">
+            <span class="bo-photo-mark">
+              <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+            </span>
+            <span>
+              <strong>BESTONE</strong>
+              <small>EDUCATION</small>
+            </span>
+          </div>
+
+          <img
+            src="{{ url_for('static', filename='img/ba.png') }}"
+            alt="BestOne Education"
+            class="bo-main-photo"
+            fetchpriority="high"
+          >
+
+          <div class="bo-photo-caption">
+            <span class="bo-caption-icon">
+              <i class="fa fa-book-open" aria-hidden="true"></i>
+            </span>
+            <span>
+              <strong>Your Journey Starts Here</strong>
+              <small>Learn • Practice • Improve</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="bo-float-card bo-float-top">
+          <span class="bo-float-icon">
+            <i class="fa fa-lightbulb" aria-hidden="true"></i>
+          </span>
+          <span>
+            <strong>Learn Better</strong>
+            <small>Belajar lebih terarah</small>
+          </span>
+        </div>
+
+        <div class="bo-float-card bo-float-bottom">
+          <span class="bo-float-icon bo-float-gold">
+            <i class="fa fa-comments" aria-hidden="true"></i>
+          </span>
+          <span>
+            <strong>Speak Confidently</strong>
+            <small>Berani mulai berbicara</small>
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bo-hero-bottom">
+      <div class="bo-container bo-hero-bottom-inner">
+        <span>YOUR NEXT CHAPTER BEGINS WITH ONE STEP</span>
+        <a href="#keunggulan">
+          Kenali BestOne
+          <i class="fa fa-arrow-down" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUE STRIP -->
+  <section class="bo-value-strip" aria-label="Keunggulan belajar">
+    <div class="bo-container bo-value-grid">
+      <div class="bo-value-item">
+        <span class="bo-value-icon">
+          <i class="fa fa-comments" aria-hidden="true"></i>
+        </span>
+        <span>
+          <strong>Praktik Komunikasi</strong>
+          <small>Belajar lebih aplikatif</small>
+        </span>
+      </div>
+
+      <div class="bo-value-item">
+        <span class="bo-value-icon">
+          <i class="fa fa-users" aria-hidden="true"></i>
+        </span>
+        <span>
+          <strong>Lingkungan Suportif</strong>
+          <small>Tumbuh bersama</small>
+        </span>
+      </div>
+
+      <div class="bo-value-item">
+        <span class="bo-value-icon">
+          <i class="fa fa-book" aria-hidden="true"></i>
+        </span>
+        <span>
+          <strong>Materi Terarah</strong>
+          <small>Sesuai tujuan belajar</small>
+        </span>
+      </div>
+
+      <div class="bo-value-item">
+        <span class="bo-value-icon">
+          <i class="fa fa-line-chart" aria-hidden="true"></i>
+        </span>
+        <span>
+          <strong>Progres Bertahap</strong>
+          <small>Bangun kemampuanmu</small>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO / KEUNGGULAN -->
+  <section class="bo-section bo-benefits" id="keunggulan">
+    <div class="bo-container">
+      <div class="bo-section-heading">
+        <span class="bo-section-label">WHY BESTONE?</span>
+        <h2>Belajar Bukan Sekadar Menghafal.<br>
+          <span>Ini Tentang Berani Berkembang.</span>
+        </h2>
+        <p>
+          Kami percaya bahwa setiap orang dapat berkembang ketika
+          memiliki kesempatan untuk belajar, berlatih, dan mencoba.
+        </p>
+      </div>
+
+      <div class="bo-benefit-grid">
+        <article class="bo-benefit-card">
+          <div class="bo-benefit-top">
+            <span class="bo-benefit-icon">
+              <i class="fa fa-comments" aria-hidden="true"></i>
+            </span>
+            <span class="bo-card-number">01</span>
+          </div>
+          <h3>Praktik Lebih Banyak</h3>
+          <p>
+            Asah kemampuan melalui percakapan, diskusi, dan
+            latihan yang dekat dengan kehidupan sehari-hari.
+          </p>
+          <span class="bo-card-accent"></span>
+        </article>
+
+        <article class="bo-benefit-card">
+          <div class="bo-benefit-top">
+            <span class="bo-benefit-icon">
+              <i class="fa fa-heart" aria-hidden="true"></i>
+            </span>
+            <span class="bo-card-number">02</span>
+          </div>
+          <h3>Belajar dengan Nyaman</h3>
+          <p>
+            Bangun rasa percaya diri dalam lingkungan belajar
+            yang mendorongmu untuk terus mencoba.
+          </p>
+          <span class="bo-card-accent"></span>
+        </article>
+
+        <article class="bo-benefit-card">
+          <div class="bo-benefit-top">
+            <span class="bo-benefit-icon">
+              <i class="fa fa-compass" aria-hidden="true"></i>
+            </span>
+            <span class="bo-card-number">03</span>
+          </div>
+          <h3>Tujuan yang Terarah</h3>
+          <p>
+            Pilih jalur pembelajaran sesuai kebutuhan, tingkat
+            kemampuan, dan target yang ingin kamu capai.
+          </p>
+          <span class="bo-card-accent"></span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="bo-section bo-gallery" id="galeri">
+    <div class="bo-container">
+      <div class="bo-gallery-heading">
+        <div class="bo-section-heading bo-heading-left">
+          <span class="bo-section-label">A GLIMPSE OF BESTONE</span>
+          <h2>Belajar, Berlatih,<br><span>Bertumbuh Bersama.</span></h2>
+          <p>
+            Setiap proses belajar adalah kesempatan untuk
+            mencoba sesuatu yang baru.
+          </p>
+        </div>
+
+        <div class="bo-slider-controls">
+          <button type="button" id="bo-slider-prev"
+                  aria-label="Foto sebelumnya">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" id="bo-slider-next"
+                  aria-label="Foto berikutnya">
+            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="bo-gallery-window" id="bo-gallery-window">
+        <div class="bo-gallery-track" id="bo-gallery-track">
+
+          <article class="bo-gallery-slide">
+            <img src="https://picsum.photos/id/20/1200/700"
+                 alt="Ilustrasi suasana belajar"
+                 loading="lazy">
+            <div class="bo-gallery-overlay">
+              <span class="bo-gallery-tag">LEARNING EXPERIENCE</span>
+              <h3>Belajar dengan Pengalaman</h3>
+              <p>Jadikan setiap sesi belajar sebagai pengalaman yang bermakna.</p>
+            </div>
+          </article>
+
+          <article class="bo-gallery-slide">
+            <img src="https://picsum.photos/id/42/1200/700"
+                 alt="Ilustrasi kegiatan pendidikan"
+                 loading="lazy">
+            <div class="bo-gallery-overlay">
+              <span class="bo-gallery-tag">GROW TOGETHER</span>
+              <h3>Berkembang Bersama</h3>
+              <p>Bangun kemampuan melalui latihan dan interaksi.</p>
+            </div>
+          </article>
+
+          <article class="bo-gallery-slide">
+            <img src="https://picsum.photos/id/15/1200/700"
+                 alt="Ilustrasi suasana belajar"
+                 loading="lazy">
+            <div class="bo-gallery-overlay">
+              <span class="bo-gallery-tag">YOUR NEXT STEP</span>
+              <h3>Mulai Langkah Berikutnya</h3>
+              <p>Terus belajar dan berani melangkah menuju tujuanmu.</p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <div class="bo-gallery-bottom">
+        <div class="bo-gallery-dots" id="bo-gallery-dots">
+          <button type="button" class="bo-gallery-dot is-active"
+                  data-slide="0" aria-label="Tampilkan foto 1"></button>
+          <button type="button" class="bo-gallery-dot"
+                  data-slide="1" aria-label="Tampilkan foto 2"></button>
+          <button type="button" class="bo-gallery-dot"
+                  data-slide="2" aria-label="Tampilkan foto 3"></button>
+        </div>
+        <span class="bo-gallery-counter" id="bo-gallery-counter">01 / 03</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAM -->
+  <section class="bo-section bo-programs" id="program">
+    <div class="bo-container">
+      <div class="bo-program-heading">
+        <div class="bo-section-heading bo-heading-left">
+          <span class="bo-section-label">FIND YOUR PATH</span>
+          <h2>Pilih Jalur Belajar<br><span>yang Sesuai denganmu.</span></h2>
+          <p>
+            Mulai dari membangun dasar hingga mempersiapkan
+            diri untuk kebutuhan akademik dan profesional.
+          </p>
+        </div>
+
+        <a href="{{ url_for('form.pilih_program') }}"
+           class="bo-text-link">
+          Lihat Pilihan Program
+          <i class="fa fa-arrow-up-right-from-square"
+             aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="bo-program-grid">
+        <article class="bo-path-card">
+          <div class="bo-path-top">
+            <span class="bo-path-icon">
+              <i class="fa fa-seedling" aria-hidden="true"></i>
+            </span>
+            <span class="bo-path-number">01</span>
+          </div>
+          <span class="bo-path-label">BUILD YOUR FOUNDATION</span>
+          <h3>Bangun Dasar</h3>
+          <p>
+            Perkuat kosakata, pemahaman dasar, dan keberanian
+            memulai percakapan bahasa Inggris.
+          </p>
+          <a href="{{ url_for('form.pilih_program') }}" class="bo-path-link">
+            Temukan Program
+            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </article>
+
+        <article class="bo-path-card bo-path-featured">
+          <div class="bo-popular-tag">KEEP GROWING</div>
+          <div class="bo-path-top">
+            <span class="bo-path-icon">
+              <i class="fa fa-comments" aria-hidden="true"></i>
+            </span>
+            <span class="bo-path-number">02</span>
+          </div>
+          <span class="bo-path-label">SPEAK WITH CONFIDENCE</span>
+          <h3>Komunikasi Aktif</h3>
+          <p>
+            Latih kelancaran berbicara melalui diskusi,
+            presentasi, dan percakapan yang lebih terarah.
+          </p>
+          <a href="{{ url_for('form.pilih_program') }}" class="bo-path-link">
+            Temukan Program
+            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </article>
+
+        <article class="bo-path-card">
+          <div class="bo-path-top">
+            <span class="bo-path-icon">
+              <i class="fa fa-bullseye" aria-hidden="true"></i>
+            </span>
+            <span class="bo-path-number">03</span>
+          </div>
+          <span class="bo-path-label">PREPARE FOR YOUR GOALS</span>
+          <h3>Persiapan Akademik</h3>
+          <p>
+            Persiapkan kemampuan bahasa Inggris sesuai
+            kebutuhan pendidikan, ujian, atau target pribadi.
+          </p>
+          <a href="{{ url_for('form.pilih_program') }}" class="bo-path-link">
+            Temukan Program
+            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </article>
+      </div>
+
+      <p class="bo-program-note">
+        <i class="fa fa-info-circle" aria-hidden="true"></i>
+        Ketersediaan program dan level dapat dilihat pada halaman pendaftaran.
+      </p>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="bo-final-cta">
+    <div class="bo-cta-pattern" aria-hidden="true"></div>
+    <div class="bo-container bo-cta-inner">
+      <div class="bo-cta-symbol">
+        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+      </div>
+
+      <span class="bo-cta-label">YOUR FUTURE STARTS NOW</span>
+      <h2>Satu Langkah Kecil.<br><span>Peluang yang Lebih Besar.</span></h2>
+      <p>
+        Temukan program yang sesuai dengan tujuanmu dan
+        mulai perjalanan belajar bersama BestOne Education.
+      </p>
+
+      <a href="{{ url_for('form.pilih_program') }}"
+         class="bo-btn bo-btn-cta">
+        Jelajahi & Daftar Sekarang
+        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+      </a>
+
+      <span class="bo-cta-footnote">
+        Pilih program dan level yang tersedia pada halaman pendaftaran.
+      </span>
+    </div>
+  </section>
+
+</main>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/public/index.css') }}">
+<script src="{{ url_for('static', filename='js/public/index.js') }}"></script>
+{% endblock %}

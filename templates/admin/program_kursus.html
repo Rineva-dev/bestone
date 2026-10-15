@@ -1,0 +1,234 @@
+{% extends "admin/base_admin.html" %}
+{% block judul %}Program Kursus — BestOne{% endblock %}
+{% block judul_halaman %}Daftar Program Kursus{% endblock %}
+
+{% block isi %}
+<!-- Bar Atas -->
+<div class="bar-atas">
+  <button class="btn-utama" id="btnBukaTambah">+ Tambah Program</button>
+  <div class="pencarian">
+    <input type="text" id="cariProgram" placeholder="Cari program..." class="form-input">
+  </div>
+</div>
+
+<!-- Tabel Daftar -->
+<div class="kartu-biasa">
+  <div class="tabel-wrapper">
+    <table class="tabel-data" id="tabelProgram">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama Program</th>
+          <th>Deskripsi</th>
+          <th>Durasi</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in daftar %}
+        <tr class="baris-program">
+          <td>{{ loop.index }}</td>
+          <td><strong>{{ p.nama }}</strong></td>
+          <td><small>{{ p.deskripsi[:60] ~ '...' if p.deskripsi and p.deskripsi|length > 60 else (p.deskripsi or '-') }}</small></td>
+          <td>
+            {% if p.durasi_nilai and p.durasi_satuan %}
+              {{ p.durasi_nilai }} {{ p.durasi_satuan }}
+            {% else %}-{% endif %}
+          </td>
+          <td>
+            <div class="tombol-aksi">
+              <button class="btn-sm btn-abu" 
+                data-id="{{ p.id }}" 
+                data-nama="{{ p.nama }}" 
+                data-deskripsi="{{ p.deskripsi or '' }}" 
+                data-nilai="{{ p.durasi_nilai or '' }}" 
+                data-satuan="{{ p.durasi_satuan or '' }}"
+                onclick="bukaModalEdit(this)">Ubah</button>
+              <form method="POST" action="{{ url_for('admin_program.hapus', program_id=p.id) }}" class="form-hapus" onsubmit="return confirm('Yakin hapus program ini?')">
+                <button type="submit" class="btn-sm btn-merah">Hapus</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" class="kosong">Belum ada program. Klik "Tambah Program" untuk memulai.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Tambah -->
+<div id="modalTambah" class="modal-latar">
+  <div class="modal-kotak">
+    <div class="modal-judul">
+      <h3>Tambah Program Kursus</h3>
+      <button class="tombol-tutup" onclick="tutupModalTambah()">&times;</button>
+    </div>
+    <form method="POST" action="{{ url_for('admin_program.tambah') }}">
+      <div class="form-kelompok">
+        <label>Nama Program <span class="wajib">*</span></label>
+        <input type="text" name="nama" required class="form-input" placeholder="Contoh: Kelas Bahasa Inggris Pemula">
+      </div>
+      
+      <div class="form-kelompok">
+        <label>Deskripsi</label>
+        <textarea name="deskripsi" rows="3" class="form-input" placeholder="Singkat tentang program ini..."></textarea>
+      </div>
+      
+      <div class="form-dua">
+        <div class="form-kelompok">
+          <label>Durasi</label>
+          <input type="number" name="durasi_nilai" class="form-input" placeholder="Contoh: 24">
+        </div>
+        <div class="form-kelompok">
+          <label>Satuan</label>
+          <select name="durasi_satuan" class="form-input">
+            <option value="">Pilih satuan</option>
+            <option value="bulan">Bulan</option>
+            <option value="minggu">Minggu</option>
+            <option value="pertemuan">Pertemuan</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="modal-tombol">
+        <button type="button" class="btn-abu" onclick="tutupModalTambah()">Batal</button>
+        <button type="submit" class="btn-utama">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Edit -->
+<div id="modalEdit" class="modal-latar">
+  <div class="modal-kotak">
+    <div class="modal-judul">
+      <h3>Ubah Program Kursus</h3>
+      <button class="tombol-tutup" onclick="tutupModalEdit()">&times;</button>
+    </div>
+    <form method="POST" id="formEdit">
+      <div class="form-kelompok">
+        <label>Nama Program <span class="wajib">*</span></label>
+        <input type="text" name="nama" id="edit-nama" required class="form-input">
+      </div>
+      
+      <div class="form-kelompok">
+        <label>Deskripsi</label>
+        <textarea name="deskripsi" id="edit-deskripsi" rows="3" class="form-input"></textarea>
+      </div>
+      
+      <div class="form-dua">
+        <div class="form-kelompok">
+          <label>Durasi</label>
+          <input type="number" name="durasi_nilai" id="edit-nilai" class="form-input">
+        </div>
+        <div class="form-kelompok">
+          <label>Satuan</label>
+          <select name="durasi_satuan" id="edit-satuan" class="form-input">
+            <option value="">Pilih satuan</option>
+            <option value="bulan">Bulan</option>
+            <option value="minggu">Minggu</option>
+            <option value="pertemuan">Pertemuan</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="modal-tombol">
+        <button type="button" class="btn-abu" onclick="tutupModalEdit()">Batal</button>
+        <button type="submit" class="btn-utama">Perbarui</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.pencarian { max-width: 300px; width: 100%; }
+.form-dua { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-kelompok { margin-bottom: 14px; }
+.form-kelompok label { display: block; margin-bottom: 6px; font-weight: 500; color: #333; font-size: 14px; }
+.form-input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+.wajib { color: #e11d48; }
+.tombol-aksi { display: flex; gap: 6px; align-items: center; }
+.form-hapus { margin: 0; }
+.btn-sm {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-utama {
+    background: #991e32;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px 16px;
+    border-radius: 6px;
+}
+
+.btn-abu {
+    background: #e5e7eb;
+    color: #4b5563;
+    min-width: 64px;
+}
+
+.btn-merah {
+    background: #ef4444;
+    color: white;
+    min-width: 64px;
+}
+
+/* Modal */
+.modal-latar { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
+.modal-latar.tampil { display: flex; }
+.modal-kotak { background: white; border-radius: 12px; width: 90%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 24px; }
+.modal-judul { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-judul h3 { margin: 0; font-size: 18px; color: #1f2937; }
+.tombol-tutup { background: none; border: none; font-size: 22px; cursor: pointer; color: #6b7280; }
+.modal-tombol { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+.modal-tombol button { padding: 10px 24px; border-radius: 8px; font-size: 14px; }
+
+@media (max-width: 640px) {
+  .form-dua { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+// Pencarian
+const cari = document.getElementById('cariProgram');
+const daftarBaris = document.querySelectorAll('.baris-program');
+cari.addEventListener('input', () => {
+  const kata = cari.value.toLowerCase();
+  daftarBaris.forEach(baris => {
+    const teks = baris.textContent.toLowerCase();
+    baris.style.display = teks.includes(kata) ? '' : 'none';
+  });
+});
+
+// Modal Tambah
+const modalTambah = document.getElementById('modalTambah');
+document.getElementById('btnBukaTambah').addEventListener('click', () => modalTambah.classList.add('tampil'));
+function tutupModalTambah() { modalTambah.classList.remove('tampil'); }
+modalTambah.addEventListener('click', e => { if (e.target === modalTambah) tutupModalTambah(); });
+
+// Modal Edit
+const modalEdit = document.getElementById('modalEdit');
+function bukaModalEdit(btn) {
+  document.getElementById('formEdit').action = `/admin/program/edit/${btn.dataset.id}`;
+  document.getElementById('edit-nama').value = btn.dataset.nama;
+  document.getElementById('edit-deskripsi').value = btn.dataset.deskripsi;
+  document.getElementById('edit-nilai').value = btn.dataset.nilai;
+  document.getElementById('edit-satuan').value = btn.dataset.satuan;
+  modalEdit.classList.add('tampil');
+}
+function tutupModalEdit() { modalEdit.classList.remove('tampil'); }
+modalEdit.addEventListener('click', e => { if (e.target === modalEdit) tutupModalEdit(); });
+</script>
+{% endblock %}

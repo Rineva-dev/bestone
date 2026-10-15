@@ -1,0 +1,1024 @@
+{% extends "base.html" %}
+{% block isi %}
+<section class="form-section">
+  <div class="form-latar-atas"></div>
+  <div class="container mx-auto px-6">
+    <div class="max-w-2xl mx-auto">
+      
+      <!-- Judul Halaman -->
+      <div class="text-center mb-10">
+        <span class="label-atas">Pendaftaran Kursus</span>
+        <h1 class="judul-halaman">Bergabung Bersama <span class="teks-akar">BestOne Education</span></h1>
+        <p class="sub-judul">Silakan lengkapi data diri Anda untuk melanjutkan pendaftaran</p>
+      </div>
+
+      <!-- Ringkasan Pilihan Program & Level -->
+      <div class="kartu-ringkasan">
+        <div class="baris-ringkasan">
+          <span class="label-ringkasan">Program</span>
+          <span class="nilai-ringkasan">{{ program_terpilih }}</span>
+        </div>
+        {% if level_terpilih %}
+        <div class="baris-ringkasan">
+          <span class="label-ringkasan">Level</span>
+          <span class="nilai-ringkasan kode-level-box">{{ level_terpilih.kode }} — {{ level_terpilih.nama }}</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Kotak Formulir Utama -->
+      <div class="kartu-formulir">
+        <form action="{{ url_for('form.kirim_pendaftaran') }}" method="POST" id="formDaftar">
+          
+          <!-- Data Tersembunyi -->
+          <input type="hidden" name="program" value="{{ program_terpilih }}">
+          {% if level_terpilih %}
+          <input type="hidden" name="level" value="{{ level_terpilih.kode }}">
+          {% endif %}
+
+          <!-- Bagian 1: Identitas Diri -->
+          <div class="bagian-form">
+            <h3 class="judul-bagian">
+              <span class="nomor-bagian">1</span>
+              Data Identitas Diri
+            </h3>
+            
+            <div class="grid-dua">
+              <div class="kelompok-input">
+                <label for="nama" class="label-input">Nama Lengkap <span class="wajib">*</span></label>
+                <input 
+                  type="text" id="nama" name="nama" required
+                  class="input-baku"
+                  placeholder="Sesuai KTP / Dokumen Resmi"
+                >
+              </div>
+              <div class="kelompok-input">
+                <label for="jenis_kelamin" class="label-input">Jenis Kelamin</label>
+                <select id="jenis_kelamin" name="jenis_kelamin" class="input-baku">
+                  <option value="">— Pilih —</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-dua">
+              <div class="kelompok-input">
+                <label for="tempat_lahir" class="label-input">Tempat Lahir</label>
+                <input 
+                  type="text" id="tempat_lahir" name="tempat_lahir"
+                  class="input-baku"
+                  placeholder="Kota / Kabupaten"
+                >
+              </div>
+              <div class="kelompok-input">
+                <label for="tanggal_lahir" class="label-input">Tanggal Lahir</label>
+                <input 
+                  type="date" id="tanggal_lahir" name="tanggal_lahir"
+                  class="input-baku"
+                >
+              </div>
+            </div>
+
+            <div class="kelompok-input">
+              <label for="nomor_identitas" class="label-input">Nomor Identitas (KTP/KK/Paspor)</label>
+              <input 
+                type="text" id="nomor_identitas" name="nomor_identitas"
+                class="input-baku"
+                placeholder="Masukkan nomor dokumen"
+              >
+            </div>
+          </div>
+
+          <!-- Bagian 2: Kontak -->
+          <div class="bagian-form">
+            <h3 class="judul-bagian">
+              <span class="nomor-bagian">2</span>
+              Informasi Kontak
+            </h3>
+            
+            <div class="grid-dua">
+              <div class="kelompok-input">
+                <label for="whatsapp" class="label-input">Nomor WhatsApp <span class="wajib">*</span></label>
+                <input 
+                  type="tel" id="whatsapp" name="whatsapp" required
+                  class="input-baku"
+                  placeholder="08xx-xxxx-xxxx"
+                >
+              </div>
+              <div class="kelompok-input">
+                <label for="telepon" class="label-input">Nomor Telepon Lain</label>
+                <input 
+                  type="tel" id="telepon" name="telepon"
+                  class="input-baku"
+                  placeholder="Opsional"
+                >
+              </div>
+            </div>
+
+            <div class="kelompok-input">
+              <label for="email" class="label-input">Alamat Email</label>
+              <input 
+                type="email" id="email" name="email"
+                class="input-baku"
+                placeholder="nama@email.com"
+              >
+            </div>
+          </div>
+
+          <!-- Bagian 3: Alamat Lengkap -->
+          <div class="bagian-form">
+            <h3 class="judul-bagian">
+              <span class="nomor-bagian">3</span>
+              Alamat Tempat Tinggal
+            </h3>
+
+            <div class="kelompok-input">
+              <label for="provinsi" class="label-input">Provinsi <span class="wajib">*</span></label>
+              <select id="provinsi" name="provinsi" required class="input-baku">
+                <option value="">— Pilih Provinsi —</option>
+              </select>
+            </div>
+
+            <div class="kelompok-input">
+              <label for="kabupaten" class="label-input">Kabupaten / Kota <span class="wajib">*</span></label>
+              <select id="kabupaten" name="kabupaten" required class="input-baku" disabled>
+                <option value="">— Pilih Kabupaten —</option>
+              </select>
+            </div>
+
+            <div class="kelompok-input">
+              <label for="kecamatan" class="label-input">Kecamatan <span class="wajib">*</span></label>
+              <select id="kecamatan" name="kecamatan" required class="input-baku" disabled>
+                <option value="">— Pilih Kecamatan —</option>
+              </select>
+            </div>
+
+            <div class="kelompok-input">
+              <label for="kelurahan" class="label-input">Kelurahan / Desa <span class="wajib">*</span></label>
+              <select id="kelurahan" name="kelurahan" required class="input-baku" disabled>
+                <option value="">— Pilih Kelurahan/Desa —</option>
+              </select>
+            </div>
+
+            <div class="kelompok-input">
+              <label for="alamat" class="label-input">Alamat Lengkap (Jalan, RT/RW, No. Rumah)</label>
+              <textarea 
+                id="alamat" name="alamat" rows="3"
+                class="input-baku"
+                placeholder="Nama jalan, nomor rumah, RT/RW, patokan..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Bagian 4: Tambahan -->
+          <div class="bagian-form">
+            <h3 class="judul-bagian">
+              <span class="nomor-bagian">4</span>
+              Informasi Tambahan
+            </h3>
+            
+            <div class="kelompok-input">
+              <label for="pendidikan" class="label-input">Riwayat Pendidikan Terakhir</label>
+              <select id="pendidikan" name="pendidikan" class="input-baku">
+                <option value="">— Pilih —</option>
+                <option value="SD">SD / Sederajat</option>
+                <option value="SMP">SMP / Sederajat</option>
+                <option value="SMA">SMA / SMK / Sederajat</option>
+                <option value="D3">Diploma 3 (D3)</option>
+                <option value="S1">Sarjana (S1)</option>
+                <option value="S2">Magister (S2)</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+
+            <div class="kelompok-input">
+              <label for="tujuan_belajar" class="label-input">Tujuan Belajar Bahasa Inggris</label>
+              <select id="tujuan_belajar" name="tujuan_belajar" class="input-baku">
+                <option value="">— Pilih —</option>
+                <option value="Sekolah">Tugas Sekolah / Akademik</option>
+                <option value="Kerja">Kebutuhan Pekerjaan</option>
+                <option value="Luar Negeri">Bekerja / Kuliah ke Luar Negeri</option>
+                <option value="Ujian">Persiapan Ujian (TOEFL/IELTS)</option>
+                <option value="Hobi">Hobi / Pengembangan Diri</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+
+            <div class="kelompok-input">
+              <label for="sumber_info" class="label-input">Dari mana Anda mengetahui BestOne Education?</label>
+              <select id="sumber_info" name="sumber_info" class="input-baku">
+                <option value="">— Pilih —</option>
+                <option value="Teman">Rekomendasi Teman/Keluarga</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Google">Google / Pencarian</option>
+                <option value="Brosur">Brosur / Papan Pengumuman</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+
+            <div class="kelompok-input">
+              <label for="catatan" class="label-input">Catatan / Pertanyaan Tambahan</label>
+              <textarea 
+                id="catatan" name="catatan" rows="3"
+                class="input-baku"
+                placeholder="Ada hal lain yang ingin disampaikan?"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Tombol Kirim -->
+          <div class="bagian-tombol">
+            <button type="submit" id="btnKirim" class="tombol-kirim">
+              <span class="teks-utama">Kirim Pendaftaran</span>
+              <span class="teks-ikon">✓</span>
+            </button>
+            <p class="catatan-bawah">
+              Dengan menekan tombol di atas, Anda menyetujui syarat dan ketentuan pendaftaran BestOne Education.
+            </p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Kembali -->
+      <div class="kembali-bawah">
+        <a href="{{ url_for('form.pilih_program') }}" class="tautan-kembali">
+          ← Kembali ke Pilihan Program
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+
+/* =========================================
+   BESTONE EDUCATION — PREMIUM REGISTRATION
+   ========================================= */
+
+:root {
+  --bo-primary: #941b32;
+  --bo-primary-dark: #681326;
+  --bo-primary-light: #c13c54;
+  --bo-accent: #f6dce2;
+  --bo-bg: #fff9fa;
+  --bo-white: #ffffff;
+  --bo-text: #20212a;
+  --bo-muted: #777b89;
+  --bo-border: #e9e5e8;
+  --bo-success: #16835f;
+
+  --bo-shadow-sm: 0 4px 16px rgba(40, 20, 28, .045);
+  --bo-shadow-lg: 0 24px 70px rgba(79, 19, 37, .11);
+  --bo-radius: 22px;
+}
+
+/* ===== HALAMAN ===== */
+
+.form-section {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  padding: 100px 0 90px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at 0% 35%,
+      rgba(244, 218, 226, .42),
+      transparent 42%
+    ),
+    linear-gradient(180deg, #fff 0%, var(--bo-bg) 100%);
+  color: var(--bo-text);
+  font-family: Inter, "Segoe UI", sans-serif;
+}
+
+.form-section *,
+.form-section *::before,
+.form-section *::after {
+  box-sizing: border-box;
+}
+
+.form-latar-atas {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 370px;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(255, 255, 255, .12),
+      transparent 26%
+    ),
+    radial-gradient(
+      circle at 10% 100%,
+      rgba(255, 255, 255, .08),
+      transparent 30%
+    ),
+    linear-gradient(
+      125deg,
+      #641226 0%,
+      #8b1931 52%,
+      #a92b44 100%
+    );
+}
+
+.form-section > .container {
+  position: relative;
+}
+
+.form-section .max-w-2xl {
+  max-width: 800px;
+  margin-inline: auto;
+}
+
+/* ===== HEADER ===== */
+
+.form-section .text-center.mb-10 {
+  margin-bottom: 30px;
+  padding: 12px 10px 8px;
+  text-align: center;
+}
+
+.label-atas {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 9px 15px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 100px;
+  background: rgba(255, 255, 255, .10);
+  color: #ffe7ec;
+  font-size: .72rem;
+  font-weight: 750;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+}
+
+.judul-halaman {
+  max-width: 680px;
+  margin: 0 auto 14px;
+  color: #fff;
+  font-size: clamp(2rem, 5vw, 3.15rem);
+  font-weight: 800;
+  line-height: 1.16;
+  letter-spacing: -1.6px;
+  text-wrap: balance;
+}
+
+.teks-akar {
+  display: inline;
+  color: #ffd4dd;
+}
+
+.sub-judul {
+  max-width: 490px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, .79);
+  font-size: .98rem;
+  line-height: 1.8;
+}
+
+/* ===== RINGKASAN PROGRAM ===== */
+
+.kartu-ringkasan {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin-bottom: 22px;
+  padding: 20px 26px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .85);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .97);
+  box-shadow: var(--bo-shadow-lg);
+}
+
+.baris-ringkasan {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 5px 20px;
+}
+
+.baris-ringkasan:first-child {
+  padding-left: 4px;
+}
+
+.baris-ringkasan + .baris-ringkasan {
+  border-top: 0;
+  border-left: 1px solid var(--bo-border);
+}
+
+.label-ringkasan {
+  color: var(--bo-muted);
+  font-size: .76rem;
+  font-weight: 600;
+  letter-spacing: .4px;
+}
+
+.nilai-ringkasan {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: var(--bo-text);
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.kode-level-box {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 5px 11px;
+  border: 1px solid #f1d6dd;
+  border-radius: 8px;
+  background: #fff4f6;
+  color: var(--bo-primary);
+  font-size: .85rem;
+  font-weight: 750;
+}
+
+/* ===== KARTU FORMULIR ===== */
+
+.kartu-formulir {
+  position: relative;
+  z-index: 1;
+  padding: 38px 42px;
+  border: 1px solid rgba(232, 222, 226, .8);
+  border-radius: var(--bo-radius);
+  background: var(--bo-white);
+  box-shadow: var(--bo-shadow-lg);
+}
+
+.bagian-form {
+  margin-bottom: 36px;
+}
+
+.judul-bagian {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 0 0 25px;
+  padding: 0 0 17px;
+  border-bottom: 1px solid var(--bo-border);
+  color: var(--bo-text);
+  font-size: 1.05rem;
+  font-weight: 750;
+  letter-spacing: -.25px;
+}
+
+.nomor-bagian {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 39px;
+  align-items: center;
+  justify-content: center;
+  width: 39px;
+  height: 39px;
+  border: 1px solid rgba(148, 27, 50, .12);
+  border-radius: 13px;
+  background: linear-gradient(145deg, #fff0f3, #f9dfe5);
+  color: var(--bo-primary);
+  font-size: .92rem;
+  font-weight: 800;
+}
+
+/* ===== GRID DAN INPUT ===== */
+
+.grid-dua {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px;
+}
+
+.kelompok-input {
+  min-width: 0;
+  margin-bottom: 21px;
+}
+
+.label-input {
+  display: block;
+  margin-bottom: 9px;
+  color: #343440;
+  font-size: .84rem;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.wajib {
+  margin-left: 2px;
+  color: #d93650;
+  font-weight: 800;
+}
+
+.input-baku {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 49px;
+  padding: 12px 15px;
+  border: 1px solid #e4e0e4;
+  border-radius: 11px;
+  outline: none;
+  background-color: #fdfcfd;
+  color: var(--bo-text);
+  font-family: inherit;
+  font-size: .91rem;
+  font-weight: 450;
+  line-height: 1.5;
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    background-color .2s ease,
+    transform .2s ease;
+}
+
+.input-baku::placeholder {
+  color: #a2a0aa;
+  opacity: 1;
+}
+
+.input-baku:hover:not(:disabled) {
+  border-color: #cbb6bc;
+  background-color: #fff;
+}
+
+.input-baku:focus {
+  border-color: var(--bo-primary-light);
+  outline: none;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(148, 27, 50, .085);
+}
+
+.input-baku:disabled {
+  cursor: not-allowed;
+  border-color: #ece9ed;
+  background-color: #f4f3f5;
+  color: #a09ca5;
+  opacity: 1;
+}
+
+textarea.input-baku {
+  min-height: 108px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+select.input-baku {
+  padding-right: 42px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23941b32' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+}
+
+select.input-baku:disabled {
+  cursor: not-allowed;
+}
+
+/* ===== TOMBOL KIRIM ===== */
+
+.bagian-tombol {
+  margin-top: 4px;
+  padding-top: 27px;
+  border-top: 1px solid var(--bo-border);
+  text-align: center;
+}
+
+.tombol-kirim {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 15px 25px;
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: 13px;
+  background: linear-gradient(
+    115deg,
+    var(--bo-primary-dark),
+    var(--bo-primary) 55%,
+    var(--bo-primary-light)
+  );
+  box-shadow: 0 7px 18px rgba(148, 27, 50, .19);
+  color: #fff;
+  font-family: inherit;
+  font-size: .98rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition:
+    transform .22s ease,
+    box-shadow .22s ease,
+    filter .22s ease;
+}
+
+.tombol-kirim:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(148, 27, 50, .25);
+  filter: brightness(1.06);
+}
+
+.tombol-kirim:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(148, 27, 50, .17);
+}
+
+.tombol-kirim:focus-visible,
+.tautan-kembali:focus-visible {
+  outline: 3px solid rgba(193, 60, 84, .4);
+  outline-offset: 4px;
+}
+
+.teks-ikon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .12);
+  font-size: .85rem;
+  transition: transform .2s ease;
+}
+
+.tombol-kirim:hover .teks-ikon {
+  transform: translateX(3px);
+}
+
+.catatan-bawah {
+  max-width: 440px;
+  margin: 15px auto 0;
+  color: var(--bo-muted);
+  font-size: .77rem;
+  line-height: 1.8;
+}
+
+/* ===== NAVIGASI KEMBALI ===== */
+
+.kembali-bawah {
+  margin-top: 26px;
+  text-align: center;
+}
+
+.tautan-kembali {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(148, 27, 50, .1);
+  border-radius: 100px;
+  background: rgba(255, 255, 255, .75);
+  color: #706671;
+  font-size: .85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    color .2s ease,
+    border-color .2s ease,
+    background-color .2s ease,
+    transform .2s ease;
+}
+
+.tautan-kembali:hover {
+  transform: translateY(-1px);
+  border-color: #e7c4cd;
+  background: #fff;
+  color: var(--bo-primary);
+}
+
+/* ===== VALIDASI BROWSER ===== */
+
+.input-baku:required:invalid:not(:focus) {
+  color: var(--bo-text);
+}
+
+/* ===== RESPONSIVE TABLET ===== */
+
+@media (max-width: 768px) {
+  .form-section {
+    padding: 70px 0 65px;
+  }
+
+  .form-latar-atas {
+    height: 340px;
+  }
+
+  .form-section .max-w-2xl {
+    max-width: 680px;
+  }
+
+  .kartu-formulir {
+    padding: 30px 26px;
+    border-radius: 20px;
+  }
+
+  .kartu-ringkasan {
+    padding: 18px 20px;
+  }
+
+  .judul-halaman {
+    letter-spacing: -1px;
+  }
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+
+@media (max-width: 640px) {
+  .form-section {
+    padding: 70px 0 45px;
+  }
+
+  .form-section .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .form-section .text-center.mb-10 {
+    margin-bottom: 24px;
+    padding: 8px 2px 5px;
+  }
+
+  .form-latar-atas {
+    height: 320px;
+  }
+
+  .label-atas {
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    font-size: .66rem;
+    letter-spacing: 1.5px;
+  }
+
+  .judul-halaman {
+    font-size: clamp(1.8rem, 8vw, 2.35rem);
+    line-height: 1.2;
+    letter-spacing: -.8px;
+  }
+
+  .sub-judul {
+    max-width: 330px;
+    font-size: .88rem;
+    line-height: 1.75;
+  }
+
+  .kartu-ringkasan {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-bottom: 16px;
+    padding: 16px 18px;
+    border-radius: 16px;
+  }
+
+  .baris-ringkasan {
+    gap: 5px;
+    padding: 10px 0;
+  }
+
+  .baris-ringkasan:first-child {
+    padding-left: 0;
+  }
+
+  .baris-ringkasan + .baris-ringkasan {
+    padding-top: 13px;
+    border-top: 1px solid var(--bo-border);
+    border-left: 0;
+  }
+
+  .nilai-ringkasan {
+    font-size: .94rem;
+  }
+
+  .kartu-formulir {
+    padding: 25px 18px;
+    border-radius: 18px;
+  }
+
+  .bagian-form {
+    margin-bottom: 29px;
+  }
+
+  .judul-bagian {
+    gap: 11px;
+    margin-bottom: 21px;
+    padding-bottom: 14px;
+    font-size: .96rem;
+  }
+
+  .nomor-bagian {
+    flex-basis: 35px;
+    width: 35px;
+    height: 35px;
+    border-radius: 11px;
+  }
+
+  .grid-dua {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .kelompok-input {
+    margin-bottom: 18px;
+  }
+
+  .label-input {
+    margin-bottom: 8px;
+    font-size: .82rem;
+  }
+
+  .input-baku {
+    min-height: 48px;
+    padding: 12px 13px;
+    border-radius: 10px;
+    font-size: 16px;
+  }
+
+  select.input-baku {
+    padding-right: 38px;
+    background-position: right 12px center;
+  }
+
+  textarea.input-baku {
+    min-height: 100px;
+  }
+
+  .bagian-tombol {
+    padding-top: 23px;
+  }
+
+  .tombol-kirim {
+    min-height: 54px;
+    padding: 14px 18px;
+    font-size: .94rem;
+  }
+
+  .catatan-bawah {
+    font-size: .74rem;
+  }
+
+  .kembali-bawah {
+    margin-top: 20px;
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .form-section *,
+  .form-section *::before,
+  .form-section *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+</style>
+
+<!-- === DATA WILAYAH INDONESIA === -->
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const provEl = document.getElementById('provinsi');
+  const kabEl = document.getElementById('kabupaten');
+  const kecEl = document.getElementById('kecamatan');
+  const kelEl = document.getElementById('kelurahan');
+
+  const BASE_URL =
+    'https://www.emsifa.com/api-wilayah-indonesia/v2';
+
+  // Mengambil data JSON dari API
+  async function ambilData(url) {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${url}`);
+    }
+
+    const hasil = await response.json();
+    return hasil.data;
+  }
+
+  // Mengisi pilihan dropdown
+  function isiSelect(el, data, label) {
+    el.replaceChildren(new Option(`— Pilih ${label} —`, ''));
+
+    data.forEach(item => {
+      el.add(new Option(item.name, item.id));
+    });
+
+    el.disabled = false;
+  }
+
+  // Mengosongkan dropdown berikutnya
+  function resetSelect(el, label) {
+    el.replaceChildren(new Option(`— Pilih ${label} —`, ''));
+    el.disabled = true;
+  }
+
+  // 1. Muat provinsi
+  async function muatProvinsi() {
+    provEl.disabled = true;
+    provEl.replaceChildren(new Option('— Memuat provinsi... —', ''));
+
+    try {
+      const data = await ambilData(`${BASE_URL}/provinces.json`);
+      isiSelect(provEl, data, 'Provinsi');
+    } catch (error) {
+      console.error('Gagal memuat provinsi:', error);
+      provEl.replaceChildren(
+        new Option('Gagal memuat — coba muat ulang halaman', '')
+      );
+    } finally {
+      provEl.disabled = false;
+    }
+  }
+
+  // 2. Provinsi → Kabupaten/Kota
+  provEl.addEventListener('change', async () => {
+    resetSelect(kabEl, 'Memilih Kabupaten/Kota');
+    resetSelect(kecEl, 'Kecamatan');
+    resetSelect(kelEl, 'Desa/Kelurahan');
+
+    if (!provEl.value) return;
+
+    kabEl.disabled = true;
+    kabEl.replaceChildren(new Option('— Memuat... —', ''));
+
+    try {
+      const data = await ambilData(
+        `${BASE_URL}/regencies/${provEl.value}.json`
+      );
+      isiSelect(kabEl, data, 'Kabupaten/Kota');
+    } catch (error) {
+      console.error('Gagal memuat kabupaten:', error);
+      resetSelect(kabEl, 'Gagal memuat Kabupaten/Kota');
+    }
+  });
+
+  // 3. Kabupaten/Kota → Kecamatan
+  kabEl.addEventListener('change', async () => {
+    resetSelect(kecEl, 'Kecamatan');
+    resetSelect(kelEl, 'Desa/Kelurahan');
+
+    if (!kabEl.value) return;
+
+    kecEl.disabled = true;
+    kecEl.replaceChildren(new Option('— Memuat... —', ''));
+
+    try {
+      const data = await ambilData(
+        `${BASE_URL}/districts/${kabEl.value}.json`
+      );
+      isiSelect(kecEl, data, 'Kecamatan');
+    } catch (error) {
+      console.error('Gagal memuat kecamatan:', error);
+      resetSelect(kecEl, 'Gagal memuat Kecamatan');
+    }
+  });
+
+  // 4. Kecamatan → Desa/Kelurahan
+  kecEl.addEventListener('change', async () => {
+    resetSelect(kelEl, 'Desa/Kelurahan');
+
+    if (!kecEl.value) return;
+
+    kelEl.disabled = true;
+    kelEl.replaceChildren(new Option('— Memuat... —', ''));
+
+    try {
+      const data = await ambilData(
+        `${BASE_URL}/villages/${kecEl.value}.json`
+      );
+      isiSelect(kelEl, data, 'Desa/Kelurahan');
+    } catch (error) {
+      console.error('Gagal memuat desa/kelurahan:', error);
+      resetSelect(kelEl, 'Gagal memuat Desa/Kelurahan');
+    }
+  });
+
+  // Jalankan saat halaman dibuka
+  resetSelect(kabEl, 'Kabupaten/Kota');
+  resetSelect(kecEl, 'Kecamatan');
+  resetSelect(kelEl, 'Desa/Kelurahan');
+
+  muatProvinsi();
+});
+</script>
+
+{% endblock %}

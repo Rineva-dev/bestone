@@ -1,0 +1,398 @@
+{% extends "admin/base_admin.html" %}
+{% block judul %}Data Pendaftar — BestOne{% endblock %}
+{% block judul_halaman %}Daftar Gelombang Pendaftaran{% endblock %}
+{% block isi %}
+<!-- === BAR ATAS === -->
+<div class="bar-atas">
+  <button class="btn-utama" id="btnBukaModalTambah">+ Tambah Gelombang</button>
+  <div class="pencarian">
+    <input type="text" id="cariPeriode" placeholder="Cari periode..." class="form-input">
+  </div>
+</div>
+
+<!-- === TABEL GELOMBANG === -->
+<div class="kartu-biasa">
+  <div class="tabel-wrapper">
+    <table class="tabel-data" id="tabelPeriode">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama Periode</th>
+          <th>Tanggal Pendaftaran</th>
+          <th>Biaya Asli</th>
+          <th>Biaya Akhir</th>
+          <th>Status</th>
+          <th>Pendaftar</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in daftar_periode %}
+        <tr class="baris-periode">
+          <td>{{ loop.index }}</td>
+          <td><strong>{{ p.nama }}</strong></td>
+          <td>
+            {% if p.mulai and p.selesai %}
+              {{ p.mulai.strftime('%d %b') }} s.d {{ p.selesai.strftime('%d %b %Y') }}
+            {% elif p.mulai %}
+              Mulai {{ p.mulai.strftime('%d %b %Y') }}
+            {% elif p.selesai %}
+              Sampai {{ p.selesai.strftime('%d %b %Y') }}
+            {% else %}-{% endif %}
+          </td>
+          <td>
+            {% if p.biaya %}
+              Rp {{ "{:,}".format(p.biaya) }}
+              {% if p.diskon %}<span class="diskon">-{{ p.diskon }}%</span>{% endif %}
+            {% else %}-{% endif %}
+          </td>
+          <td class="biaya-akhir">
+            {% if p.biaya %}
+              <strong>Rp {{ "{:,}".format(p.biaya_akhir) }}</strong>
+            {% else %}-{% endif %}
+          </td>
+          <td>
+            {% if p.sedang_aktif %}
+              <span class="label-status aktif">Sedang Dibuka</span>
+            {% else %}
+              <span class="label-status tutup">Tertutup / Belum Mulai</span>
+            {% endif %}
+          </td>
+          <td><strong>{{ p.pendaftar|length }}</strong> orang</td>
+          <td>
+            <div class="tombol-aksi">
+              <a href="{{ url_for('admin_pendaftar.detail', periode_id=p.id) }}" class="btn-sm btn-lihat">Lihat</a>
+              <button class="btn-sm btn-abu btnBukaModalUbah" data-periode-id="{{ p.id }}">Ubah</button>
+              <form method="POST" action="{{ url_for('admin_pendaftar.hapus_periode', periode_id=p.id) }}" 
+                    onsubmit="return confirm('Yakin ingin menghapus gelombang ini? Semua data pendaftarnya juga akan dihapus!')"
+                    class="form-aksi">
+                <button type="submit" class="btn-sm btn-merah">Hapus</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="kosong">Belum ada periode. Klik "Tambah Gelombang" untuk memulai.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- === MODAL TAMBAH GELOMBANG === -->
+<div id="modalTambah" class="modal-latar">
+  <div class="modal-kotak">
+    <div class="modal-judul">
+      <h3>Tambah Gelombang Baru</h3>
+      <button class="tombol-tutup" id="tutupModalTambah">&times;</button>
+    </div>
+    <form method="POST" action="{{ url_for('admin_pendaftar.periode_baru') }}" id="formTambah">
+      <div class="form-kelompok">
+        <label>Nama Gelombang <span class="wajib">*</span></label>
+        <input type="text" name="nama" placeholder="Contoh: Gelombang 2 — Nov 2026" required class="form-input">
+      </div>
+      <div class="form-dua">
+        <div class="form-kelompok">
+          <label>Mulai Pendaftaran <span class="wajib">*</span></label>
+          <input type="date" name="mulai" class="form-input" required>
+        </div>
+        <div class="form-kelompok">
+          <label>Tutup Pendaftaran <span class="wajib">*</span></label>
+          <input type="date" name="selesai" class="form-input" required>
+        </div>
+      </div>
+      <div class="form-kelompok">
+        <label>Tanggal Kelas Dimulai</label>
+        <input type="date" name="kelas_mulai" class="form-input">
+      </div>
+      <div class="form-kelompok">
+        <label>Program yang Dibuka <span class="wajib">*</span></label>
+        <div class="daftar-program-pilih">
+          {% if daftar_program %}
+            {% for prog in daftar_program %}
+            <label class="cek-label">
+              <input type="checkbox" name="program_dibuka" value="{{ prog.nama }}" class="chk-program">
+              <span class="kode-pilih">{{ prog.kode }}</span> {{ prog.nama }}
+            </label>
+            {% endfor %}
+          {% else %}
+            <p class="kosong-program">Belum ada program. Tambah dulu di halaman <a href="{{ url_for('admin_program.daftar_program') }}">Program Kursus</a>.</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="form-kelompok">
+        <label>Level yang Dibuka <small class="opsional">(Boleh kosong = semua level)</small></label>
+        <div class="daftar-program-pilih">
+          {% if daftar_level %}
+            {% for lv in daftar_level %}
+            <label class="cek-label">
+              <input type="checkbox" name="level_dibuka" value="{{ lv.nama }}" class="chk-level">
+              {{ lv.nama }}
+            </label>
+            {% endfor %}
+          {% else %}
+            <p class="kosong-program">Belum ada level. Tambah dulu di halaman <a href="{{ url_for('admin_level.daftar_level') }}">Daftar Level</a>.</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="form-dua">
+        <div class="form-kelompok">
+          <label>Biaya Pendaftaran</label>
+          <input type="number" name="biaya" placeholder="Contoh: 250000" class="form-input input-biaya">
+        </div>
+        <div class="form-kelompok">
+          <label>Diskon (%) — Opsional</label>
+          <input type="number" name="diskon" placeholder="Contoh: 10" min="0" max="100" class="form-input input-diskon">
+        </div>
+      </div>
+      <div class="form-kelompok">
+        <label>Biaya Akhir</label>
+        <input type="text" class="form-input tampil-biaya-akhir" readonly placeholder="Otomatis terhitung di sini">
+      </div>
+      <div class="form-kelompok">
+        <label>Link Grup WhatsApp</label>
+        <input type="url" name="link_grup_wa" placeholder="https://chat.whatsapp.com/..." class="form-input">
+      </div>
+      <div class="modal-tombol">
+        <button type="button" class="btn-utama-batal" id="batalModalTambah">Batal</button>
+        <button type="submit" class="btn-utama">Simpan Periode</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- === MODAL UBAH GELOMBANG === -->
+<div id="modalUbah" class="modal-latar">
+  <div class="modal-kotak">
+    <div class="modal-judul">
+      <h3>Ubah Gelombang</h3>
+      <button class="tombol-tutup" id="tutupModalUbah">&times;</button>
+    </div>
+    <form method="POST" action="" id="formUbah">
+      <div class="form-kelompok">
+        <label>Nama Gelombang <span class="wajib">*</span></label>
+        <input type="text" name="nama" id="ubah-nama" required class="form-input">
+      </div>
+      <div class="form-dua">
+        <div class="form-kelompok">
+          <label>Mulai Pendaftaran <span class="wajib">*</span></label>
+          <input type="date" name="mulai" id="ubah-mulai" class="form-input" required>
+        </div>
+        <div class="form-kelompok">
+          <label>Tutup Pendaftaran <span class="wajib">*</span></label>
+          <input type="date" name="selesai" id="ubah-selesai" class="form-input" required>
+        </div>
+      </div>
+      <div class="form-kelompok">
+        <label>Tanggal Kelas Dimulai</label>
+        <input type="date" name="kelas_mulai" id="ubah-kelas-mulai" class="form-input">
+      </div>
+      <div class="form-kelompok">
+        <label>Program yang Dibuka <span class="wajib">*</span></label>
+        <div class="daftar-program-pilih" id="ubah-program-wrapper">
+          {% if daftar_program %}
+            {% for prog in daftar_program %}
+            <label class="cek-label">
+              <input type="checkbox" name="program_dibuka" value="{{ prog.nama }}" class="chk-program-ubah">
+              <span class="kode-pilih">{{ prog.kode }}</span> {{ prog.nama }}
+            </label>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="form-kelompok">
+        <label>Level yang Dibuka <small class="opsional">(Boleh kosong = semua level)</small></label>
+        <div class="daftar-program-pilih">
+          {% if daftar_level %}
+            {% for lv in daftar_level %}
+            <label class="cek-label">
+              <input type="checkbox" name="level_dibuka" value="{{ lv.nama }}" class="chk-level-ubah">
+              {{ lv.nama }}
+            </label>
+            {% endfor %}
+          {% else %}
+            <p class="kosong-program">Belum ada level. Tambah dulu di halaman <a href="{{ url_for('admin_level.daftar_level') }}">Daftar Level</a>.</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="form-dua">
+        <div class="form-kelompok">
+          <label>Biaya Pendaftaran</label>
+          <input type="number" name="biaya" id="ubah-biaya" class="form-input input-biaya-ubah">
+        </div>
+        <div class="form-kelompok">
+          <label>Diskon (%) — Opsional</label>
+          <input type="number" name="diskon" id="ubah-diskon" min="0" max="100" class="form-input input-diskon-ubah">
+        </div>
+      </div>
+      <div class="form-kelompok">
+        <label>Biaya Akhir</label>
+        <input type="text" class="form-input tampil-biaya-akhir-ubah" readonly placeholder="Otomatis terhitung di sini">
+      </div>
+      <div class="form-kelompok">
+        <label>Link Grup WhatsApp</label>
+        <input type="url" name="link_grup_wa" id="ubah-link-wa" class="form-input">
+      </div>
+      <div class="modal-tombol">
+        <button type="button" class="btn-utama-batal" id="batalModalUbah">Batal</button>
+        <button type="submit" class="btn-utama">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.pencarian { max-width: 300px; width: 100%; }
+.form-dua { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-kelompok { margin-bottom: 14px; }
+.form-kelompok label { display: block; margin-bottom: 6px; font-weight: 500; color: #333; font-size: 14px; }
+.form-input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+.form-input[readonly] { background: #f9fafb; color: #1f2937; font-weight: 600; }
+.wajib { color: #e11d48; }
+.diskon { display: inline-block; margin-left: 6px; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+.biaya-akhir { color: #991e32; font-weight: 600; }
+.tombol-aksi { display: flex; gap: 6px; align-items: center; }
+.btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-block; }
+.btn-utama {
+    background: #991e32;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px 16px;
+    border-radius: 6px;
+}
+.btn-utama-batal { background: #e5e7eb; color: #4b5563; border: none; cursor: pointer; }
+
+.btn-lihat {
+    background: #991e32;
+    color: #ffffff;
+    min-width: 64px;
+    text-align: center;
+    padding: 5px 12px;
+}
+
+.btn-abu {
+    background: #e5e7eb;
+    color: #4b5563;
+    border: none;
+    cursor: pointer;
+    min-width: 64px;
+}
+
+.btn-merah {
+    background: #ef4444;
+    color: white;
+    min-width: 64px;
+}
+
+.btn-merah:hover { background: #dc2626; }
+.form-aksi { margin: 0; }
+.label-status.aktif { background: #dcfce7; color: #166534; font-weight: 500; }
+.label-status.tutup { background: #f3f4f6; color: #6b7280; }
+.modal-latar { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
+.modal-latar.tampil { display: flex; }
+.modal-kotak { background: white; border-radius: 12px; width: 90%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 24px; }
+.modal-judul { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-judul h3 { margin: 0; font-size: 18px; color: #1f2937; }
+.tombol-tutup { background: none; border: none; font-size: 22px; cursor: pointer; color: #6b7280; }
+.modal-tombol { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+.modal-tombol button { padding: 10px 24px; border-radius: 8px; font-size: 14px; }
+.daftar-program-pilih { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; max-height: 180px; overflow-y: auto; padding: 8px; border: 1px solid #eee; border-radius: 8px; }
+.cek-label { display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; padding: 6px 4px; border-radius: 4px; transition: background 0.2s; }
+.cek-label:hover { background: #f9fafb; }
+.kode-pilih { font-family: monospace; font-weight: bold; color: #991e32; background: #fef2f4; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
+.kosong-program { color: #6b7280; font-size: 13px; margin: 0; }
+@media (max-width: 640px) {
+  .form-dua { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+// === MODAL TAMBAH ===
+const modalTambah = document.getElementById('modalTambah');
+document.getElementById('btnBukaModalTambah').addEventListener('click', () => modalTambah.classList.add('tampil'));
+document.getElementById('tutupModalTambah').addEventListener('click', () => modalTambah.classList.remove('tampil'));
+document.getElementById('batalModalTambah').addEventListener('click', () => modalTambah.classList.remove('tampil'));
+modalTambah.addEventListener('click', (e) => { if (e.target === modalTambah) modalTambah.classList.remove('tampil'); });
+
+// Hitung biaya — Tambah
+function hitungBiaya(biayaEl, diskonEl, tampilEl) {
+  const biaya = parseInt(biayaEl.value) || 0;
+  const diskon = parseInt(diskonEl.value) || 0;
+  if (biaya > 0) {
+    tampilEl.value = 'Rp ' + Math.round(biaya * (100 - diskon) / 100).toLocaleString('id-ID');
+  } else {
+    tampilEl.value = '';
+  }
+}
+const inputBiaya = document.querySelector('.input-biaya');
+const inputDiskon = document.querySelector('.input-diskon');
+const tampilBiayaAkhir = document.querySelector('.tampil-biaya-akhir');
+inputBiaya.addEventListener('input', () => hitungBiaya(inputBiaya, inputDiskon, tampilBiayaAkhir));
+inputDiskon.addEventListener('input', () => hitungBiaya(inputBiaya, inputDiskon, tampilBiayaAkhir));
+
+// === MODAL UBAH ===
+const modalUbah = document.getElementById('modalUbah');
+const formUbah = document.getElementById('formUbah');
+
+document.querySelectorAll('.btnBukaModalUbah').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const periodeId = btn.getAttribute('data-periode-id');
+    
+    // Ambil data periode dari server
+    const res = await fetch(`/admin/pendaftar/api-periode/${periodeId}`);
+    const data = await res.json();
+    
+    // Isi form
+    formUbah.action = `/admin/pendaftar/simpan-ubah/${periodeId}`;
+    document.getElementById('ubah-nama').value = data.nama;
+    document.getElementById('ubah-mulai').value = data.mulai || '';
+    document.getElementById('ubah-selesai').value = data.selesai || '';
+    document.getElementById('ubah-kelas-mulai').value = data.kelas_mulai || '';
+    document.getElementById('ubah-biaya').value = data.biaya || '';
+    document.getElementById('ubah-diskon').value = data.diskon || '';
+    document.getElementById('ubah-link-wa').value = data.link_grup_wa || '';
+    
+    // Centang program
+    document.querySelectorAll('.chk-program-ubah').forEach(chk => {
+      chk.checked = data.program_dibuka.includes(chk.value);
+    });
+
+    document.querySelectorAll('.chk-level-ubah').forEach(chk => {
+      chk.checked = data.level_dibuka.includes(chk.value);
+    });
+    
+    // Hitung biaya awal
+    hitungBiayaUbah();
+    
+    modalUbah.classList.add('tampil');
+  });
+});
+
+document.getElementById('tutupModalUbah').addEventListener('click', () => modalUbah.classList.remove('tampil'));
+document.getElementById('batalModalUbah').addEventListener('click', () => modalUbah.classList.remove('tampil'));
+modalUbah.addEventListener('click', (e) => { if (e.target === modalUbah) modalUbah.classList.remove('tampil'); });
+
+// Hitung biaya — Ubah
+const inputBiayaUbah = document.querySelector('.input-biaya-ubah');
+const inputDiskonUbah = document.querySelector('.input-diskon-ubah');
+const tampilBiayaAkhirUbah = document.querySelector('.tampil-biaya-akhir-ubah');
+function hitungBiayaUbah() {
+  hitungBiaya(inputBiayaUbah, inputDiskonUbah, tampilBiayaAkhirUbah);
+}
+inputBiayaUbah.addEventListener('input', hitungBiayaUbah);
+inputDiskonUbah.addEventListener('input', hitungBiayaUbah);
+
+// === PENCARIAN ===
+const cari = document.getElementById('cariPeriode');
+document.querySelectorAll('.baris-periode').forEach(baris => {
+  cari.addEventListener('input', () => {
+    const kata = cari.value.toLowerCase();
+    baris.style.display = baris.textContent.toLowerCase().includes(kata) ? '' : 'none';
+  });
+});
+</script>
+{% endblock %}
