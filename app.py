@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template
 from flask_login import LoginManager
 from dotenv import load_dotenv
 import os
@@ -9,23 +9,6 @@ from models.database import db, Pengguna
 load_dotenv()
 app = Flask(__name__)
 
-from werkzeug.middleware.proxy_fix import ProxyFix
-
-app.wsgi_app = ProxyFix(
-    app.wsgi_app,
-    x_for=1,
-    x_proto=1,
-    x_host=1,
-    x_prefix=1
-)
-
-# Opsional: Arahkan HTTP ke HTTPS otomatis
-@app.before_request
-def force_https():
-    # Jalankan hanya di produksi (bukan lokal)
-    if not request.is_secure and os.getenv("FLASK_ENV") == "production":
-        url = request.url.replace("http://", "https://", 1)
-        return redirect(url, code=301)
 
 # ===== Konfigurasi =====
 app.config.update(
