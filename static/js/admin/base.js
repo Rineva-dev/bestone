@@ -149,6 +149,74 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  
+  // ==========================================
+  // TOGGLE SIDEBAR ADMIN
+  // ==========================================
+  const sidebar = document.getElementById("sidebar");
+  const tombolSidebar = document.getElementById("tombolSidebar");
+
+  let sidebarOverlay = document.querySelector(".sidebar-overlay");
+
+  if (sidebar && tombolSidebar) {
+    // Buat overlay khusus untuk sidebar mobile.
+    if (!sidebarOverlay) {
+      sidebarOverlay = document.createElement("div");
+      sidebarOverlay.className = "sidebar-overlay";
+      sidebarOverlay.setAttribute("aria-hidden", "true");
+      document.body.appendChild(sidebarOverlay);
+    }
+
+    function bukaSidebar() {
+      sidebar.classList.add("buka");
+      sidebarOverlay.classList.add("aktif");
+      tombolSidebar.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+    }
+
+    function tutupSidebar() {
+      sidebar.classList.remove("buka");
+      sidebarOverlay.classList.remove("aktif");
+      tombolSidebar.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+    }
+
+    tombolSidebar.setAttribute("aria-controls", "sidebar");
+    tombolSidebar.setAttribute("aria-expanded", "false");
+
+    tombolSidebar.addEventListener("click", function () {
+      if (sidebar.classList.contains("buka")) {
+        tutupSidebar();
+      } else {
+        bukaSidebar();
+      }
+    });
+
+    sidebarOverlay.addEventListener("click", tutupSidebar);
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && sidebar.classList.contains("buka")) {
+        tutupSidebar();
+        tombolSidebar.focus();
+      }
+    });
+
+    sidebar.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        if (window.innerWidth <= 768) {
+          tutupSidebar();
+        }
+      });
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 768) {
+        tutupSidebar();
+      }
+    });
+  }
+
+
   if (window.lucide) {
     lucide.createIcons();
   }

@@ -11,63 +11,84 @@
 <body>
   <div class="admin-wrapper">
     
-    <!-- ===== SIDEBAR KIRI ===== -->
+    
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-inner">
+
         <!-- Logo -->
-        <div class="sidebar-logo">
+        <a href="{{ url_for('admin_dashboard.dashboard') }}" class="sidebar-logo">
           <span class="logo-mark">B</span>
           <span class="logo-text">BestOne</span>
-        </div>
+        </a>
 
-        <!-- Menu Navigasi -->
+        <div class="sidebar-label">MENU UTAMA</div>
+
+        <!-- Navigasi -->
         <nav class="sidebar-menu">
           <ul>
             <li>
-              <a href="{{ url_for('admin_dashboard.dashboard') }}" class="menu-link {% if halaman == 'dashboard' %}aktif{% endif %}">
-                    <i class="fa fa-tachometer"></i>
-                    <span>Dashboard</span>
-                </a>
+              <a href="{{ url_for('admin_dashboard.dashboard') }}"
+                class="menu-link {% if halaman == 'dashboard' %}aktif{% endif %}">
+                <i class="fa fa-tachometer"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
 
-                <!-- Pendaftar — sementara pakai '#' dulu sampai dibuat filenya -->
-                <a href="{{ url_for('admin_pendaftar.pendaftar') }}" class="menu-link {% if halaman == 'pendaftar' %}aktif{% endif %}">
-                    <i class="fa fa-list-alt"></i>
-                    <span>Pendaftar</span>
-                </a>
+            <li>
+              <a href="{{ url_for('admin_pendaftar.pendaftar') }}"
+                class="menu-link {% if halaman == 'pendaftar' %}aktif{% endif %}">
+                <i class="fa fa-users"></i>
+                <span>Pendaftar</span>
+              </a>
+            </li>
 
-                <!-- Program — sementara pakai '#' dulu -->
-                <a href="{{ url_for('admin_program.daftar_program') }}" class="menu-link {% if halaman == 'program' %}aktif{% endif %}">
-                    <i class="fa fa-book"></i>
-                    <span>Program Kursus</span>
-                </a>
+            <li>
+              <a href="{{ url_for('admin_program.daftar_program') }}"
+                class="menu-link {% if halaman == 'program' %}aktif{% endif %}">
+                <i class="fa fa-book"></i>
+                <span>Program Kursus</span>
+              </a>
+            </li>
 
-                <a href="{{ url_for('admin_level.daftar_level') }}" class="menu-link {% if halaman == 'level' %}aktif{% endif %}">
-                    <i class="fa fa-list"></i>
-                    <span>Daftar Level</span>
-                </a>
+            <li>
+              <a href="{{ url_for('admin_level.daftar_level') }}"
+                class="menu-link {% if halaman == 'level' %}aktif{% endif %}">
+                <i class="fa fa-list"></i>
+                <span>Daftar Level</span>
+              </a>
+            </li>
 
-                <!-- Galeri — sementara pakai '#' dulu -->
-                <a href="#" class="menu-link">
-                    <i class="fa fa-picture-o"></i>
-                    <span>Galeri & Foto</span>
-                </a>
-
-                <li class="menu-pemisah"></li>
-
-                <!-- Lihat Situs -->
-                <a href="/" class="menu-link">
-                    <i class="fa fa-external-link"></i>
-                    <span>Lihat Situs</span>
-                </a>
-
-                <!-- Keluar -->
-                <a href="{{ url_for('login.login') }}" class="menu-link keluar">
-                    <i class="fa fa-sign-out"></i>
-                    <span>Keluar</span>
-                </a>
+            <li>
+              <a href="#" class="menu-link">
+                <i class="fa fa-picture-o"></i>
+                <span>Galeri &amp; Foto</span>
+              </a>
             </li>
           </ul>
         </nav>
+
+        <!-- Footer sidebar: selalu di bawah -->
+        <div class="sidebar-footer">
+          <a href="/" class="menu-link">
+            <i class="fa fa-external-link"></i>
+            <span>Lihat Situs</span>
+            <i class="fa fa-arrow-up-right-from-square menu-eksternal"></i>
+          </a>
+
+          <div class="sidebar-divider"></div>
+
+          <a href="{{ url_for('login.login') }}" class="menu-link keluar">
+            <i class="fa fa-sign-out"></i>
+            <span>Keluar</span>
+          </a>
+
+          <div class="sidebar-version">
+            <span class="status-dot"></span>
+            BestOne Admin
+          </div>
+        </div>
+
       </div>
     </aside>
 
