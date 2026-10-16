@@ -2,84 +2,254 @@
 {% block judul %}Data Pendaftar — BestOne{% endblock %}
 {% block judul_halaman %}Daftar Gelombang Pendaftaran{% endblock %}
 {% block isi %}
-<!-- === BAR ATAS === -->
-<div class="bar-atas">
-  <button class="btn-utama" id="btnBukaModalTambah">+ Tambah Gelombang</button>
-  <div class="pencarian">
-    <input type="text" id="cariPeriode" placeholder="Cari periode..." class="form-input">
+
+<!-- HEADER HALAMAN -->
+<div class="gelombang-header">
+  <div class="gelombang-heading">
+    <div class="gelombang-breadcrumb">
+      <span>PENDAFTARAN</span>
+      <span class="breadcrumb-separator">/</span>
+      <span>GELOMBANG</span>
+    </div>
+
+    <h2>Gelombang Pendaftaran</h2>
+    <p>Kelola jadwal pendaftaran, biaya, dan program yang tersedia.</p>
+  </div>
+
+  <button class="btn-utama" id="btnBukaModalTambah" type="button">
+    <span class="ikon-plus">+</span>
+    Tambah Gelombang
+  </button>
+</div>
+
+<!-- TOOLBAR -->
+<div class="gelombang-toolbar">
+  <div class="gelombang-search">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="10.8" cy="10.8" r="6.8"></circle>
+      <path d="m16 16 4 4"></path>
+    </svg>
+    <input
+      type="text"
+      id="cariPeriode"
+      placeholder="Cari nama gelombang, tanggal, atau status..."
+      autocomplete="off"
+    >
+    <kbd>⌕</kbd>
+  </div>
+
+  <div class="filter-status" role="group" aria-label="Filter status gelombang">
+    <button type="button" class="filter-status-btn aktif-filter" data-filter="semua">
+      Semua <span class="filter-jumlah">{{ daftar_periode|length }}</span>
+    </button>
+    <button type="button" class="filter-status-btn" data-filter="aktif">
+      Dibuka
+    </button>
+    <button type="button" class="filter-status-btn" data-filter="tutup">
+      Ditutup
+    </button>
   </div>
 </div>
 
-<!-- === TABEL GELOMBANG === -->
-<div class="kartu-biasa">
+<!-- TABEL GELOMBANG -->
+<div class="gelombang-panel">
+  <div class="gelombang-panel-heading">
+    <div>
+      <h3>Daftar gelombang</h3>
+      <p>Informasi periode dan status pendaftaran</p>
+    </div>
+    <span class="total-gelombang">
+      <span class="total-gelombang-dot"></span>
+      <span id="jumlahHasil">{{ daftar_periode|length }} gelombang</span>
+    </span>
+  </div>
+
   <div class="tabel-wrapper">
     <table class="tabel-data" id="tabelPeriode">
       <thead>
         <tr>
-          <th>No</th>
-          <th>Nama Periode</th>
-          <th>Tanggal Pendaftaran</th>
-          <th>Biaya Asli</th>
-          <th>Biaya Akhir</th>
-          <th>Status</th>
-          <th>Pendaftar</th>
-          <th>Aksi</th>
+          <th class="kolom-no">NO.</th>
+          <th>GELOMBANG</th>
+          <th>PERIODE PENDAFTARAN</th>
+          <th>BIAYA PENDAFTARAN</th>
+          <th>STATUS</th>
+          <th>PENDAFTAR</th>
+          <th class="kolom-aksi">AKSI</th>
         </tr>
       </thead>
+
       <tbody>
         {% for p in daftar_periode %}
-        <tr class="baris-periode">
-          <td>{{ loop.index }}</td>
-          <td><strong>{{ p.nama }}</strong></td>
-          <td>
-            {% if p.mulai and p.selesai %}
-              {{ p.mulai.strftime('%d %b') }} s.d {{ p.selesai.strftime('%d %b %Y') }}
-            {% elif p.mulai %}
-              Mulai {{ p.mulai.strftime('%d %b %Y') }}
-            {% elif p.selesai %}
-              Sampai {{ p.selesai.strftime('%d %b %Y') }}
-            {% else %}-{% endif %}
+        <tr
+          class="baris-periode"
+          data-status="{{ 'aktif' if p.sedang_aktif else 'tutup' }}"
+        >
+          <td class="kolom-no">
+            <span class="nomor-baris">{{ '%02d'|format(loop.index) }}</span>
           </td>
+
+          <td class="sel-gelombang">
+            <div class="nama-gelombang">
+              <span class="gelombang-mark">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="3.5" y="5" width="17" height="15" rx="3"></rect>
+                  <path d="M7.5 3.5v3M16.5 3.5v3M3.5 9.5h17"></path>
+                </svg>
+              </span>
+              <div class="nama-gelombang-info">
+                <strong>{{ p.nama }}</strong>
+                <span>Gelombang pendaftaran</span>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div class="tanggal-periode">
+              {% if p.mulai and p.selesai %}
+                <strong>{{ p.mulai.strftime('%d %b %Y') }}</strong>
+                <span>sampai</span>
+                <strong>{{ p.selesai.strftime('%d %b %Y') }}</strong>
+              {% elif p.mulai %}
+                <strong>{{ p.mulai.strftime('%d %b %Y') }}</strong>
+                <span>Tanggal mulai</span>
+              {% elif p.selesai %}
+                <strong>{{ p.selesai.strftime('%d %b %Y') }}</strong>
+                <span>Batas pendaftaran</span>
+              {% else %}
+                <span class="data-kosong">Belum ditentukan</span>
+              {% endif %}
+            </div>
+          </td>
+
           <td>
             {% if p.biaya %}
-              Rp {{ "{:,}".format(p.biaya) }}
-              {% if p.diskon %}<span class="diskon">-{{ p.diskon }}%</span>{% endif %}
-            {% else %}-{% endif %}
-          </td>
-          <td class="biaya-akhir">
-            {% if p.biaya %}
-              <strong>Rp {{ "{:,}".format(p.biaya_akhir) }}</strong>
-            {% else %}-{% endif %}
-          </td>
-          <td>
-            {% if p.sedang_aktif %}
-              <span class="label-status aktif">Sedang Dibuka</span>
+              <div class="biaya-info">
+                {% if p.diskon %}
+                  <span class="biaya-asli">Rp {{ "{:,}".format(p.biaya).replace(',', '.') }}</span>
+                {% endif %}
+                <strong>Rp {{ "{:,}".format(p.biaya_akhir).replace(',', '.') }}</strong>
+                {% if p.diskon %}
+                  <span class="diskon-tag">−{{ p.diskon }}%</span>
+                {% endif %}
+              </div>
             {% else %}
-              <span class="label-status tutup">Tertutup / Belum Mulai</span>
+              <span class="data-kosong">Tidak ditentukan</span>
             {% endif %}
           </td>
-          <td><strong>{{ p.pendaftar|length }}</strong> orang</td>
+
           <td>
-            <div class="tombol-aksi">
-              <a href="{{ url_for('admin_pendaftar.detail', periode_id=p.id) }}" class="btn-sm btn-lihat">Lihat</a>
-              <button class="btn-sm btn-abu btnBukaModalUbah" data-periode-id="{{ p.id }}">Ubah</button>
-              <form method="POST" action="{{ url_for('admin_pendaftar.hapus_periode', periode_id=p.id) }}" 
-                    onsubmit="return confirm('Yakin ingin menghapus gelombang ini? Semua data pendaftarnya juga akan dihapus!')"
-                    class="form-aksi">
-                <button type="submit" class="btn-sm btn-merah">Hapus</button>
-              </form>
+            {% if p.sedang_aktif %}
+              <span class="status-pill status-dibuka">
+                <span class="status-indikator"></span>
+                Dibuka
+              </span>
+            {% else %}
+              <span class="status-pill status-ditutup">
+                <span class="status-indikator"></span>
+                Ditutup
+              </span>
+            {% endif %}
+          </td>
+
+          <td>
+            <div class="pendaftar-info">
+              <span class="pendaftar-angka">{{ p.pendaftar|length }}</span>
+              <span>orang</span>
+            </div>
+          </td>
+
+          <td class="kolom-aksi">
+            <div class="aksi-modern">
+              <a
+                href="{{ url_for('admin_pendaftar.detail', periode_id=p.id) }}"
+                class="aksi-detail"
+                title="Lihat detail gelombang"
+              >
+                Lihat detail
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12h14M13 5l7 7-7 7"></path>
+                </svg>
+              </a>
+
+              <button
+                type="button"
+                class="aksi-menu-btn"
+                aria-label="Ubah gelombang"
+                title="Ubah gelombang"
+                onclick="this.closest('.aksi-modern').querySelector('.aksi-dropdown').classList.toggle('aksi-dropdown-buka')"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <circle cx="5" cy="12" r="1.7"></circle>
+                  <circle cx="12" cy="12" r="1.7"></circle>
+                  <circle cx="19" cy="12" r="1.7"></circle>
+                </svg>
+              </button>
+
+              <div class="aksi-dropdown">
+                <button type="button" class="aksi-dropdown-ubah btnBukaModalUbah" data-periode-id="{{ p.id }}">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="m14 5 5 5M4 20l4.5-1 11-11a2.12 2.12 0 0 0-3-3l-11 11L4 20Z"></path>
+                  </svg>
+                  Ubah gelombang
+                </button>
+
+                <form
+                  method="POST"
+                  action="{{ url_for('admin_pendaftar.hapus_periode', periode_id=p.id) }}"
+                  onsubmit="return confirm('Yakin ingin menghapus gelombang ini? Semua data pendaftarnya juga akan dihapus!')"
+                >
+                  <button type="submit" class="aksi-dropdown-hapus">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M4 7h16M10 11v6M14 11v6M5.5 7l1 13h11l1-13M9 7V4h6v3"></path>
+                    </svg>
+                    Hapus gelombang
+                  </button>
+                </form>
+              </div>
             </div>
           </td>
         </tr>
         {% else %}
         <tr>
-          <td colspan="8" class="kosong">Belum ada periode. Klik "Tambah Gelombang" untuk memulai.</td>
+          <td colspan="7">
+            <div class="gelombang-empty">
+              <span class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="3.5" y="5" width="17" height="15" rx="3"></rect>
+                  <path d="M7.5 3.5v3M16.5 3.5v3M3.5 9.5h17"></path>
+                </svg>
+              </span>
+              <strong>Belum ada gelombang pendaftaran</strong>
+              <p>Buat gelombang pertama untuk mulai mengelola pendaftaran.</p>
+              <button type="button" class="btn-utama" onclick="document.getElementById('btnBukaModalTambah').click()">
+                + Tambah Gelombang
+              </button>
+            </div>
+          </td>
         </tr>
         {% endfor %}
+
+        <tr id="barisTidakDitemukan" hidden>
+          <td colspan="7">
+            <div class="hasil-kosong">Tidak ada gelombang yang cocok dengan pencarian atau filter ini.</div>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
+
+  <div class="gelombang-panel-footer">
+    <span>Menampilkan <strong id="jumlahTerlihat">{{ daftar_periode|length }}</strong> dari {{ daftar_periode|length }} gelombang</span>
+    <span class="footer-aman">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-3Z"></path>
+        <path d="m9 12 2 2 4-4"></path>
+      </svg>
+      Data dikelola secara internal
+    </span>
+  </div>
 </div>
+
 
 <!-- === MODAL TAMBAH GELOMBANG === -->
 <div id="modalTambah" class="modal-latar">
@@ -91,7 +261,7 @@
     <form method="POST" action="{{ url_for('admin_pendaftar.periode_baru') }}" id="formTambah">
       <div class="form-kelompok">
         <label>Nama Gelombang <span class="wajib">*</span></label>
-        <input type="text" name="nama" placeholder="Contoh: Gelombang 2 — Nov 2026" required class="form-input">
+        <input type="text" name="nama" placeholder="Contoh: Beginner November 2026" required class="form-input">
       </div>
       <div class="form-dua">
         <div class="form-kelompok">
@@ -244,70 +414,678 @@
 </div>
 
 <style>
-.bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
-.pencarian { max-width: 300px; width: 100%; }
-.form-dua { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-kelompok { margin-bottom: 14px; }
-.form-kelompok label { display: block; margin-bottom: 6px; font-weight: 500; color: #333; font-size: 14px; }
-.form-input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-.form-input[readonly] { background: #f9fafb; color: #1f2937; font-weight: 600; }
-.wajib { color: #e11d48; }
-.diskon { display: inline-block; margin-left: 6px; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
-.biaya-akhir { color: #991e32; font-weight: 600; }
-.tombol-aksi { display: flex; gap: 6px; align-items: center; }
-.btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-block; }
-.btn-utama {
-    background: #991e32;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 10px 16px;
-    border-radius: 6px;
-}
-.btn-utama-batal { background: #e5e7eb; color: #4b5563; border: none; cursor: pointer; }
 
-.btn-lihat {
-    background: #991e32;
-    color: #ffffff;
-    min-width: 64px;
-    text-align: center;
-    padding: 5px 12px;
+:root {
+  --gw-brand: #991e32;
+  --gw-brand-dark: #771629;
+  --gw-brand-soft: #fff1f3;
+  --gw-ink: #252632;
+  --gw-muted: #858797;
+  --gw-line: #ececf1;
+  --gw-paper: #ffffff;
+  --gw-canvas: #faf9fb;
 }
 
-.btn-abu {
-    background: #e5e7eb;
-    color: #4b5563;
-    border: none;
-    cursor: pointer;
-    min-width: 64px;
+/* Header editorial */
+.gelombang-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
 }
 
-.btn-merah {
-    background: #ef4444;
-    color: white;
-    min-width: 64px;
+.gelombang-heading { min-width: 0; }
+
+.gelombang-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 10px;
+  color: #9996a2;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.5px;
 }
 
-.btn-merah:hover { background: #dc2626; }
-.form-aksi { margin: 0; }
-.label-status.aktif { background: #dcfce7; color: #166534; font-weight: 500; }
-.label-status.tutup { background: #f3f4f6; color: #6b7280; }
-.modal-latar { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
-.modal-latar.tampil { display: flex; }
-.modal-kotak { background: white; border-radius: 12px; width: 90%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 24px; }
-.modal-judul { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.modal-judul h3 { margin: 0; font-size: 18px; color: #1f2937; }
-.tombol-tutup { background: none; border: none; font-size: 22px; cursor: pointer; color: #6b7280; }
-.modal-tombol { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
-.modal-tombol button { padding: 10px 24px; border-radius: 8px; font-size: 14px; }
-.daftar-program-pilih { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; max-height: 180px; overflow-y: auto; padding: 8px; border: 1px solid #eee; border-radius: 8px; }
-.cek-label { display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; padding: 6px 4px; border-radius: 4px; transition: background 0.2s; }
-.cek-label:hover { background: #f9fafb; }
-.kode-pilih { font-family: monospace; font-weight: bold; color: #991e32; background: #fef2f4; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
-.kosong-program { color: #6b7280; font-size: 13px; margin: 0; }
-@media (max-width: 640px) {
-  .form-dua { grid-template-columns: 1fr; }
+.breadcrumb-separator { color: #c6c2cb; }
+
+.gelombang-heading h2 {
+  margin: 0;
+  color: var(--gw-ink);
+  font-size: clamp(25px, 3vw, 32px);
+  font-weight: 760;
+  letter-spacing: -1.15px;
+  line-height: 1.2;
 }
+
+.gelombang-heading p {
+  margin: 9px 0 0;
+  color: var(--gw-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.gelombang-header .btn-utama {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 45px;
+  padding: 0 18px;
+  border: 1px solid var(--gw-brand);
+  border-radius: 10px;
+  background: var(--gw-brand);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(153,30,50,.13);
+  transition: .2s ease;
+}
+
+.gelombang-header .btn-utama:hover {
+  background: var(--gw-brand-dark);
+  box-shadow: 0 7px 18px rgba(153,30,50,.2);
+  transform: translateY(-1px);
+}
+
+.ikon-plus { font-size: 21px; font-weight: 400; line-height: 1; }
+
+/* Toolbar pencarian dan filter */
+.gelombang-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.gelombang-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 390px);
+  min-height: 43px;
+  padding: 0 12px;
+  border: 1px solid #e7e5ec;
+  border-radius: 10px;
+  background: #fff;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.gelombang-search:focus-within {
+  border-color: #c98390;
+  box-shadow: 0 0 0 3px rgba(153,30,50,.07);
+}
+
+.gelombang-search > svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  stroke: #92909d;
+  stroke-width: 1.7;
+}
+
+.gelombang-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--gw-ink);
+  font-size: 12px;
+  box-shadow: none !important;
+}
+
+.gelombang-search input::placeholder { color: #a3a1ad; }
+
+.gelombang-search kbd {
+  display: none;
+  padding: 3px 6px;
+  border: 1px solid #eceaf0;
+  border-radius: 5px;
+  color: #a3a1ad;
+  font-size: 10px;
+}
+
+.filter-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid #eceaf0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.filter-status-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 31px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #777584;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .18s ease;
+}
+
+.filter-status-btn:hover { background: #f8f6f8; color: var(--gw-ink); }
+
+.filter-status-btn.aktif-filter {
+  background: var(--gw-brand-soft);
+  color: var(--gw-brand);
+}
+
+.filter-jumlah {
+  font-size: 10px;
+  opacity: .8;
+}
+
+/* Panel daftar */
+.gelombang-panel {
+  overflow: visible;
+  border: 1px solid #eae8ef;
+  border-radius: 13px;
+  background: var(--gw-paper);
+  box-shadow: 0 5px 22px rgba(29,24,39,.025);
+}
+
+.gelombang-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 21px 23px;
+  border-bottom: 1px solid var(--gw-line);
+}
+
+.gelombang-panel-heading h3 {
+  margin: 0;
+  color: var(--gw-ink);
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: -.25px;
+}
+
+.gelombang-panel-heading p {
+  margin: 5px 0 0;
+  color: var(--gw-muted);
+  font-size: 11px;
+}
+
+.total-gelombang {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #858392;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.total-gelombang-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b0aebb;
+}
+
+/* Tabel */
+.tabel-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#tabelPeriode {
+  width: 100%;
+  min-width: 930px;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--gw-ink);
+  font-size: 12px;
+}
+
+#tabelPeriode thead th {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--gw-line);
+  background: #fbfafc;
+  color: #9693a0;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 1px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#tabelPeriode tbody td {
+  padding: 17px 16px;
+  border-bottom: 1px solid #f0eef3;
+  vertical-align: middle;
+}
+
+#tabelPeriode tbody tr:last-child td { border-bottom: 0; }
+
+#tabelPeriode tbody tr.baris-periode {
+  transition: background .18s ease;
+}
+
+#tabelPeriode tbody tr.baris-periode:hover { background: #fdf9fa; }
+
+#tabelPeriode .kolom-no { width: 55px; padding-left: 22px; }
+
+.nomor-baris {
+  color: #aaa7b3;
+  font-size: 10px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.nama-gelombang {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 200px;
+}
+
+.gelombang-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 37px;
+  height: 37px;
+  flex-shrink: 0;
+  border: 1px solid #f1dfe3;
+  border-radius: 10px;
+  background: #fff5f6;
+  color: var(--gw-brand);
+}
+
+.gelombang-mark svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nama-gelombang-info { display: flex; flex-direction: column; gap: 5px; }
+
+.nama-gelombang-info strong {
+  max-width: 230px;
+  color: #2b2935;
+  font-size: 12px;
+  font-weight: 720;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.nama-gelombang-info > span {
+  color: #a09daa;
+  font-size: 10px;
+}
+
+.tanggal-periode { display: flex; flex-direction: column; gap: 4px; }
+
+.tanggal-periode strong {
+  color: #494653;
+  font-size: 11px;
+  font-weight: 620;
+  white-space: nowrap;
+}
+
+.tanggal-periode span { color: #aaa6b1; font-size: 10px; }
+
+.data-kosong { color: #aaa6b1; font-size: 11px; }
+
+.biaya-info { display: flex; align-items: center; flex-wrap: wrap; gap: 5px 7px; }
+
+.biaya-info > strong {
+  color: #34303d;
+  font-size: 12px;
+  font-weight: 730;
+  white-space: nowrap;
+}
+
+.biaya-asli {
+  color: #a8a4af;
+  font-size: 10px;
+  text-decoration: line-through;
+  white-space: nowrap;
+}
+
+.diskon-tag {
+  padding: 3px 5px;
+  border-radius: 4px;
+  background: #fff2e5;
+  color: #a65b20;
+  font-size: 9px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+/* Status */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 9px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-indikator { width: 6px; height: 6px; border-radius: 50%; }
+
+.status-dibuka {
+  border-color: #d6eee0;
+  background: #f0faf4;
+  color: #247c4b;
+}
+
+.status-dibuka .status-indikator { background: #36a66b; }
+
+.status-ditutup {
+  border-color: #e9e7ed;
+  background: #f7f6f9;
+  color: #827e8c;
+}
+
+.status-ditutup .status-indikator { background: #aaa6b2; }
+
+/* Jumlah pendaftar */
+.pendaftar-info { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; }
+.pendaftar-angka { color: #373440; font-size: 15px; font-weight: 750; font-variant-numeric: tabular-nums; }
+.pendaftar-info > span:last-child { color: #96929f; font-size: 10px; }
+
+/* Aksi berbentuk menu */
+#tabelPeriode .kolom-aksi { width: 150px; }
+
+.aksi-modern {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.aksi-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 0;
+  color: var(--gw-brand);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.aksi-detail:hover { color: var(--gw-brand-dark); }
+
+.aksi-detail svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  transition: transform .18s;
+}
+
+.aksi-detail:hover svg { transform: translateX(2px); }
+
+.aksi-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 31px;
+  height: 31px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #888492;
+  cursor: pointer;
+}
+
+.aksi-menu-btn:hover,
+.aksi-menu-btn:focus-visible {
+  border-color: #eae6ed;
+  background: #fff;
+  color: #393542;
+}
+
+.aksi-menu-btn svg { width: 17px; height: 17px; }
+
+.aksi-dropdown {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  right: 0;
+  display: none;
+  width: 185px;
+  padding: 5px;
+  border: 1px solid #e9e6ed;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 35px rgba(30,23,39,.12);
+}
+
+.aksi-dropdown.aksi-dropdown-buka { display: block; }
+
+.aksi-dropdown form { margin: 0; }
+
+.aksi-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.aksi-dropdown button svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+
+.aksi-dropdown-ubah { color: #55515f; }
+.aksi-dropdown-ubah:hover { background: #f7f5f8; }
+
+.aksi-dropdown .aksi-dropdown-hapus { color: #c23b4c; }
+.aksi-dropdown .aksi-dropdown-hapus:hover { background: #fff0f2; }
+
+/* Footer panel */
+.gelombang-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--gw-line);
+  color: #9692a0;
+  font-size: 10px;
+}
+
+.gelombang-panel-footer strong { color: #4b4755; }
+
+.footer-aman { display: inline-flex; align-items: center; gap: 6px; }
+
+.footer-aman svg { width: 14px; height: 14px; stroke: #9995a2; stroke-width: 1.5; }
+
+/* Empty state */
+.gelombang-empty {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 55px;
+  height: 55px;
+  margin-bottom: 16px;
+  border: 1px solid #f0dce1;
+  border-radius: 15px;
+  background: #fff4f6;
+  color: var(--gw-brand);
+}
+
+.empty-icon svg { width: 25px; height: 25px; stroke: currentColor; stroke-width: 1.5; }
+
+.gelombang-empty > strong { color: var(--gw-ink); font-size: 14px; }
+.gelombang-empty p { margin: 8px 0 20px; color: var(--gw-muted); font-size: 12px; }
+
+.gelombang-empty .btn-utama {
+  padding: 10px 15px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--gw-brand);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.hasil-kosong { padding: 35px 20px; color: var(--gw-muted); text-align: center; font-size: 12px; }
+
+/* Modal lama tetap digunakan, hanya disesuaikan tampilannya */
+
+/* Modal: sembunyikan secara default */
+.modal-latar {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  background: rgba(26, 22, 31, .58);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* Modal hanya muncul ketika class tampil ditambahkan */
+.modal-latar.tampil {
+  display: flex;
+}
+
+
+.modal-kotak {
+  width: min(100%, 620px);
+  max-height: 90vh;
+  padding: 25px;
+  border: 1px solid #f0edf2;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 25px 80px rgba(23,18,29,.2);
+}
+
+.modal-kotak {
+  /* Properti lama tetap dipertahankan */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.modal-judul {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--gw-line);
+}
+
+.modal-judul h3 { margin: 0; color: var(--gw-ink); font-size: 18px; font-weight: 750; letter-spacing: -.4px; }
+
+.tombol-tutup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: #f7f5f8;
+  color: #797583;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.tombol-tutup:hover { background: #fff0f2; color: var(--gw-brand); }
+
+.form-dua { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-kelompok { min-width: 0; margin-bottom: 16px; }
+.form-kelompok label { display: block; margin-bottom: 7px; color: #45414e; font-size: 12px; font-weight: 650; }
+.form-kelompok .form-input { width: 100%; min-height: 41px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #e3e0e8; border-radius: 8px; background: #fff; color: var(--gw-ink); font-size: 12px; outline: none; }
+.form-kelompok .form-input:focus { border-color: #c98390; box-shadow: 0 0 0 3px rgba(153,30,50,.07); }
+.form-kelompok .form-input[readonly] { background: #f8f7fa; color: var(--gw-brand); font-weight: 750; }
+.wajib { color: #d84458; }
+.opsional { color: #9894a1; font-size: 10px; font-weight: 400; }
+.daftar-program-pilih { display: flex; flex-direction: column; gap: 5px; max-height: 180px; overflow-y: auto; margin-top: 8px; padding: 8px; border: 1px solid #eae7ee; border-radius: 9px; }
+.cek-label { display: flex; align-items: center; gap: 8px; margin: 0; padding: 9px; border: 1px solid transparent; border-radius: 6px; color: #514d5b; font-size: 12px; cursor: pointer; }
+.cek-label:hover { border-color: #f0dce1; background: #fff8f9; }
+.cek-label input { accent-color: var(--gw-brand); }
+.kode-pilih { padding: 3px 6px; border-radius: 4px; background: #fff1f3; color: var(--gw-brand); font-family: monospace; font-size: 10px; font-weight: 750; }
+.kosong-program { color: #858190; font-size: 12px; }
+.kosong-program a { color: var(--gw-brand); }
+.modal-tombol { display: flex; justify-content: flex-end; gap: 9px; margin-top: 21px; padding-top: 17px; border-top: 1px solid var(--gw-line); }
+.modal-tombol button { min-height: 40px; padding: 0 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.modal-tombol .btn-utama { border: 1px solid var(--gw-brand); background: var(--gw-brand); color: #fff; }
+.modal-tombol .btn-utama-batal { border: 1px solid #e7e4eb; background: #fff; color: #6e6978; }
+
+/* Responsive */
+@media (max-width: 760px) {
+  .gelombang-header { align-items: flex-start; flex-direction: column; gap: 18px; }
+  .gelombang-header .btn-utama { width: 100%; }
+  .gelombang-toolbar { align-items: stretch; flex-direction: column; }
+  .gelombang-search { width: auto; }
+  .filter-status { align-self: flex-start; max-width: 100%; overflow-x: auto; }
+  .gelombang-panel-heading { padding: 17px; }
+  .gelombang-panel-footer { align-items: flex-start; flex-direction: column; padding: 14px 17px; }
+}
+
+@media (max-width: 480px) {
+  .gelombang-heading h2 { font-size: 25px; }
+  .gelombang-heading p { font-size: 12px; }
+  .filter-status { width: 100%; }
+  .filter-status-btn { flex: 1; padding: 0 8px; }
+  .form-dua { grid-template-columns: 1fr; gap: 0; }
+  .modal-latar { align-items: flex-end; padding: 8px; }
+  .modal-kotak { width: 100%; max-height: 92dvh; padding: 19px; border-radius: 15px 15px 10px 10px; }
+  .modal-tombol { position: sticky; bottom: -19px; margin: 12px -19px -19px; padding: 13px 19px 19px; background: #fff; }
+  .modal-tombol button { flex: 1; padding: 0 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
 </style>
 
 <script>
@@ -316,7 +1094,6 @@ const modalTambah = document.getElementById('modalTambah');
 document.getElementById('btnBukaModalTambah').addEventListener('click', () => modalTambah.classList.add('tampil'));
 document.getElementById('tutupModalTambah').addEventListener('click', () => modalTambah.classList.remove('tampil'));
 document.getElementById('batalModalTambah').addEventListener('click', () => modalTambah.classList.remove('tampil'));
-modalTambah.addEventListener('click', (e) => { if (e.target === modalTambah) modalTambah.classList.remove('tampil'); });
 
 // Hitung biaya — Tambah
 function hitungBiaya(biayaEl, diskonEl, tampilEl) {
@@ -374,8 +1151,6 @@ document.querySelectorAll('.btnBukaModalUbah').forEach(btn => {
 
 document.getElementById('tutupModalUbah').addEventListener('click', () => modalUbah.classList.remove('tampil'));
 document.getElementById('batalModalUbah').addEventListener('click', () => modalUbah.classList.remove('tampil'));
-modalUbah.addEventListener('click', (e) => { if (e.target === modalUbah) modalUbah.classList.remove('tampil'); });
-
 // Hitung biaya — Ubah
 const inputBiayaUbah = document.querySelector('.input-biaya-ubah');
 const inputDiskonUbah = document.querySelector('.input-diskon-ubah');
@@ -386,13 +1161,97 @@ function hitungBiayaUbah() {
 inputBiayaUbah.addEventListener('input', hitungBiayaUbah);
 inputDiskonUbah.addEventListener('input', hitungBiayaUbah);
 
-// === PENCARIAN ===
+
+/* === PENCARIAN DAN FILTER STATUS === */
 const cari = document.getElementById('cariPeriode');
-document.querySelectorAll('.baris-periode').forEach(baris => {
-  cari.addEventListener('input', () => {
-    const kata = cari.value.toLowerCase();
-    baris.style.display = baris.textContent.toLowerCase().includes(kata) ? '' : 'none';
+const tombolFilter = document.querySelectorAll('.filter-status-btn');
+const barisPeriode = [...document.querySelectorAll('#tabelPeriode tbody tr.baris-periode')];
+const jumlahHasil = document.getElementById('jumlahHasil');
+const jumlahTerlihat = document.getElementById('jumlahTerlihat');
+const barisTidakDitemukan = document.getElementById('barisTidakDitemukan');
+
+let filterStatusAktif = 'semua';
+
+function perbaruiDaftarPeriode() {
+  const kata = cari.value.trim().toLocaleLowerCase('id-ID');
+  let jumlah = 0;
+
+  barisPeriode.forEach(baris => {
+    const cocokTeks = baris.textContent.toLocaleLowerCase('id-ID').includes(kata);
+    const cocokStatus = filterStatusAktif === 'semua' ||
+      baris.dataset.status === filterStatusAktif;
+
+    const tampil = cocokTeks && cocokStatus;
+    baris.hidden = !tampil;
+
+    if (tampil) jumlah++;
+  });
+
+  if (barisTidakDitemukan) {
+    barisTidakDitemukan.hidden = jumlah !== 0 || barisPeriode.length === 0;
+  }
+
+  if (jumlahHasil) {
+    jumlahHasil.textContent = `${jumlah} gelombang`;
+  }
+
+  if (jumlahTerlihat) {
+    jumlahTerlihat.textContent = jumlah;
+  }
+}
+
+cari.addEventListener('input', perbaruiDaftarPeriode);
+
+tombolFilter.forEach(tombol => {
+  tombol.addEventListener('click', () => {
+    filterStatusAktif = tombol.dataset.filter;
+
+    tombolFilter.forEach(item => {
+      const aktif = item === tombol;
+      item.classList.toggle('aktif-filter', aktif);
+      item.setAttribute('aria-pressed', String(aktif));
+    });
+
+    perbaruiDaftarPeriode();
   });
 });
+
+/* === MENU AKSI PER BARIS === */
+document.addEventListener('click', event => {
+  const tombolMenu = event.target.closest('.aksi-menu-btn');
+  const dropdownTujuan = tombolMenu
+    ? tombolMenu.closest('.aksi-modern').querySelector('.aksi-dropdown')
+    : null;
+
+  document.querySelectorAll('.aksi-dropdown.aksi-dropdown-buka').forEach(menu => {
+    if (menu !== dropdownTujuan) {
+      menu.classList.remove('aksi-dropdown-buka');
+    }
+  });
+
+  if (dropdownTujuan) {
+    event.stopPropagation();
+    dropdownTujuan.classList.toggle('aksi-dropdown-buka');
+  }
+});
+
+/* Tutup menu aksi saat Escape ditekan */
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    document.querySelectorAll('.aksi-dropdown.aksi-dropdown-buka').forEach(menu => {
+      menu.classList.remove('aksi-dropdown-buka');
+    });
+  }
+});
+
+/* Tutup menu setelah memilih Ubah */
+document.querySelectorAll('.btnBukaModalUbah').forEach(tombol => {
+  tombol.addEventListener('click', () => {
+    tombol.closest('.aksi-dropdown')?.classList.remove('aksi-dropdown-buka');
+  });
+});
+
+perbaruiDaftarPeriode();
+
 </script>
 {% endblock %}
