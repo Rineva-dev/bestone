@@ -532,27 +532,34 @@
     line-height: 1.7;
 }
 
-/* Pertahankan indentasi paragraf dan subpoin */
-.dp-teks.ql-editor .ql-indent-1,
-.dp-daftar-materi.ql-editor .ql-indent-1,
-.dp-daftar-keuntungan.ql-editor .ql-indent-1,
-.dp-syarat.ql-editor .ql-indent-1 {
-    padding-left: 1.5em;
+
+/* Indentasi paragraf penjelasan */
+.dp-teks.ql-editor p.ql-indent-1,
+.dp-daftar-materi.ql-editor p.ql-indent-1,
+.dp-daftar-keuntungan.ql-editor p.ql-indent-1,
+.dp-syarat.ql-editor p.ql-indent-1 {
+    padding-left: 3em !important;
+    box-sizing: border-box;
 }
 
-.dp-teks.ql-editor .ql-indent-2,
-.dp-daftar-materi.ql-editor .ql-indent-2,
-.dp-daftar-keuntungan.ql-editor .ql-indent-2,
-.dp-syarat.ql-editor .ql-indent-2 {
-    padding-left: 1.5em;
+/* Indentasi paragraf tingkat kedua */
+.dp-teks.ql-editor p.ql-indent-2,
+.dp-daftar-materi.ql-editor p.ql-indent-2,
+.dp-daftar-keuntungan.ql-editor p.ql-indent-2,
+.dp-syarat.ql-editor p.ql-indent-2 {
+    padding-left: 6em !important;
+    box-sizing: border-box;
 }
 
-.dp-teks.ql-editor .ql-indent-3,
-.dp-daftar-materi.ql-editor .ql-indent-3,
-.dp-daftar-keuntungan.ql-editor .ql-indent-3,
-.dp-syarat.ql-editor .ql-indent-3 {
-    padding-left: 9em;
+/* Indentasi paragraf tingkat ketiga */
+.dp-teks.ql-editor p.ql-indent-3,
+.dp-daftar-materi.ql-editor p.ql-indent-3,
+.dp-daftar-keuntungan.ql-editor p.ql-indent-3,
+.dp-syarat.ql-editor p.ql-indent-3 {
+    padding-left: 9em !important;
+    box-sizing: border-box;
 }
+
 
 .ql-editor li.ql-indent-1:not(.ql-direction-rtl) {
     padding-left: 3.5em !important;
@@ -579,6 +586,14 @@
     padding-top: 0;
     padding-bottom: 0;
     line-height: 1.7;
+}
+
+.dp-teks.ql-editor ol:has(> li[data-list="ordered"]) + p,
+.dp-daftar-materi.ql-editor ol:has(> li[data-list="ordered"]) + p,
+.dp-daftar-keuntungan.ql-editor ol:has(> li[data-list="ordered"]) + p,
+.dp-syarat.ql-editor ol:has(> li[data-list="ordered"]) + p {
+    padding-left: 1.5em !important;
+    box-sizing: border-box;
 }
 
 </style>

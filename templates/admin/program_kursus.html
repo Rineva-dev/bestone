@@ -421,6 +421,14 @@
   line-height: 1.7;
 }
 
+.editor-rich .ql-editor ol + p,
+.dp-teks.ql-editor ol + p,
+.dp-daftar-materi.ql-editor ol + p,
+.dp-daftar-keuntungan.ql-editor ol + p,
+.dp-syarat.ql-editor ol + p {
+    padding-left: 3em;
+}
+
 .editor-rich .ql-toolbar {
   border-radius: 8px 8px 0 0;
   background: #fafafa;
@@ -715,6 +723,8 @@ document.addEventListener('DOMContentLoaded', function () {
           }
 
           // Atur angka awal daftar ini tanpa mengubah paragraf lain
+          daftarAktif.setAttribute('start', String(nomorBerikutnya));
+
           daftarAktif.style.counterReset =
               `list-0 ${nomorBerikutnya - 1}`;
 
@@ -765,38 +775,132 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Mengisi editor saat membuka form Ubah.
   function isiEditor(idEditor, isi) {
-    const item = editorProgram[idEditor];
-    if (!item) return;
+      const item = editorProgram[idEditor];
+      if (!item) return;
 
-    const teks = isi || '';
+      const teks = isi || '';
+      const quill = item.quill;
 
-    item.quill.setText('');
+      quill.setText('');
 
-    if (!teks) return;
+      if (!teks) return;
 
-    // Konten baru berupa HTML dari Quill.
-    if (/<(p|h[1-6]|ol|ul|li|strong|em|u|blockquote|a|br)\b/i.test(teks)) {
-      item.quill.clipboard.dangerouslyPasteHTML(teks);
-    } else {
-      // Mempertahankan teks lama yang belum memakai HTML.
-      item.quill.setText(teks);
-    }
+      // Konten HTML dari Quill.
+      if (/<(p|h[1-6]|ol|ul|li|strong|em|u|blockquote|a|br)\b/i.test(teks)) {
+
+          // Simpan informasi penomoran sebelum HTML dibaca ulang Quill.
+          const parser = new DOMParser();
+          const dokumen = parser.parseFromString(teks, 'text/html');
+
+          const informasiNomor = Array.from(
+              dokumen.querySelectorAll('ol')
+          ).map(function (daftar) {
+              const gaya = daftar.getAttribute('style') || '';
+
+              const cocok = gaya.match(
+                  /counter-reset\s*:\s*list-0\s+(-?\d+)/i
+              );
+
+              return {
+                  reset: cocok ? parseInt(cocok[1], 10) : null,
+                  start: daftar.hasAttribute('start')
+                      ? parseInt(daftar.getAttribute('start'), 10)
+                      : null
+              };
+          });
+
+          // Masukkan konten ke editor.
+          quill.clipboard.dangerouslyPasteHTML(teks);
+
+          // Pulihkan nomor setelah Quill membentuk ulang HTML.
+          setTimeout(function () {
+              const semuaDaftar = Array.from(
+                  quill.root.querySelectorAll('ol')
+              );
+
+              informasiNomor.forEach(function (info, index) {
+                  const daftar = semuaDaftar[index];
+
+                  if (!daftar) return;
+
+                  if (info.reset !== null && Number.isFinite(info.reset)) {
+                      daftar.style.counterReset = 'list-0 ' + info.reset;
+                  } else if (info.start !== null && Number.isFinite(info.start)) {
+                      daftar.style.counterReset = 'list-0 ' + (info.start - 1);
+                  }
+              });
+
+              // Sinkronkan HTML yang sudah dipulihkan ke textarea.
+              rapikanIndentParagraf(quill);
+
+              // Sinkronkan HTML ke textarea.
+              item.input.value = quill.root.innerHTML;
+          }, 0);
+
+      } else {
+          // Mempertahankan teks lama yang belum memakai HTML.
+          quill.setText(teks);
+      }
+  }
+
+  
+  function rapikanIndentParagraf(quill) {
+      const root = quill.root;
+
+      root.querySelectorAll('ol').forEach(function (daftar) {
+          // Hanya memproses daftar yang berisi nomor,
+          // bukan daftar bullet.
+          const punyaNomor = Array.from(daftar.children).some(
+              function (elemen) {
+                  return elemen.tagName === 'LI' &&
+                        elemen.getAttribute('data-list') === 'ordered';
+              }
+          );
+
+          if (!punyaNomor) return;
+
+          // Cari paragraf berikutnya, melewati paragraf kosong.
+          let berikutnya = daftar.nextElementSibling;
+
+          while (
+              berikutnya &&
+              berikutnya.tagName === 'P' &&
+              !berikutnya.textContent.trim() &&
+              berikutnya.querySelector('br')
+          ) {
+              berikutnya = berikutnya.nextElementSibling;
+          }
+
+          // Simpan indentasi sebagai kelas HTML Quill.
+          if (
+              berikutnya &&
+              berikutnya.tagName === 'P' &&
+              berikutnya.textContent.trim()
+          ) {
+              berikutnya.classList.add('ql-indent-1');
+          }
+      });
   }
 
   // Sinkronisasi editor ke textarea sebelum form dikirim.
+  
   function sinkronkanEditor(form) {
-    const textarea = form.querySelectorAll('textarea[name]');
+      const textarea = form.querySelectorAll('textarea[name]');
 
-    textarea.forEach(function (input) {
-      const pasangan = Object.values(editorProgram).find(function (item) {
-        return item.input === input;
+      textarea.forEach(function (input) {
+          const pasangan = Object.values(editorProgram).find(
+              function (item) {
+                  return item.input === input;
+              }
+          );
+
+          if (pasangan) {
+              // Pastikan indentasi paragraf masuk ke HTML tersimpan.
+              rapikanIndentParagraf(pasangan.quill);
+
+              input.value = pasangan.quill.root.innerHTML;
+          }
       });
-
-      if (pasangan) {
-        console.log(pasangan.quill.root.innerHTML);
-        input.value = pasangan.quill.root.innerHTML;
-      }
-    });
   }
 
   // Modal Tambah.

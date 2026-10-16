@@ -1,83 +1,273 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#310d1c">
+  <meta name="color-scheme" content="light">
+
   <title>Login Admin — BestOne Education</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/login.css') }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/admin/login.css') }}"
+  >
 </head>
+
 <body>
-  <div class="login-page">
-    <div class="login-container">
-      
-      <!-- Kotak Login -->
-      <div class="login-card">
-        <!-- Logo & Judul -->
-        <div class="login-header">
-          <div class="admin-logo">
-            <span class="logo-text">B</span>
+  <main class="login-page">
+
+    <!-- PANEL BRANDING -->
+    <section class="brand-panel" aria-label="BestOne Education">
+      <div class="brand-background" aria-hidden="true">
+        <div class="brand-orb brand-orb-one"></div>
+        <div class="brand-orb brand-orb-two"></div>
+        <div class="brand-grid"></div>
+        <div class="brand-ring brand-ring-one"></div>
+        <div class="brand-ring brand-ring-two"></div>
+      </div>
+
+      <div class="brand-content">
+
+        <a href="/" class="brand-identity" aria-label="BestOne Education">
+          <span class="brand-logo">
+            <span>B</span>
+            <span class="brand-logo-accent"></span>
+          </span>
+
+          <span class="brand-name">
+            <strong>BestOne</strong>
+            <span>EDUCATION</span>
+          </span>
+        </a>
+
+        <div class="brand-main">
+          <div class="brand-eyebrow">
+            <span class="eyebrow-dot"></span>
+            <span>ADMINISTRATION PORTAL</span>
           </div>
-          <h1>BestOne Education</h1>
-          <p class="sub-judul">Panel Administrator</p>
+
+          <h1>
+            Every great journey
+            starts with a
+            <span>better education.</span>
+          </h1>
+
+          <p class="brand-description">
+            Kelola program, administrasi, dan perjalanan pendidikan
+            dalam satu ruang kendali yang dirancang untuk kemajuan.
+          </p>
+
+          <div class="brand-divider"></div>
+
+          <div class="brand-note">
+            <span class="brand-note-icon">
+              <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+            </span>
+
+            <div>
+              <strong>Built for better learning.</strong>
+              <span>One platform. Endless possibilities.</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Form Login -->
-        <form action="/admin/proses-login" method="POST" class="login-form">
-          
-          <!-- Pesan Error (jika salah) -->
+        <footer class="brand-footer">
+          <span>BESTONE EDUCATION</span>
+          <span class="brand-footer-separator"></span>
+          <span>MANAGEMENT SYSTEM</span>
+        </footer>
+
+      </div>
+    </section>
+
+    <!-- PANEL LOGIN -->
+    <section class="login-panel" aria-label="Form login administrator">
+
+      <div class="login-panel-top">
+        <span class="mobile-brand">
+          <span class="mobile-brand-logo">B</span>
+          <span>BestOne <strong>Education</strong></span>
+        </span>
+
+        <span class="security-badge">
+          <i class="fa fa-shield" aria-hidden="true"></i>
+          <span>Secure access</span>
+        </span>
+      </div>
+
+      <div class="login-content">
+
+        <header class="login-header">
+          <div class="login-welcome-icon" aria-hidden="true">
+            <i class="fa fa-hand-peace-o"></i>
+          </div>
+
+          <p class="login-eyebrow">WELCOME BACK</p>
+
+          <h2>Selamat datang<span>.</span></h2>
+
+          <p class="login-subtitle">
+            Masuk ke akun administrator untuk melanjutkan.
+          </p>
+        </header>
+
+        <form
+          action="/admin/proses-login"
+          method="POST"
+          class="login-form"
+        >
+
           {% if error %}
-          <div class="pesan-error">
-            <i class="fa fa-exclamation-circle"></i>
-            {{ error }}
+          <div class="pesan-error" role="alert">
+            <span class="error-icon">
+              <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+            </span>
+
+            <span class="error-message">{{ error }}</span>
           </div>
           {% endif %}
 
-          <!-- Username -->
+          <!-- USERNAME -->
           <div class="form-group">
-            <label for="username">
-              <i class="fa fa-user"></i> Nama Pengguna
-            </label>
-            <input 
-              type="text" 
-              id="username" 
-              name="username" 
-              required
-              autocomplete="username"
-              placeholder="Masukkan nama pengguna"
-            >
+            <label for="username">Nama Pengguna</label>
+
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">
+                <i class="fa fa-user-o"></i>
+              </span>
+
+              <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                autocomplete="username"
+                placeholder="Masukkan nama pengguna"
+                autocapitalize="none"
+                spellcheck="false"
+                autofocus
+              >
+            </div>
           </div>
 
-          <!-- Kata Sandi -->
+          <!-- PASSWORD -->
           <div class="form-group">
-            <label for="password">
-              <i class="fa fa-lock"></i> Kata Sandi
-            </label>
-            <input 
-              type="password" 
-              id="password" 
-              name="password" 
-              required
-              autocomplete="current-password"
-              placeholder="Masukkan kata sandi"
-            >
+            <label for="password">Kata Sandi</label>
+
+            <div class="input-wrapper password-wrapper">
+              <span class="input-icon" aria-hidden="true">
+                <i class="fa fa-lock"></i>
+              </span>
+
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                autocomplete="current-password"
+                placeholder="Masukkan kata sandi"
+              >
+
+              <button
+                type="button"
+                class="toggle-password"
+                id="togglePassword"
+                aria-label="Tampilkan kata sandi"
+                aria-pressed="false"
+                aria-controls="password"
+                title="Tampilkan kata sandi"
+              >
+                <i class="fa fa-eye" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
 
-          <!-- Tombol Masuk -->
+          <!-- TOMBOL LOGIN -->
           <button type="submit" class="btn-masuk">
-            <i class="fa fa-sign-in"></i> Masuk ke Panel
+            <span>Masuk ke Panel</span>
+
+            <span class="btn-icon" aria-hidden="true">
+              <i class="fa fa-arrow-right"></i>
+            </span>
           </button>
+
+          <div class="login-assurance">
+            <i class="fa fa-lock" aria-hidden="true"></i>
+            <span>Akses terbatas untuk administrator resmi.</span>
+          </div>
+
         </form>
 
-        <!-- Kembali ke Situs -->
-        <div class="login-footer">
+        <footer class="login-footer">
           <a href="/" class="link-kembali">
-            <i class="fa fa-arrow-left"></i> Kembali ke Halaman Utama
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            <span>Kembali ke Halaman Utama</span>
           </a>
-        </div>
+        </footer>
+
       </div>
 
-    </div>
-  </div>
+      <div class="login-panel-bottom">
+        <span>© {{ 2026 }} BestOne Education</span>
+        <span class="bottom-status">
+          <span class="status-dot"></span>
+          Administrator portal
+        </span>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const passwordInput = document.getElementById('password');
+      const togglePassword = document.getElementById('togglePassword');
+
+      if (!passwordInput || !togglePassword) return;
+
+      togglePassword.addEventListener('click', function () {
+        const sedangTersembunyi = passwordInput.type === 'password';
+
+        passwordInput.type = sedangTersembunyi ? 'text' : 'password';
+
+        const ikon = this.querySelector('i');
+
+        ikon.classList.toggle('fa-eye', !sedangTersembunyi);
+        ikon.classList.toggle('fa-eye-slash', sedangTersembunyi);
+
+        this.setAttribute(
+          'aria-label',
+          sedangTersembunyi
+            ? 'Sembunyikan kata sandi'
+            : 'Tampilkan kata sandi'
+        );
+
+        this.setAttribute(
+          'title',
+          sedangTersembunyi
+            ? 'Sembunyikan kata sandi'
+            : 'Tampilkan kata sandi'
+        );
+
+        this.setAttribute('aria-pressed', String(sedangTersembunyi));
+      });
+    })();
+  </script>
 </body>
 </html>
