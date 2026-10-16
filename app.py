@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from flask_login import LoginManager
 from dotenv import load_dotenv
 import os
@@ -9,6 +9,22 @@ from models.database import db, Pengguna
 load_dotenv()
 app = Flask(__name__)
 
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+# Beri tahu Flask bahwa ada 1 lapis proxy di depan
+app.wsgi_app = ProxyFix(
+    app.wsgi_app,
+    x_for=1,
+    x_proto=1,
+    x_host=1,
+    x_prefix=1 
+)
+
+@app.before_request
+def force_https():
+    # Hanya jika benar-benar lewat HTTPS dari proxy
+    if request.headers.get("X-Forwarded-Proto") == "https":
+        request.environ["wsgi.url_scheme"] = "https"
 
 # ===== Konfigurasi =====
 app.config.update(
