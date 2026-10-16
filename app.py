@@ -38,6 +38,7 @@ from routes.admin.dashboard import dashboard_bp
 from routes.admin.pendaftar import pendaftar_bp
 from routes.admin.program import program_bp
 from routes.admin.level import level_bp
+from routes.public.program import program_bp as public_program_bp
 
 app.register_blueprint(beranda_bp)
 app.register_blueprint(form_bp)
@@ -46,6 +47,7 @@ app.register_blueprint(dashboard_bp)
 app.register_blueprint(pendaftar_bp)
 app.register_blueprint(program_bp)
 app.register_blueprint(level_bp)
+app.register_blueprint(public_program_bp, name='public_program')
 
 # Buat Tabel
 with app.app_context():

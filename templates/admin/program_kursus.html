@@ -1,11 +1,19 @@
+
 {% extends "admin/base_admin.html" %}
+
 {% block judul %}Program Kursus — BestOne{% endblock %}
 {% block judul_halaman %}Daftar Program Kursus{% endblock %}
 
 {% block isi %}
+
+<link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+
 <!-- Bar Atas -->
 <div class="bar-atas">
-  <button class="btn-utama" id="btnBukaTambah">+ Tambah Program</button>
+  <button type="button" class="btn-utama" id="btnBukaTambah">
+    + Tambah Program
+  </button>
   <div class="pencarian">
     <input type="text" id="cariProgram" placeholder="Cari program..." class="form-input">
   </div>
@@ -18,8 +26,8 @@
       <thead>
         <tr>
           <th>No</th>
+          <th>Kode</th>
           <th>Nama Program</th>
-          <th>Deskripsi</th>
           <th>Durasi</th>
           <th>Aksi</th>
         </tr>
@@ -28,23 +36,40 @@
         {% for p in daftar %}
         <tr class="baris-program">
           <td>{{ loop.index }}</td>
+          <td><code class="kode-program">{{ p.kode }}</code></td>
           <td><strong>{{ p.nama }}</strong></td>
-          <td><small>{{ p.deskripsi[:60] ~ '...' if p.deskripsi and p.deskripsi|length > 60 else (p.deskripsi or '-') }}</small></td>
           <td>
             {% if p.durasi_nilai and p.durasi_satuan %}
               {{ p.durasi_nilai }} {{ p.durasi_satuan }}
-            {% else %}-{% endif %}
+            {% else %}
+              -
+            {% endif %}
           </td>
           <td>
             <div class="tombol-aksi">
-              <button class="btn-sm btn-abu" 
-                data-id="{{ p.id }}" 
-                data-nama="{{ p.nama }}" 
-                data-deskripsi="{{ p.deskripsi or '' }}" 
-                data-nilai="{{ p.durasi_nilai or '' }}" 
+              <button
+                type="button"
+                class="btn-sm btn-abu"
+                data-id="{{ p.id }}"
+                data-kode="{{ p.kode or '' }}"
+                data-nama="{{ p.nama or '' }}"
+                data-deskripsi_singkat="{{ p.deskripsi_singkat or '' }}"
+                data-deskripsi="{{ p.deskripsi or '' }}"
+                data-materi="{{ p.materi or '' }}"
+                data-keuntungan="{{ p.keuntungan or '' }}"
+                data-jadwal="{{ p.jadwal or '' }}"
+                data-metode="{{ p.metode or '' }}"
+                data-syarat="{{ p.syarat or '' }}"
+                data-nilai="{{ p.durasi_nilai or '' }}"
                 data-satuan="{{ p.durasi_satuan or '' }}"
-                onclick="bukaModalEdit(this)">Ubah</button>
-              <form method="POST" action="{{ url_for('admin_program.hapus', program_id=p.id) }}" class="form-hapus" onsubmit="return confirm('Yakin hapus program ini?')">
+                onclick="bukaModalEdit(this)">
+                Ubah
+              </button>
+
+              <form method="POST"
+                    action="{{ url_for('admin_program.hapus', program_id=p.id) }}"
+                    class="form-hapus"
+                    onsubmit="return confirm('Yakin hapus program ini?')">
                 <button type="submit" class="btn-sm btn-merah">Hapus</button>
               </form>
             </div>
@@ -52,7 +77,9 @@
         </tr>
         {% else %}
         <tr>
-          <td colspan="5" class="kosong">Belum ada program. Klik "Tambah Program" untuk memulai.</td>
+          <td colspan="6" class="kosong">
+            Belum ada program. Klik "Tambah Program" untuk memulai.
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -60,31 +87,55 @@
   </div>
 </div>
 
-<!-- Modal Tambah -->
+<!-- ================================================== -->
+<!-- MODAL TAMBAH -->
+<!-- ================================================== -->
 <div id="modalTambah" class="modal-latar">
-  <div class="modal-kotak">
+  <div class="modal-kotak modal-lebar">
     <div class="modal-judul">
       <h3>Tambah Program Kursus</h3>
-      <button class="tombol-tutup" onclick="tutupModalTambah()">&times;</button>
+      <button type="button" class="tombol-tutup" onclick="tutupModalTambah()">&times;</button>
     </div>
-    <form method="POST" action="{{ url_for('admin_program.tambah') }}">
+
+    <form method="POST" action="{{ url_for('admin_program.tambah') }}" id="formTambah">
+
       <div class="form-kelompok">
         <label>Nama Program <span class="wajib">*</span></label>
-        <input type="text" name="nama" required class="form-input" placeholder="Contoh: Kelas Bahasa Inggris Pemula">
+        <input type="text" name="nama" required class="form-input"
+               placeholder="Contoh: Kelas Bahasa Inggris Pemula">
       </div>
-      
+
       <div class="form-kelompok">
-        <label>Deskripsi</label>
-        <textarea name="deskripsi" rows="3" class="form-input" placeholder="Singkat tentang program ini..."></textarea>
+        <label>Deskripsi Singkat</label>
+        <input type="text" name="deskripsi_singkat" class="form-input"
+               placeholder="Kalimat pendek yang menarik">
       </div>
-      
+
+      <div class="form-kelompok">
+        <label>Deskripsi Lengkap</label>
+        <div id="editor-deskripsi" class="editor-rich"></div>
+        <textarea name="deskripsi" id="input-deskripsi" hidden></textarea>
+      </div>
+
+      <div class="form-kelompok">
+        <label>Materi Pembelajaran</label>
+        <div id="editor-materi" class="editor-rich"></div>
+        <textarea name="materi" id="input-materi" hidden></textarea>
+      </div>
+
+      <div class="form-kelompok">
+        <label>Hasil & Keuntungan</label>
+        <div id="editor-keuntungan" class="editor-rich"></div>
+        <textarea name="keuntungan" id="input-keuntungan" hidden></textarea>
+      </div>
+
       <div class="form-dua">
         <div class="form-kelompok">
           <label>Durasi</label>
           <input type="number" name="durasi_nilai" class="form-input" placeholder="Contoh: 24">
         </div>
         <div class="form-kelompok">
-          <label>Satuan</label>
+          <label>Satuan Durasi</label>
           <select name="durasi_satuan" class="form-input">
             <option value="">Pilih satuan</option>
             <option value="bulan">Bulan</option>
@@ -93,7 +144,24 @@
           </select>
         </div>
       </div>
-      
+
+      <div class="form-dua">
+        <div class="form-kelompok">
+          <label>Jadwal</label>
+          <input type="text" name="jadwal" class="form-input" placeholder="Senin–Jumat">
+        </div>
+        <div class="form-kelompok">
+          <label>Metode</label>
+          <input type="text" name="metode" class="form-input" placeholder="Tatap Muka">
+        </div>
+      </div>
+
+      <div class="form-kelompok">
+        <label>Syarat Pendaftaran</label>
+        <div id="editor-syarat" class="editor-rich"></div>
+        <textarea name="syarat" id="input-syarat" hidden></textarea>
+      </div>
+
       <div class="modal-tombol">
         <button type="button" class="btn-abu" onclick="tutupModalTambah()">Batal</button>
         <button type="submit" class="btn-utama">Simpan</button>
@@ -102,31 +170,53 @@
   </div>
 </div>
 
-<!-- Modal Edit -->
+<!-- ================================================== -->
+<!-- MODAL UBAH -->
+<!-- ================================================== -->
 <div id="modalEdit" class="modal-latar">
-  <div class="modal-kotak">
+  <div class="modal-kotak modal-lebar">
     <div class="modal-judul">
       <h3>Ubah Program Kursus</h3>
-      <button class="tombol-tutup" onclick="tutupModalEdit()">&times;</button>
+      <button type="button" class="tombol-tutup" onclick="tutupModalEdit()">&times;</button>
     </div>
+
     <form method="POST" id="formEdit">
+
       <div class="form-kelompok">
         <label>Nama Program <span class="wajib">*</span></label>
         <input type="text" name="nama" id="edit-nama" required class="form-input">
       </div>
-      
+
       <div class="form-kelompok">
-        <label>Deskripsi</label>
-        <textarea name="deskripsi" id="edit-deskripsi" rows="3" class="form-input"></textarea>
+        <label>Deskripsi Singkat</label>
+        <input type="text" name="deskripsi_singkat" id="edit-deskripsi_singkat" class="form-input">
       </div>
-      
+
+      <div class="form-kelompok">
+        <label>Deskripsi Lengkap</label>
+        <div id="edit-editor-deskripsi" class="editor-rich"></div>
+        <textarea name="deskripsi" id="edit-input-deskripsi" hidden></textarea>
+      </div>
+
+      <div class="form-kelompok">
+        <label>Materi Pembelajaran</label>
+        <div id="edit-editor-materi" class="editor-rich"></div>
+        <textarea name="materi" id="edit-input-materi" hidden></textarea>
+      </div>
+
+      <div class="form-kelompok">
+        <label>Hasil & Keuntungan</label>
+        <div id="edit-editor-keuntungan" class="editor-rich"></div>
+        <textarea name="keuntungan" id="edit-input-keuntungan" hidden></textarea>
+      </div>
+
       <div class="form-dua">
         <div class="form-kelompok">
           <label>Durasi</label>
           <input type="number" name="durasi_nilai" id="edit-nilai" class="form-input">
         </div>
         <div class="form-kelompok">
-          <label>Satuan</label>
+          <label>Satuan Durasi</label>
           <select name="durasi_satuan" id="edit-satuan" class="form-input">
             <option value="">Pilih satuan</option>
             <option value="bulan">Bulan</option>
@@ -135,7 +225,24 @@
           </select>
         </div>
       </div>
-      
+
+      <div class="form-dua">
+        <div class="form-kelompok">
+          <label>Jadwal</label>
+          <input type="text" name="jadwal" id="edit-jadwal" class="form-input">
+        </div>
+        <div class="form-kelompok">
+          <label>Metode</label>
+          <input type="text" name="metode" id="edit-metode" class="form-input">
+        </div>
+      </div>
+
+      <div class="form-kelompok">
+        <label>Syarat Pendaftaran</label>
+        <div id="edit-editor-syarat" class="editor-rich"></div>
+        <textarea name="syarat" id="edit-input-syarat" hidden></textarea>
+      </div>
+
       <div class="modal-tombol">
         <button type="button" class="btn-abu" onclick="tutupModalEdit()">Batal</button>
         <button type="submit" class="btn-utama">Perbarui</button>
@@ -145,90 +252,637 @@
 </div>
 
 <style>
-.bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
-.pencarian { max-width: 300px; width: 100%; }
-.form-dua { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-kelompok { margin-bottom: 14px; }
-.form-kelompok label { display: block; margin-bottom: 6px; font-weight: 500; color: #333; font-size: 14px; }
-.form-input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-.wajib { color: #e11d48; }
-.tombol-aksi { display: flex; gap: 6px; align-items: center; }
-.form-hapus { margin: 0; }
+.bar-atas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.pencarian {
+  max-width: 300px;
+  width: 100%;
+}
+
+.form-dua {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-kelompok {
+  margin-bottom: 16px;
+}
+
+.form-kelompok label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.wajib {
+  color: #e11d48;
+}
+
+.kode-program {
+  background: #f3e9ec;
+  color: #991e32;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.tombol-aksi {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.form-hapus {
+  margin: 0;
+}
+
 .btn-sm {
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-size: 13px;
-    text-decoration: none;
-    display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .btn-utama {
-    background: #991e32;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 10px 16px;
-    border-radius: 6px;
+  background: #991e32;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: 6px;
 }
 
 .btn-abu {
-    background: #e5e7eb;
-    color: #4b5563;
-    min-width: 64px;
+  background: #e5e7eb;
+  color: #4b5563;
+  min-width: 64px;
+  border: none;
+  cursor: pointer;
 }
 
 .btn-merah {
-    background: #ef4444;
-    color: white;
-    min-width: 64px;
+  background: #ef4444;
+  color: white;
+  min-width: 64px;
 }
 
-/* Modal */
-.modal-latar { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
-.modal-latar.tampil { display: flex; }
-.modal-kotak { background: white; border-radius: 12px; width: 90%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 24px; }
-.modal-judul { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.modal-judul h3 { margin: 0; font-size: 18px; color: #1f2937; }
-.tombol-tutup { background: none; border: none; font-size: 22px; cursor: pointer; color: #6b7280; }
-.modal-tombol { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
-.modal-tombol button { padding: 10px 24px; border-radius: 8px; font-size: 14px; }
+.modal-latar {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-latar.tampil {
+  display: flex;
+}
+
+.modal-kotak {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.modal-lebar {
+  max-width: 760px;
+}
+
+.modal-judul {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-judul h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+.tombol-tutup {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.modal-tombol {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.modal-tombol button {
+  padding: 10px 24px;
+  border-radius: 8px;
+}
+
+.editor-rich {
+  background: #fff;
+  border-radius: 8px;
+}
+
+.editor-rich .ql-editor {
+  min-height: 150px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.editor-rich .ql-toolbar {
+  border-radius: 8px 8px 0 0;
+  background: #fafafa;
+}
+
+.editor-rich .ql-container {
+  border-radius: 0 0 8px 8px;
+}
+
+.form-bantuan {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
 
 @media (max-width: 640px) {
-  .form-dua { grid-template-columns: 1fr; }
+  .form-dua {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .modal-kotak {
+    padding: 18px;
+  }
+
+  .editor-rich .ql-editor {
+    min-height: 120px;
+  }
 }
+
+
+/* Tombol tambahan penomoran Quill */
+.editor-rich .ql-toolbar button.ql-lanjutNomor,
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru {
+    width: auto;
+    min-width: 90px;
+    padding: 0 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    margin: 0 3px;
+    color: #991e32;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.editor-rich .ql-toolbar button.ql-lanjutNomor::after {
+    content: "Lanjutkan Nomor";
+}
+
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru::after {
+    content: "Mulai dari 1";
+}
+
+.editor-rich .ql-toolbar button.ql-lanjutNomor:hover,
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru:hover {
+    background: #f3e9ec;
+    border-color: #991e32;
+}
+
 </style>
 
 <script>
-// Pencarian
-const cari = document.getElementById('cariProgram');
-const daftarBaris = document.querySelectorAll('.baris-program');
-cari.addEventListener('input', () => {
-  const kata = cari.value.toLowerCase();
-  daftarBaris.forEach(baris => {
-    const teks = baris.textContent.toLowerCase();
-    baris.style.display = teks.includes(kata) ? '' : 'none';
+document.addEventListener('DOMContentLoaded', function () {
+  // Pastikan library Quill berhasil dimuat.
+  if (typeof Quill === 'undefined') {
+    console.error('Quill belum termuat. Periksa koneksi internet atau CDN.');
+    alert('Editor teks belum berhasil dimuat. Periksa koneksi internet lalu muat ulang halaman.');
+    return;
+  }
+
+  // Toolbar untuk semua editor.
+  const toolbarEditor = [
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ header: [2, 3, false] }],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ indent: '-1' }, { indent: '+1' }],
+      [{ align: [] }],
+      ['blockquote', 'link'],
+      [
+          { lanjutNomor: 'Lanjutkan Nomor' },
+          { mulaiNomorBaru: 'Mulai dari 1' }
+      ],
+      ['clean']
+  ];
+
+  const editorProgram = {};
+
+  // Buat editor dengan ID unik.
+  function buatEditor(idEditor, idInput) {
+      const elemen = document.getElementById(idEditor);
+      const input = document.getElementById(idInput);
+
+      if (!elemen || !input) {
+          console.warn('Elemen editor tidak ditemukan:', idEditor, idInput);
+          return null;
+      }
+
+      const quill = new Quill(elemen, {
+          theme: 'snow',
+          modules: {
+              toolbar: {
+                  container: toolbarEditor,
+
+                  
+                  handlers: {
+                      lanjutNomor: function () {
+                          lanjutkanNomor(this.quill);
+                      },
+
+                      mulaiNomorBaru: function () {
+                          const range = this.quill.getSelection();
+                          if (!range) return;
+
+                          const [line] = this.quill.getLine(range.index);
+                          if (!line) return;
+
+                          const indexBaris = this.quill.getIndex(line);
+
+                          this.quill.formatLine(
+                              indexBaris,
+                              1,
+                              'list',
+                              'ordered'
+                          );
+
+                          setTimeout(() => {
+                              const [lineAktif] = this.quill.getLine(indexBaris);
+                              const daftar = lineAktif?.domNode?.closest('ol');
+
+                              if (daftar) {
+                                  daftar.style.counterReset = 'list-0 0';
+                              }
+
+                              const dataEditor = Object.values(editorProgram).find(
+                                  data => data.quill === this.quill
+                              );
+
+                              if (dataEditor) {
+                                  dataEditor.input.value = this.quill.root.innerHTML;
+                              }
+                          }, 0);
+                      }
+                  }
+              }
+          },
+          placeholder: 'Tulis konten di sini...'
+      });
+
+      editorProgram[idEditor] = {
+          quill: quill,
+          input: input
+      };
+
+      // Membuat tombol toolbar mudah dikenali
+      const toolbar = quill.getModule('toolbar').container;
+
+      const btnLanjut = toolbar.querySelector('.ql-lanjutNomor');
+      const btnBaru = toolbar.querySelector('.ql-mulaiNomorBaru');
+
+      if (btnLanjut) {
+          btnLanjut.type = 'button';
+          btnLanjut.title = 'Lanjutkan penomoran dari daftar sebelumnya';
+          btnLanjut.setAttribute('aria-label', 'Lanjutkan Nomor');
+      }
+
+      if (btnBaru) {
+          btnBaru.type = 'button';
+          btnBaru.title = 'Mulai penomoran baru dari angka 1';
+          btnBaru.setAttribute('aria-label', 'Mulai dari 1');
+      }
+
+      return quill;
+  }
+
+
+  // Mengambil jumlah nomor dari daftar sebelumnya
+  function hitungNomorSebelumnya(quill, daftarAktif) {
+      const root = quill.root;
+
+      const semuaDaftar = Array.from(
+          root.querySelectorAll('ol')
+      );
+
+      let daftarSebelumnya = null;
+
+      for (const daftar of semuaDaftar) {
+          if (daftar === daftarAktif) {
+              break;
+          }
+
+          // Hanya menghitung daftar bernomor yang tidak berada
+          // di dalam daftar lain (bukan subdaftar).
+          if (!daftar.parentElement.closest('ol')) {
+              daftarSebelumnya = daftar;
+          }
+      }
+
+      if (!daftarSebelumnya) {
+          return 0;
+      }
+
+      // Hitung item tingkat pertama saja.
+      const jumlah = Array.from(daftarSebelumnya.children)
+          .filter(function (elemen) {
+              return elemen.tagName === 'LI';
+          }).length;
+
+      // Menghormati atribut start apabila daftar sebelumnya
+      // sudah pernah dilanjutkan dari nomor tertentu.
+      const angkaAwal = parseInt(
+          daftarSebelumnya.getAttribute('start') || '1',
+          10
+      );
+
+      return angkaAwal + jumlah - 1;
+  }
+
+
+  // Mengambil elemen daftar tempat kursor berada
+  function ambilDaftarAktif(quill, indeks) {
+      const [baris] = quill.getLine(indeks);
+
+      if (!baris || !baris.domNode) {
+          return null;
+      }
+
+      const node = baris.domNode;
+
+      if (node.tagName === 'LI') {
+          return node.parentElement;
+      }
+
+      return node.closest('ol');
+  }
+
+
+  // Mengatur nomor awal sekaligus tampilan nomor di editor
+  function aturNomorAwal(daftar, nomorAwal) {
+      if (!daftar) return;
+
+      daftar.setAttribute('start', String(nomorAwal));
+
+      // Quill menggunakan CSS counter untuk daftar bernomor.
+      // Reset counter agar nomor tampil sesuai nomor awal.
+      daftar.style.counterReset = `list-0 ${nomorAwal - 1}`;
+  }
+
+
+  // Melanjutkan nomor daftar sebelumnya
+  function lanjutkanNomor(quill) {
+      const range = quill.getSelection();
+
+      if (!range) {
+          alert('Klik terlebih dahulu pada baris yang ingin diberi nomor.');
+          return;
+      }
+
+      // Ambil posisi awal baris yang sedang dipilih
+      const [line] = quill.getLine(range.index);
+
+      if (!line) return;
+
+      const indexBaris = quill.getIndex(line);
+
+      // Ubah hanya baris aktif menjadi daftar bernomor
+      quill.formatLine(indexBaris, 1, 'list', 'ordered');
+
+      // Tunggu sampai Quill memperbarui struktur HTML
+      setTimeout(() => {
+          const [lineAktif] = quill.getLine(indexBaris);
+
+          if (!lineAktif || !lineAktif.domNode) return;
+
+          const itemAktif = lineAktif.domNode;
+          const daftarAktif = itemAktif.closest('ol');
+
+          if (!daftarAktif) return;
+
+          // Hitung item bernomor sebelum baris aktif.
+          // Paragraf biasa tidak ikut dihitung.
+          const semuaItem = Array.from(
+              quill.root.querySelectorAll('li[data-list="ordered"]')
+          );
+
+          let nomorBerikutnya = 1;
+
+          for (const item of semuaItem) {
+              if (item === itemAktif) break;
+              nomorBerikutnya++;
+          }
+
+          // Atur angka awal daftar ini tanpa mengubah paragraf lain
+          daftarAktif.style.counterReset =
+              `list-0 ${nomorBerikutnya - 1}`;
+
+          // Sinkronkan hasil HTML ke textarea tersembunyi
+          const dataEditor = Object.values(editorProgram).find(
+              data => data.quill === quill
+          );
+
+          if (dataEditor) {
+              dataEditor.input.value = quill.root.innerHTML;
+          }
+      }, 0);
+  }
+
+  // Memulai daftar baru dari angka 1
+  function mulaiNomorDariSatu(quill) {
+      const range = quill.getSelection(true);
+
+      if (!range) return;
+
+      quill.formatLine(range.index, 1, 'list', 'ordered');
+
+      setTimeout(function () {
+          const daftarAktif = ambilDaftarAktif(quill, range.index);
+
+          if (!daftarAktif || daftarAktif.tagName !== 'OL') {
+              return;
+          }
+
+          aturNomorAwal(daftarAktif, 1);
+
+          quill.focus();
+          quill.setSelection(range.index, 0, 'silent');
+      }, 0);
+  }
+
+  // Editor modal Tambah.
+  buatEditor('editor-deskripsi', 'input-deskripsi');
+  buatEditor('editor-materi', 'input-materi');
+  buatEditor('editor-keuntungan', 'input-keuntungan');
+  buatEditor('editor-syarat', 'input-syarat');
+
+  // Editor modal Ubah.
+  buatEditor('edit-editor-deskripsi', 'edit-input-deskripsi');
+  buatEditor('edit-editor-materi', 'edit-input-materi');
+  buatEditor('edit-editor-keuntungan', 'edit-input-keuntungan');
+  buatEditor('edit-editor-syarat', 'edit-input-syarat');
+
+  // Mengisi editor saat membuka form Ubah.
+  function isiEditor(idEditor, isi) {
+    const item = editorProgram[idEditor];
+    if (!item) return;
+
+    const teks = isi || '';
+
+    item.quill.setText('');
+
+    if (!teks) return;
+
+    // Konten baru berupa HTML dari Quill.
+    if (/<(p|h[1-6]|ol|ul|li|strong|em|u|blockquote|a|br)\b/i.test(teks)) {
+      item.quill.clipboard.dangerouslyPasteHTML(teks);
+    } else {
+      // Mempertahankan teks lama yang belum memakai HTML.
+      item.quill.setText(teks);
+    }
+  }
+
+  // Sinkronisasi editor ke textarea sebelum form dikirim.
+  function sinkronkanEditor(form) {
+    const textarea = form.querySelectorAll('textarea[name]');
+
+    textarea.forEach(function (input) {
+      const pasangan = Object.values(editorProgram).find(function (item) {
+        return item.input === input;
+      });
+
+      if (pasangan) {
+        console.log(pasangan.quill.root.innerHTML);
+        input.value = pasangan.quill.root.innerHTML;
+      }
+    });
+  }
+
+  // Modal Tambah.
+  const modalTambah = document.getElementById('modalTambah');
+  const formTambah = document.getElementById('formTambah');
+  const btnBukaTambah = document.getElementById('btnBukaTambah');
+
+  btnBukaTambah.addEventListener('click', function () {
+    modalTambah.classList.add('tampil');
+  });
+
+  window.tutupModalTambah = function () {
+    modalTambah.classList.remove('tampil');
+  };
+
+  modalTambah.addEventListener('click', function (event) {
+    if (event.target === modalTambah) {
+      window.tutupModalTambah();
+    }
+  });
+
+  formTambah.addEventListener('submit', function () {
+    sinkronkanEditor(formTambah);
+  });
+
+  // Modal Ubah.
+  const modalEdit = document.getElementById('modalEdit');
+  const formEdit = document.getElementById('formEdit');
+
+  window.bukaModalEdit = function (btn) {
+    const data = btn.dataset;
+
+    formEdit.action = `/admin/program/edit/${encodeURIComponent(data.id)}`;
+
+    document.getElementById('edit-nama').value = data.nama || '';
+    document.getElementById('edit-deskripsi_singkat').value = data.deskripsi_singkat || '';
+
+    document.getElementById('edit-jadwal').value = data.jadwal || '';
+    document.getElementById('edit-metode').value = data.metode || '';
+
+    document.getElementById('edit-nilai').value = data.nilai || '';
+    document.getElementById('edit-satuan').value = data.satuan || '';
+
+    isiEditor('edit-editor-deskripsi', data.deskripsi);
+    isiEditor('edit-editor-materi', data.materi);
+    isiEditor('edit-editor-keuntungan', data.keuntungan);
+    isiEditor('edit-editor-syarat', data.syarat);
+
+    modalEdit.classList.add('tampil');
+  };
+
+  window.tutupModalEdit = function () {
+    modalEdit.classList.remove('tampil');
+  };
+
+  modalEdit.addEventListener('click', function (event) {
+    if (event.target === modalEdit) {
+      window.tutupModalEdit();
+    }
+  });
+
+  formEdit.addEventListener('submit', function () {
+    sinkronkanEditor(formEdit);
+  });
+
+  // Pencarian program.
+  const cari = document.getElementById('cariProgram');
+  const daftarBaris = document.querySelectorAll('.baris-program');
+
+  cari.addEventListener('input', function () {
+    const kata = cari.value.toLowerCase().trim();
+
+    daftarBaris.forEach(function (baris) {
+      const teks = baris.textContent.toLowerCase();
+      baris.style.display = teks.includes(kata) ? '' : 'none';
+    });
+  });
+
+  // Tutup modal dengan tombol Escape.
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      window.tutupModalTambah();
+      window.tutupModalEdit();
+    }
   });
 });
-
-// Modal Tambah
-const modalTambah = document.getElementById('modalTambah');
-document.getElementById('btnBukaTambah').addEventListener('click', () => modalTambah.classList.add('tampil'));
-function tutupModalTambah() { modalTambah.classList.remove('tampil'); }
-modalTambah.addEventListener('click', e => { if (e.target === modalTambah) tutupModalTambah(); });
-
-// Modal Edit
-const modalEdit = document.getElementById('modalEdit');
-function bukaModalEdit(btn) {
-  document.getElementById('formEdit').action = `/admin/program/edit/${btn.dataset.id}`;
-  document.getElementById('edit-nama').value = btn.dataset.nama;
-  document.getElementById('edit-deskripsi').value = btn.dataset.deskripsi;
-  document.getElementById('edit-nilai').value = btn.dataset.nilai;
-  document.getElementById('edit-satuan').value = btn.dataset.satuan;
-  modalEdit.classList.add('tampil');
-}
-function tutupModalEdit() { modalEdit.classList.remove('tampil'); }
-modalEdit.addEventListener('click', e => { if (e.target === modalEdit) tutupModalEdit(); });
 </script>
+
 {% endblock %}

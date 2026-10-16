@@ -1,0 +1,585 @@
+{% extends "base.html" %}
+{% block title %}{{ program.nama }} — BestOne Education{% endblock %}
+
+{%- macro format_teks(isi) -%}
+  {% if isi %}
+    {{ isi|safe }}
+  {% endif %}
+{%- endmacro -%}
+
+{% block isi %}
+<section class="dp-section">
+  <div class="dp-bg-orb dp-orb-1"></div>
+  <div class="dp-bg-orb dp-orb-2"></div>
+  <div class="dp-container">
+    <header class="dp-hero">
+      {% if program.kategori %}
+      <span class="dp-kategori">{{ program.kategori }}</span>
+      {% endif %}
+      <h1 class="dp-judul">{{ program.nama }}</h1>
+      <div class="dp-meta-bar">
+        {% if program.durasi_nilai and program.durasi_satuan %}
+        <div class="dp-meta-item">
+          <i class="fa-solid fa-clock"></i>
+          <span>{{ program.durasi_nilai }} {{ program.durasi_satuan }}</span>
+        </div>
+        {% endif %}
+        {% if program.level %}
+        <div class="dp-meta-item">
+          <i class="fa-solid fa-signal"></i>
+          <span>{{ program.level }}</span>
+        </div>
+        {% endif %}
+        {% if program.biaya %}
+        <div class="dp-meta-item">
+          <i class="fa-solid fa-tag"></i>
+          <span>{{ program.biaya }}</span>
+        </div>
+        {% endif %}
+      </div>
+      {% if program.deskripsi_singkat %}
+      <p class="dp-deskripsi-singkat">{{ program.deskripsi_singkat }}</p>
+      {% endif %}
+      <div class="dp-aksi-atas">
+        <a href="{{ url_for('form.pilih_program', kode=program.kode) }}" class="dp-btn-utama">
+          Daftar Program Ini
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <a href="#detail-lengkap" class="dp-btn-sekunder">
+          Pelajari Lebih Lanjut
+          <i class="fa-solid fa-chevron-down"></i>
+        </a>
+      </div>
+    </header>
+
+    <div class="dp-konten" id="detail-lengkap">
+      {% if program.deskripsi %}
+      <article class="dp-kartu">
+        <div class="dp-kartu-header">
+          <div class="dp-icon-bungkus dp-icon-maroon">
+            <i class="fa-solid fa-book-open"></i>
+          </div>
+          <div>
+            <h2>Tentang Program</h2>
+            <p>Informasi lengkap pembelajaran</p>
+          </div>
+        </div>
+        <div class="dp-teks ql-editor">
+          {{ format_teks(program.deskripsi) }}
+        </div>
+      </article>
+      {% endif %}
+
+      {% if program.materi %}
+      <article class="dp-kartu">
+        <div class="dp-kartu-header">
+          <div class="dp-icon-bungkus dp-icon-hijau">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div>
+            <h2>Materi Pembelajaran</h2>
+            <p>Apa saja yang akan dipelajari</p>
+          </div>
+        </div>
+        <div class="dp-daftar-materi ql-editor">
+          {{ format_teks(program.materi) }}
+        </div>
+      </article>
+      {% endif %}
+
+      {% if program.keuntungan %}
+      <article class="dp-kartu">
+        <div class="dp-kartu-header">
+          <div class="dp-icon-bungkus dp-icon-emas">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <div>
+            <h2>Hasil & Keuntungan</h2>
+            <p>Apa yang Anda dapatkan</p>
+          </div>
+        </div>
+        <div class="dp-daftar-keuntungan ql-editor">
+          {{ format_teks(program.keuntungan) }}
+        </div>
+      </article>
+      {% endif %}
+
+      {% if program.jadwal or program.metode or program.sesi %}
+      <article class="dp-kartu">
+        <div class="dp-kartu-header">
+          <div class="dp-icon-bungkus dp-icon-biru">
+            <i class="fa-solid fa-calendar-days"></i>
+          </div>
+          <div>
+            <h2>Jadwal & Metode Belajar</h2>
+            <p>Sistem pembelajaran yang diterapkan</p>
+          </div>
+        </div>
+        <div class="dp-info-grid">
+          {% if program.jadwal %}
+          <div class="dp-info-item">
+            <h3><i class="fa-solid fa-clock"></i> Jadwal</h3>
+            <p>{{ program.jadwal }}</p>
+          </div>
+          {% endif %}
+          {% if program.metode %}
+          <div class="dp-info-item">
+            <h3><i class="fa-solid fa-chalkboard-teacher"></i> Metode</h3>
+            <p>{{ program.metode }}</p>
+          </div>
+          {% endif %}
+          {% if program.sesi %}
+          <div class="dp-info-item">
+            <h3><i class="fa-solid fa-hourglass-half"></i> Sesi</h3>
+            <p>{{ program.sesi }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </article>
+      {% endif %}
+
+      {% if program.syarat %}
+      <article class="dp-kartu">
+        <div class="dp-kartu-header">
+          <div class="dp-icon-bungkus dp-icon-abu">
+            <i class="fa-solid fa-file-circle-check"></i>
+          </div>
+          <div>
+            <h2>Syarat Pendaftaran</h2>
+            <p>Yang perlu diperhatikan</p>
+          </div>
+        </div>
+        <div class="dp-syarat ql-editor">
+          {{ format_teks(program.syarat) }}
+        </div>
+      </article>
+      {% endif %}
+
+      <div class="dp-aksi-bawah">
+        <div class="dp-cta-kartu">
+          <h3>Siap Memulai Belajar?</h3>
+          <p>Bergabunglah bersama kami dan tingkatkan kemampuan bahasa Inggris Anda.</p>
+          <a href="{{ url_for('form.pilih_program', kode=program.kode) }}" class="dp-btn-utama dp-btn-besar">
+            Daftar Sekarang
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<link
+    href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
+    rel="stylesheet"
+>
+<style>
+.dp-section {
+  --dp-maroon: #991E32;
+  --dp-maroon-lembut: #fef2f4;
+  --dp-maroon-gelap: #7A1828;
+  --dp-hijau: #10b981;
+  --dp-hijau-lembut: #ecfdf5;
+  --dp-emas: #f59e0b;
+  --dp-emas-lembut: #fffbeb;
+  --dp-biru: #3b82f6;
+  --dp-biru-lembut: #eff6ff;
+  --dp-abu: #6b7280;
+  --dp-abu-lembut: #f3f4f6;
+  --dp-teks: #1f2937;
+  --dp-teks-lembut: #6b7280;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  padding: 100px 20px 80px;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(153,30,50,.04), transparent 45%),
+    linear-gradient(180deg, #fffafb 0%, #ffffff 100%);
+  font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif;
+}
+.dp-bg-orb {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.dp-orb-1 {
+  width: 320px;
+  height: 320px;
+  top: 60px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(153,30,50,.06), transparent 60%);
+}
+.dp-orb-2 {
+  width: 240px;
+  height: 240px;
+  bottom: 100px;
+  left: -80px;
+  background: radial-gradient(circle, rgba(16,185,129,.05), transparent 60%);
+}
+.dp-container {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+}
+.dp-hero {
+  text-align: center;
+  padding: 30px 10px 50px;
+}
+.dp-kategori {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--dp-maroon-lembut);
+  color: var(--dp-maroon);
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+}
+.dp-judul {
+  font-size: clamp(30px, 6vw, 44px);
+  font-weight: 850;
+  color: var(--dp-teks);
+  margin: 0 0 18px;
+  line-height: 1.2;
+}
+.dp-meta-bar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-bottom: 20px;
+}
+.dp-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--dp-teks-lembut);
+  font-size: 13px;
+  font-weight: 600;
+}
+.dp-meta-item i {
+  color: var(--dp-maroon);
+  font-size: 15px;
+}
+.dp-deskripsi-singkat {
+  max-width: 560px;
+  margin: 0 auto 30px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--dp-teks-lembut);
+}
+.dp-aksi-atas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.dp-btn-utama {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--dp-maroon), var(--dp-maroon-gelap));
+  color: #fff !important;
+  border-radius: 12px;
+  font-weight: 800;
+  text-decoration: none !important;
+  box-shadow: 0 10px 25px rgba(153,30,50,.25);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.dp-btn-utama:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(153,30,50,.3);
+}
+.dp-btn-besar {
+  padding: 16px 36px;
+  font-size: 16px;
+}
+.dp-btn-sekunder {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: var(--dp-teks) !important;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none !important;
+  transition: all .25s ease;
+}
+.dp-btn-sekunder:hover {
+  border-color: var(--dp-maroon);
+  color: var(--dp-maroon) !important;
+}
+.dp-konten {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.dp-kartu {
+  background: #fff;
+  border: 1px solid #f3e9ec;
+  border-radius: 20px;
+  padding: 28px 30px;
+  box-shadow: 0 8px 30px rgba(99,28,45,.04);
+  transition: transform .25s ease;
+}
+.dp-kartu:hover {
+  transform: translateY(-2px);
+}
+.dp-kartu-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.dp-icon-bungkus {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.dp-icon-maroon {
+  background: var(--dp-maroon-lembut);
+  color: var(--dp-maroon);
+}
+.dp-icon-hijau {
+  background: var(--dp-hijau-lembut);
+  color: var(--dp-hijau);
+}
+.dp-icon-emas {
+  background: var(--dp-emas-lembut);
+  color: var(--dp-emas);
+}
+.dp-icon-biru {
+  background: var(--dp-biru-lembut);
+  color: var(--dp-biru);
+}
+.dp-icon-abu {
+  background: var(--dp-abu-lembut);
+  color: var(--dp-abu);
+}
+.dp-kartu-header h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--dp-teks);
+}
+.dp-kartu-header p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--dp-teks-lembut);
+}
+
+/* === Gaya Daftar — Sesuai HTML dari Quill === */
+/* === Gaya Daftar — Sesuai HTML dari Quill === */
+.dp-teks, .dp-daftar-materi, .dp-daftar-keuntungan, .dp-syarat {
+  color: #374151;
+  line-height: 1.7;
+  font-size: 15px;
+}
+.dp-teks p,
+.dp-daftar-materi p,
+.dp-daftar-keuntungan p,
+.dp-syarat p {
+    margin: 0;
+    line-height: 1.7;
+}
+
+.dp-teks strong, .dp-daftar-materi strong, .dp-daftar-keuntungan strong, .dp-syarat strong {
+  font-weight: 700;
+  color: #1f2937;
+}
+.dp-teks em, .dp-daftar-materi em, .dp-daftar-keuntungan em, .dp-syarat em {
+  font-style: italic;
+}
+
+
+
+/* Daftar Poin <ul> */
+
+.dp-teks ul,
+.dp-daftar-materi ul,
+.dp-daftar-keuntungan ul,
+.dp-syarat ul {
+    margin: 0 !important;
+    padding-left: 30px !important;
+    list-style-type: disc !important;
+    display: block !important;
+}
+
+.dp-teks ul li,
+.dp-daftar-materi ul li,
+.dp-daftar-keuntungan ul li,
+.dp-syarat ul li {
+    display: list-item !important;
+    list-style: disc !important;
+    list-style-position: outside !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.7 !important;
+}
+
+.dp-teks ul li::marker,
+.dp-daftar-materi ul li::marker,
+.dp-daftar-keuntungan ul li::marker,
+.dp-syarat ul li::marker {
+  color: #991E32 !important;
+  font-size: 16px;
+}
+.dp-teks ul li::marker,
+.dp-daftar-materi ul li::marker,
+.dp-daftar-keuntungan ul li::marker,
+.dp-syarat ul li::marker {
+  color: #991E32;
+}
+
+.dp-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+}
+.dp-info-item h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 750;
+  color: var(--dp-teks);
+}
+.dp-info-item h3 i {
+  color: var(--dp-maroon);
+  font-size: 15px;
+}
+.dp-info-item p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--dp-teks-lembut);
+  line-height: 1.7;
+}
+.dp-aksi-bawah {
+  margin-top: 10px;
+}
+.dp-cta-kartu {
+  background: linear-gradient(135deg, #fef2f4, #fff);
+  border: 1px solid #f9d6de;
+  border-radius: 20px;
+  padding: 32px 28px;
+  text-align: center;
+}
+.dp-cta-kartu h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 850;
+  color: var(--dp-maroon);
+}
+.dp-cta-kartu p {
+  margin: 0 0 22px;
+  color: var(--dp-teks-lembut);
+  font-size: 14px;
+}
+@media (max-width: 640px) {
+  .dp-section {
+    padding: 80px 15px 60px;
+  }
+  .dp-kartu {
+    padding: 22px 18px;
+  }
+  .dp-aksi-atas {
+    flex-direction: column;
+  }
+  .dp-btn-utama, .dp-btn-sekunder {
+    width: 100%;
+    justify-content: center;
+  }
+  .dp-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Menyamakan format konten detail dengan editor Quill */
+.dp-teks.ql-editor,
+.dp-daftar-materi.ql-editor,
+.dp-daftar-keuntungan.ql-editor,
+.dp-syarat.ql-editor {
+    padding: 0 !important;
+    min-height: 0;
+    height: auto;
+    overflow: visible;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    line-height: 1.7;
+    font-family: inherit;
+    font-size: 15px;
+    color: #374151;
+    white-space: normal !important;
+}
+
+/* Paragraf rapat; Enter kosong tetap bisa terlihat */
+.dp-teks.ql-editor p,
+.dp-daftar-materi.ql-editor p,
+.dp-daftar-keuntungan.ql-editor p,
+.dp-syarat.ql-editor p {
+    margin: 0;
+    padding: 0;
+    line-height: 1.7;
+}
+
+/* Pertahankan indentasi paragraf dan subpoin */
+.dp-teks.ql-editor .ql-indent-1,
+.dp-daftar-materi.ql-editor .ql-indent-1,
+.dp-daftar-keuntungan.ql-editor .ql-indent-1,
+.dp-syarat.ql-editor .ql-indent-1 {
+    padding-left: 1.5em;
+}
+
+.dp-teks.ql-editor .ql-indent-2,
+.dp-daftar-materi.ql-editor .ql-indent-2,
+.dp-daftar-keuntungan.ql-editor .ql-indent-2,
+.dp-syarat.ql-editor .ql-indent-2 {
+    padding-left: 1.5em;
+}
+
+.dp-teks.ql-editor .ql-indent-3,
+.dp-daftar-materi.ql-editor .ql-indent-3,
+.dp-daftar-keuntungan.ql-editor .ql-indent-3,
+.dp-syarat.ql-editor .ql-indent-3 {
+    padding-left: 9em;
+}
+
+.ql-editor li.ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 3.5em !important;
+}
+
+/* Daftar tetap rapat tanpa jarak otomatis */
+.dp-teks.ql-editor ol,
+.dp-teks.ql-editor ul,
+.dp-daftar-materi.ql-editor ol,
+.dp-daftar-materi.ql-editor ul,
+.dp-daftar-keuntungan.ql-editor ol,
+.dp-daftar-keuntungan.ql-editor ul,
+.dp-syarat.ql-editor ol,
+.dp-syarat.ql-editor ul {
+    margin: 0;
+    padding-left: 0;
+}
+
+.dp-teks.ql-editor li,
+.dp-daftar-materi.ql-editor li,
+.dp-daftar-keuntungan.ql-editor li,
+.dp-syarat.ql-editor li {
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 1.7;
+}
+
+</style>
+{% endblock %}

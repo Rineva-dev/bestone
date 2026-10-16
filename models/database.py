@@ -17,9 +17,16 @@ class ProgramKursus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     kode = db.Column(db.String(5), unique=True, nullable=False)
     nama = db.Column(db.String(100), nullable=False)
+    kategori = db.Column(db.String(100))
+    deskripsi_singkat = db.Column(db.String(255))
     deskripsi = db.Column(db.Text)
+    materi = db.Column(db.Text)
+    keuntungan = db.Column(db.Text)
+    jadwal = db.Column(db.String(200))
+    metode = db.Column(db.String(100))
+    syarat = db.Column(db.Text)
     durasi_nilai = db.Column(db.Integer)
-    durasi_satuan = db.Column(db.String(20))
+    durasi_satuan = db.Column(db.String(30))
     dibuat_pada = db.Column(db.DateTime, default=db.func.now())
 
     # Fungsi buat kode otomatis
@@ -100,6 +107,15 @@ class Periode(db.Model):
             return sekarang <= self.selesai
         # Tidak ada tanggal
         return False
+
+    @staticmethod
+    def buat_kode_otomatis(nama):
+        # Contoh: "Kelas Bahasa Inggris Pemula" → "kelas-bahasa-inggris-pemula"
+        import re
+        kode = nama.lower()
+        kode = re.sub(r'[^a-z0-9\s-]', '', kode)
+        kode = re.sub(r'[\s-]+', '-', kode).strip('-')
+        return kode
 
 # ===== Model Pendaftar =====
 class Pendaftar(db.Model):

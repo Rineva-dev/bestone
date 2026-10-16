@@ -4,29 +4,970 @@
 {% block judul_halaman %}Dashboard{% endblock %}
 
 {% block isi %}
-<div class="kartu-biasa">
-  <h3>Selamat Datang! 👋</h3>
-  <p>Panel ini digunakan untuk mengelola semua konten dan data pendaftaran situs BestOne Education.</p>
-  <p class="petunjuk">Gunakan menu di sebelah kiri untuk membuka halaman lain.</p>
+
+<div class="bo-dashboard">
+
+  <!-- HEADER SAMBUTAN -->
+  <section class="bo-welcome">
+    <div class="bo-welcome-content">
+      <div class="bo-eyebrow">
+        <span class="bo-eyebrow-dot"></span>
+        ADMINISTRATION OVERVIEW
+      </div>
+
+      <h2>Selamat Datang Kembali! <span>👋</span></h2>
+
+      <p>
+        Pantau perkembangan BestOne Education dan kelola seluruh
+        aktivitas pendaftaran melalui satu dashboard.
+      </p>
+
+      <div class="bo-welcome-meta">
+        <span><i data-lucide="shield-check"></i> Management Workspace</span>
+        <span class="bo-meta-divider"></span>
+        <span><i data-lucide="activity"></i> Dashboard Administrasi</span>
+      </div>
+    </div>
+
+    <div class="bo-welcome-art" aria-hidden="true">
+      <div class="bo-art-circle bo-art-circle-one"></div>
+      <div class="bo-art-circle bo-art-circle-two"></div>
+
+      <div class="bo-art-icon">
+        <i data-lucide="graduation-cap"></i>
+      </div>
+
+      <div class="bo-art-float bo-art-float-top">
+        <i data-lucide="book-open-check"></i>
+      </div>
+
+      <div class="bo-art-float bo-art-float-bottom">
+        <i data-lucide="chart-no-axes-combined"></i>
+      </div>
+    </div>
+
+    <div class="bo-welcome-decoration"></div>
+  </section>
+
+
+  <!-- JUDUL STATISTIK -->
+  <div class="bo-section-heading">
+    <div>
+      <span class="bo-section-kicker">RINGKASAN DATA</span>
+      <h3>Statistik Dashboard</h3>
+      <p>Ringkasan data utama BestOne Education.</p>
+    </div>
+
+    <div class="bo-live-label">
+      <span></span>
+      Data Sistem
+    </div>
+  </div>
+
+
+  <!-- KARTU STATISTIK -->
+  <section class="bo-stat-grid">
+
+    <!-- TOTAL PENDAFTAR -->
+    <article class="bo-stat-card bo-stat-maroon">
+      <div class="bo-stat-top">
+        <div class="bo-stat-icon">
+          <i data-lucide="users"></i>
+        </div>
+        <span class="bo-stat-index">01</span>
+      </div>
+
+      <div class="bo-stat-body">
+        <p class="bo-stat-label">Total Pendaftar</p>
+        <h3 class="bo-stat-number">
+          {{ total_pendaftar or 0 }}
+        </h3>
+        <p class="bo-stat-description">
+          <i data-lucide="users-round"></i>
+          Seluruh data pendaftar
+        </p>
+      </div>
+
+      <div class="bo-stat-line"></div>
+    </article>
+
+
+    <!-- PENDAFTAR BULAN INI -->
+    <article class="bo-stat-card bo-stat-orange">
+      <div class="bo-stat-top">
+        <div class="bo-stat-icon">
+          <i data-lucide="calendar-days"></i>
+        </div>
+        <span class="bo-stat-index">02</span>
+      </div>
+
+      <div class="bo-stat-body">
+        <p class="bo-stat-label">Pendaftar Bulan Ini</p>
+        <h3 class="bo-stat-number">
+          {{ pendaftar_bulan_ini or 0 }}
+        </h3>
+        <p class="bo-stat-description">
+          <i data-lucide="calendar-check"></i>
+          Pendaftaran bulanan
+        </p>
+      </div>
+
+      <div class="bo-stat-line"></div>
+    </article>
+
+
+    <!-- PROGRAM KURSUS -->
+    <article class="bo-stat-card bo-stat-blue">
+      <div class="bo-stat-top">
+        <div class="bo-stat-icon">
+          <i data-lucide="book-open"></i>
+        </div>
+        <span class="bo-stat-index">03</span>
+      </div>
+
+      <div class="bo-stat-body">
+        <p class="bo-stat-label">Program Kursus</p>
+        <h3 class="bo-stat-number">
+          {{ total_program if total_program is not none else 3 }}
+        </h3>
+        <p class="bo-stat-description">
+          <i data-lucide="graduation-cap"></i>
+          Program pembelajaran
+        </p>
+      </div>
+
+      <div class="bo-stat-line"></div>
+    </article>
+
+
+    <!-- FOTO GALERI -->
+    <article class="bo-stat-card bo-stat-green">
+      <div class="bo-stat-top">
+        <div class="bo-stat-icon">
+          <i data-lucide="images"></i>
+        </div>
+        <span class="bo-stat-index">04</span>
+      </div>
+
+      <div class="bo-stat-body">
+        <p class="bo-stat-label">Foto Galeri</p>
+        <h3 class="bo-stat-number">
+          {{ total_foto or 0 }}
+        </h3>
+        <p class="bo-stat-description">
+          <i data-lucide="image"></i>
+          Dokumentasi kegiatan
+        </p>
+      </div>
+
+      <div class="bo-stat-line"></div>
+    </article>
+
+  </section>
+
+
+  <!-- PANEL INFORMASI -->
+  <section class="bo-bottom-grid">
+
+    <div class="bo-info-panel">
+      <div class="bo-panel-icon bo-panel-icon-maroon">
+        <i data-lucide="layout-dashboard"></i>
+      </div>
+
+      <div class="bo-panel-content">
+        <span class="bo-panel-label">WORKSPACE</span>
+        <h3>Semua dalam Satu Tempat</h3>
+        <p>
+          Kelola data pendaftaran, program kursus, periode pendaftaran,
+          dan galeri melalui menu navigasi di sebelah kiri.
+        </p>
+      </div>
+
+      <div class="bo-panel-watermark">
+        <i data-lucide="layers-3"></i>
+      </div>
+    </div>
+
+    <div class="bo-info-panel bo-info-panel-soft">
+      <div class="bo-panel-icon bo-panel-icon-green">
+        <i data-lucide="lightbulb"></i>
+      </div>
+
+      <div class="bo-panel-content">
+        <span class="bo-panel-label">ADMIN TIPS</span>
+        <h3>Pastikan Data Selalu Terbarui</h3>
+        <p>
+          Periksa periode pendaftaran, program yang dibuka, dan
+          informasi kontak agar calon peserta mendapatkan informasi
+          yang tepat.
+        </p>
+      </div>
+
+      <div class="bo-panel-watermark">
+        <i data-lucide="sparkles"></i>
+      </div>
+    </div>
+
+  </section>
+
 </div>
 
-<div class="grid-statistik">
-  <div class="kartu-statistik">
-    <p class="label">Total Pendaftar</p>
-    <p class="angka">{{ total_pendaftar or 0 }}</p>
-  </div>
-  <div class="kartu-statistik">
-    <p class="label">Bulan Ini</p>
-    <p class="angka">{{ pendaftar_bulan_ini or 0 }}</p>
-  </div>
-  <div class="kartu-statistik">
-    <p class="label">Program Aktif</p>
-    <p class="angka">{{ total_program or 3 }}</p>
-  </div>
-  <div class="kartu-statistik">
-    <p class="label">Foto Galeri</p>
-    <p class="angka">{{ total_foto or 0 }}</p>
-  </div>
-</div>
+
+<style>
+/* =====================================================
+   BESTONE EDUCATION — PREMIUM ADMIN DASHBOARD
+   CSS diisolasi dengan prefix bo-dashboard
+===================================================== */
+
+.bo-dashboard {
+  --bo-primary: #991e32;
+  --bo-primary-dark: #741628;
+  --bo-primary-soft: #fff0f2;
+  --bo-text: #211b20;
+  --bo-muted: #817680;
+  --bo-border: #eee8ec;
+  --bo-surface: #ffffff;
+
+  width: 100%;
+  min-width: 0;
+  color: var(--bo-text);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  animation: boFadeIn .55s ease both;
+}
+
+.bo-dashboard *,
+.bo-dashboard *::before,
+.bo-dashboard *::after {
+  box-sizing: border-box;
+}
+
+.bo-dashboard svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.8;
+}
+
+/* WELCOME BANNER */
+
+.bo-welcome {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 235px;
+  margin-bottom: 34px;
+  padding: 36px 40px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(153, 30, 50, .12);
+  border-radius: 25px;
+  background:
+    radial-gradient(
+      circle at 88% 15%,
+      rgba(255, 180, 191, .24),
+      transparent 27%
+    ),
+    linear-gradient(115deg, #ffffff 0%, #fff9fa 52%, #f9edf0 100%);
+  box-shadow:
+    0 12px 35px rgba(65, 25, 38, .045),
+    inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+.bo-welcome-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1500px;
+}
+
+.bo-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 18px;
+  color: var(--bo-primary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.bo-eyebrow-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bo-primary);
+  box-shadow: 0 0 0 4px rgba(153, 30, 50, .10);
+}
+
+.bo-welcome h2 {
+  margin: 0 0 12px;
+  color: #2a1920;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -1.2px;
+}
+
+.bo-welcome h2 span {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: boWave 2.5s ease-in-out 1;
+}
+
+.bo-welcome-content > p {
+  max-width: 1500px;
+  margin: 0;
+  color: #786c73;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.bo-welcome-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-top: 25px;
+}
+
+.bo-welcome-meta span:not(.bo-meta-divider) {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #75636c;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.bo-welcome-meta svg {
+  width: 15px;
+  height: 15px;
+  color: var(--bo-primary);
+}
+
+.bo-meta-divider {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #c6a7b0;
+}
+
+/* ILUSTRASI BANNER */
+
+.bo-welcome-art {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex: 0 0 190px;
+  width: 190px;
+  height: 175px;
+  place-items: center;
+}
+
+.bo-art-circle {
+  position: absolute;
+  border: 1px solid rgba(153, 30, 50, .13);
+  border-radius: 50%;
+}
+
+.bo-art-circle-one {
+  width: 165px;
+  height: 165px;
+}
+
+.bo-art-circle-two {
+  width: 125px;
+  height: 125px;
+  border-style: dashed;
+}
+
+.bo-art-icon {
+  position: relative;
+  display: grid;
+  width: 90px;
+  height: 90px;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 28px;
+  color: #fff;
+  background: linear-gradient(145deg, #b82d48, #761528);
+  box-shadow:
+    0 20px 40px rgba(121, 22, 42, .25),
+    inset 0 1px 0 rgba(255,255,255,.22);
+  transform: rotate(-7deg);
+}
+
+.bo-art-icon svg {
+  width: 42px;
+  height: 42px;
+  stroke-width: 1.5;
+}
+
+.bo-art-float {
+  position: absolute;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #f1e5e9;
+  border-radius: 14px;
+  color: var(--bo-primary);
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 10px 25px rgba(70, 25, 40, .10);
+}
+
+.bo-art-float-top {
+  top: 5px;
+  right: 7px;
+}
+
+.bo-art-float-bottom {
+  bottom: 6px;
+  left: 3px;
+  color: #26836b;
+}
+
+.bo-welcome-decoration {
+  position: absolute;
+  z-index: -1;
+  right: -100px;
+  bottom: -160px;
+  width: 310px;
+  height: 310px;
+  border: 1px solid rgba(153, 30, 50, .08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* SECTION HEADING */
+
+.bo-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.bo-section-kicker {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--bo-primary);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.bo-section-heading h3 {
+  margin: 0;
+  color: #2a2026;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.6px;
+}
+
+.bo-section-heading p {
+  margin: 7px 0 0;
+  color: var(--bo-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.bo-live-label {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid #e8eee9;
+  border-radius: 30px;
+  color: #527263;
+  background: #f8fcf9;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.bo-live-label > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2da879;
+  box-shadow: 0 0 0 4px rgba(45, 168, 121, .10);
+}
+
+/* STATISTICS GRID */
+
+.bo-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.bo-stat-card {
+  --bo-accent: #991e32;
+  --bo-accent-bg: #fff0f2;
+
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 205px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px 21px 19px;
+  overflow: hidden;
+  border: 1px solid var(--bo-border);
+  border-radius: 19px;
+  background: var(--bo-surface);
+  box-shadow: 0 5px 20px rgba(42, 24, 34, .025);
+  transition:
+    transform .28s ease,
+    box-shadow .28s ease,
+    border-color .28s ease;
+  animation: boCardIn .6s ease both;
+}
+
+.bo-stat-card:nth-child(2) {
+  animation-delay: .06s;
+}
+
+.bo-stat-card:nth-child(3) {
+  animation-delay: .12s;
+}
+
+.bo-stat-card:nth-child(4) {
+  animation-delay: .18s;
+}
+
+.bo-stat-card:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--bo-accent) 25%, white);
+  box-shadow: 0 16px 35px rgba(42, 24, 34, .075);
+}
+
+.bo-stat-maroon {
+  --bo-accent: #991e32;
+  --bo-accent-bg: #fff0f2;
+}
+
+.bo-stat-orange {
+  --bo-accent: #bd7132;
+  --bo-accent-bg: #fff5e9;
+}
+
+.bo-stat-blue {
+  --bo-accent: #566bc4;
+  --bo-accent-bg: #eff2ff;
+}
+
+.bo-stat-green {
+  --bo-accent: #218469;
+  --bo-accent-bg: #eaf8f1;
+}
+
+.bo-stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bo-stat-icon {
+  display: grid;
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--bo-accent) 10%, white);
+  border-radius: 14px;
+  color: var(--bo-accent);
+  background: var(--bo-accent-bg);
+  transition: transform .25s ease;
+}
+
+.bo-stat-card:hover .bo-stat-icon {
+  transform: scale(1.06) rotate(-4deg);
+}
+
+.bo-stat-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.bo-stat-index {
+  color: #c5bac1;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.bo-stat-body {
+  margin-top: 22px;
+}
+
+.bo-stat-label {
+  margin: 0 0 7px;
+  color: #80747c;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.bo-stat-number {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #292027;
+  font-size: clamp(28px, 2.5vw, 35px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1.3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bo-stat-description {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 11px 0 0;
+  color: #9a8e96;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.bo-stat-description svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--bo-accent);
+}
+
+.bo-stat-line {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--bo-accent),
+    color-mix(in srgb, var(--bo-accent) 12%, white)
+  );
+  transform: scaleX(.25);
+  transform-origin: left;
+  transition: transform .3s ease;
+}
+
+.bo-stat-card:hover .bo-stat-line {
+  transform: scaleX(1);
+}
+
+/* INFORMATION PANELS */
+
+.bo-bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.bo-info-panel {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid var(--bo-border);
+  border-radius: 19px;
+  background: #fff;
+  transition: box-shadow .25s ease, transform .25s ease;
+}
+
+.bo-info-panel:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(42, 24, 34, .05);
+}
+
+.bo-info-panel-soft {
+  background: linear-gradient(135deg, #fff 0%, #f8fcf9 100%);
+}
+
+.bo-panel-icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  place-items: center;
+  border-radius: 14px;
+}
+
+.bo-panel-icon-maroon {
+  color: var(--bo-primary);
+  background: #fff0f2;
+}
+
+.bo-panel-icon-green {
+  color: #218469;
+  background: #eaf8f1;
+}
+
+.bo-panel-content {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.bo-panel-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #9a8d95;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.bo-panel-content h3 {
+  margin: 0 0 9px;
+  color: #2b2027;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.bo-panel-content p {
+  max-width: 390px;
+  margin: 0;
+  color: #827680;
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+.bo-panel-watermark {
+  position: absolute;
+  right: -12px;
+  bottom: -17px;
+  color: rgba(153, 30, 50, .045);
+  pointer-events: none;
+}
+
+.bo-panel-watermark svg {
+  width: 100px;
+  height: 100px;
+  stroke-width: 1;
+}
+
+.bo-info-panel-soft .bo-panel-watermark {
+  color: rgba(33, 132, 105, .06);
+}
+
+/* ANIMATIONS */
+
+@keyframes boFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes boCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes boWave {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(15deg); }
+  40% { transform: rotate(-8deg); }
+  60% { transform: rotate(12deg); }
+  80% { transform: rotate(-3deg); }
+}
+
+/* TABLET */
+
+@media (max-width: 1100px) {
+  .bo-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bo-stat-card {
+    min-height: 190px;
+  }
+
+  .bo-welcome {
+    padding: 30px;
+  }
+
+  .bo-welcome-art {
+    flex-basis: 155px;
+    width: 155px;
+  }
+
+  .bo-art-circle-one {
+    width: 145px;
+    height: 145px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 640px) {
+  .bo-welcome {
+    min-height: auto;
+    padding: 25px 21px;
+    border-radius: 20px;
+  }
+
+  .bo-welcome-content {
+    max-width: 100%;
+  }
+
+  .bo-welcome h2 {
+    font-size: 25px;
+    letter-spacing: -.8px;
+  }
+
+  .bo-welcome-content > p {
+    font-size: 12px;
+  }
+
+  .bo-welcome-meta {
+    gap: 10px;
+    margin-top: 19px;
+  }
+
+  .bo-welcome-meta span:not(.bo-meta-divider) {
+    font-size: 10px;
+  }
+
+  .bo-welcome-meta span:nth-of-type(2) {
+    display: none;
+  }
+
+  .bo-welcome-art {
+    display: none;
+  }
+
+  .bo-section-heading {
+    align-items: flex-start;
+    margin-bottom: 17px;
+  }
+
+  .bo-section-heading h3 {
+    font-size: 19px;
+  }
+
+  .bo-section-heading p {
+    max-width: 230px;
+    font-size: 11px;
+  }
+
+  .bo-live-label {
+    padding: 8px 9px;
+    font-size: 9px;
+  }
+
+  .bo-stat-grid {
+    gap: 11px;
+  }
+
+  .bo-stat-card {
+    min-height: 176px;
+    padding: 16px 14px 15px;
+    border-radius: 16px;
+  }
+
+  .bo-stat-icon {
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+  }
+
+  .bo-stat-icon svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .bo-stat-body {
+    margin-top: 17px;
+  }
+
+  .bo-stat-label {
+    font-size: 10px;
+  }
+
+  .bo-stat-number {
+    font-size: 29px;
+  }
+
+  .bo-stat-description {
+    align-items: flex-start;
+    font-size: 9px;
+  }
+
+  .bo-bottom-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin-top: 21px;
+  }
+
+  .bo-info-panel {
+    gap: 13px;
+    padding: 20px 17px;
+    border-radius: 16px;
+  }
+
+  .bo-panel-icon {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+  }
+
+  .bo-panel-content h3 {
+    font-size: 13px;
+  }
+
+  .bo-panel-content p {
+    font-size: 10px;
+  }
+}
+
+/* HP KECIL */
+
+@media (max-width: 360px) {
+  .bo-stat-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bo-stat-card {
+    min-height: 160px;
+  }
+
+  .bo-live-label {
+    display: none;
+  }
+}
+
+/* AKSESIBILITAS */
+
+@media (prefers-reduced-motion: reduce) {
+  .bo-dashboard *,
+  .bo-dashboard *::before,
+  .bo-dashboard *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
 
 {% endblock %}

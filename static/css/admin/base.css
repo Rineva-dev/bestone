@@ -21,7 +21,7 @@ body {
 /* ===== SIDEBAR KIRI ===== */
 .sidebar {
   width: 260px;
-  background: linear-gradient(180deg, #6b1428 0%, #991e32 100%);
+      background: linear-gradient(180deg, #650e22 0%, #49000c 100%);
   color: white;
   position: fixed;
   top: 0;
