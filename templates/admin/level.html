@@ -17,26 +17,27 @@
   </div>
 
   <div class="program-toolbar">
-      <div class="pencarian">
-        <span class="ikon-cari">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="10.8" cy="10.8" r="6.8"></circle>
-            <path d="m16 16 4.5 4.5"></path>
-          </svg>
-        </span>
-        <input
-          type="text"
-          id="cariLevel"
-          placeholder="Cari kode, nama level..."
-          class="form-input"
-          autocomplete="off"
-        >
-      </div>
+    <div class="pencarian">
+      <span class="ikon-cari">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8"></circle>
+          <path d="m16 16 4.5 4.5"></path>
+        </svg>
+      </span>
+      <input
+        type="text"
+        id="cariLevel"
+        placeholder="Cari kode, nama level..."
+        class="form-input"
+        autocomplete="off"
+      >
     </div>
+
     <button class="btn-utama" id="btnBukaTambah" type="button">
       <span class="ikon-tambah">+</span>
       Tambah Level
     </button>
+  </div>
 </div>
 
 <!-- Kartu Tabel -->
@@ -1271,6 +1272,201 @@
   }
 }
 
+/* =========================================
+   RESPONSIVE HALAMAN LEVEL
+========================================= */
+
+@media (max-width: 640px) {
+  .bar-atas {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 17px;
+    margin-bottom: 20px;
+  }
+
+  .program-heading {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .program-heading h2 {
+    font-size: 23px;
+    line-height: 1.35;
+  }
+
+  .program-heading p {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .program-toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .pencarian {
+    width: 100%;
+    max-width: none;
+  }
+
+  .pencarian .form-input {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  .program-toolbar > .btn-utama {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  /* Kartu tabel */
+  .program-card {
+    border-radius: 12px;
+  }
+
+  .program-card-header {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .program-card-header h3 {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .program-card-header p {
+    font-size: 11px;
+  }
+
+  .program-total {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  /* Tabel tetap dapat digeser secara horizontal */
+  .tabel-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #tabelLevel {
+    min-width: 680px;
+  }
+
+  #tabelLevel thead th,
+  #tabelLevel tbody td {
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .tombol-aksi {
+    gap: 6px;
+  }
+
+  .btn-sm {
+    min-width: 55px;
+    min-height: 34px;
+    padding: 7px 9px;
+    font-size: 11px;
+  }
+
+  /* Modal */
+  .modal-latar {
+    align-items: center;
+    padding: 12px;
+  }
+
+  .modal-kotak {
+    width: 100%;
+    max-width: 540px;
+    max-height: calc(100dvh - 24px);
+    border-radius: 15px;
+  }
+
+  .modal-judul {
+    gap: 12px;
+    padding: 19px 18px 16px;
+  }
+
+  .modal-judul h3 {
+    font-size: 18px;
+  }
+
+  .modal-heading-info p {
+    font-size: 11px;
+  }
+
+  .modal-body {
+    padding: 19px 18px;
+  }
+
+  .form-section-heading {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+
+  .form-modal-level .form-kelompok {
+    margin-bottom: 18px;
+  }
+
+  .form-modal-level .form-input {
+    font-size: 16px;
+  }
+
+  .form-modal-level textarea.form-input {
+    min-height: 100px;
+  }
+
+  .modal-tombol {
+    gap: 8px;
+    padding: 13px 18px 16px;
+  }
+
+  .modal-tombol button {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+}
+
+/* HP kecil */
+@media (max-width: 380px) {
+  .program-heading h2 {
+    font-size: 21px;
+  }
+
+  .program-card-header {
+    flex-wrap: wrap;
+  }
+
+  .program-total {
+    align-self: flex-start;
+  }
+
+  .modal-judul {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .modal-body {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .modal-tombol {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+}
 </style>
 
 <script>
