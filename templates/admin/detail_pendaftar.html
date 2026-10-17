@@ -215,9 +215,28 @@
         </div>
       </div>
 
-      <div class="dg-total-pendaftar">
-        <span class="dg-total-dot"></span>
-        {{ daftar_pendaftar|length }} pendaftar terdaftar
+      <div class="dg-pendaftar-header-actions">
+
+        <div class="dg-total-pendaftar">
+          <span class="dg-total-dot"></span>
+          {{ daftar_pendaftar|length }} pendaftar terdaftar
+        </div>
+
+        <a
+          href="{{ url_for('admin_pendaftar.tambah_manual', periode_id=periode.id) }}"
+          class="dg-btn-tambah-pendaftar"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M12 5v14M5 12h14"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span>Tambah Pendaftar</span>
+        </a>
+
       </div>
     </div>
 
@@ -301,7 +320,10 @@
                 <div class="dg-aksi-group">
 
                   <!-- DETAIL -->
-                  <a href="#"
+                  <a href="{{ url_for(
+                                'admin_pendaftar.detail_data',
+                                pendaftar_id=p.id
+                            ) }}"
                     class="dg-btn-aksi dg-btn-detail"
                     title="Detail gelombang"
                     aria-label="Detail gelombang">
@@ -316,15 +338,22 @@
                   </a>
 
                   <!-- EDIT: GANTI ROUTE SESUAI ROUTE EDIT PENDAFTAR -->
-                  <a href="#"
+                  <a href="{{ url_for(
+                      'admin_pendaftar.edit_pendaftar',
+                      pendaftar_id=p.id
+                  ) }}"
                     class="dg-btn-aksi dg-btn-edit"
                     title="Edit pendaftar"
                     aria-label="Edit pendaftar">
+
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="m14 6 4 4M4 20l4.2-.9L19 8.3a2.1 2.1 0 0 0-3-3L5.2 16.1 4 20Z"
-                            stroke="currentColor" stroke-width="1.7"
-                            stroke-linecap="round" stroke-linejoin="round"/>
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"/>
                     </svg>
+
                     <span>Edit</span>
                   </a>
 
@@ -1447,6 +1476,56 @@
   color: #8f1728;
   background: #ffe1e4;
   border-color: #f2c1c8;
+}
+
+.dg-pendaftar-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dg-btn-tambah-pendaftar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 10px 15px;
+  border: 1px solid #991e32;
+  border-radius: 11px;
+  color: #fff;
+  background: linear-gradient(135deg, #a9253b, #7b1729);
+  box-shadow: 0 5px 14px rgba(153, 30, 50, .15);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.dg-btn-tambah-pendaftar svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.dg-btn-tambah-pendaftar:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(153, 30, 50, .22);
+}
+
+@media (max-width: 640px) {
+  .dg-pendaftar-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dg-btn-tambah-pendaftar {
+    padding: 9px 12px;
+    font-size: 11px;
+  }
 }
 </style>
 

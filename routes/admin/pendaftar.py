@@ -151,3 +151,307 @@ def simpan_ubah_periode(periode_id):
     
     db.session.commit()
     return redirect(url_for('admin_pendaftar.pendaftar'))
+
+# ===== TAMBAH PENDAFTAR SECARA MANUAL =====
+@pendaftar_bp.route(
+    '/pendaftar/tambah-manual/<int:periode_id>',
+    methods=['GET', 'POST']
+)
+def tambah_manual(periode_id):
+    cek = cek_login()
+    if cek:
+        return cek
+
+    periode = Periode.query.get_or_404(periode_id)
+
+    # Ambil program yang dibuka oleh gelombang ini
+    daftar_nama_program = [
+        nama.strip()
+        for nama in (periode.program_dibuka or '').split(',')
+        if nama.strip()
+    ]
+
+    daftar_program = ProgramKursus.query.filter(
+        ProgramKursus.nama.in_(daftar_nama_program)
+    ).order_by(ProgramKursus.nama.asc()).all()
+
+    # Ambil level yang dibuka oleh gelombang ini
+    daftar_nama_level = [
+        nama.strip()
+        for nama in (periode.level_dibuka or '').split(',')
+        if nama.strip()
+    ]
+
+    daftar_level = Level.query.filter(
+        Level.nama.in_(daftar_nama_level)
+    ).order_by(Level.nama.asc()).all()
+
+    if request.method == 'POST':
+        nama = request.form.get('nama', '').strip()
+        whatsapp = request.form.get('whatsapp', '').strip()
+        program = request.form.get('program', '').strip()
+        level = request.form.get('level', '').strip()
+
+        if not nama or not whatsapp or not program:
+            return render_template(
+                'admin/form_tambah_pendaftar.html',
+                halaman='pendaftar',
+                periode=periode,
+                daftar_program=daftar_program,
+                daftar_level=daftar_level,
+                error='Nama lengkap, WhatsApp, dan program wajib diisi.'
+            )
+
+        # Pastikan program memang dibuka pada gelombang ini
+        if program not in daftar_nama_program:
+            return render_template(
+                'admin/form_tambah_pendaftar.html',
+                halaman='pendaftar',
+                periode=periode,
+                daftar_program=daftar_program,
+                daftar_level=daftar_level,
+                error='Program tidak tersedia pada gelombang ini.'
+            )
+
+        # Pastikan level valid jika diisi
+        if level and level not in daftar_nama_level:
+            return render_template(
+                'admin/form_tambah_pendaftar.html',
+                halaman='pendaftar',
+                periode=periode,
+                daftar_program=daftar_program,
+                daftar_level=daftar_level,
+                error='Level tidak tersedia pada gelombang ini.'
+            )
+
+        tanggal_lahir = request.form.get('tanggal_lahir', '').strip()
+
+        try:
+            tanggal_lahir = (
+                datetime.strptime(tanggal_lahir, '%Y-%m-%d').date()
+                if tanggal_lahir else None
+            )
+        except ValueError:
+            return render_template(
+                'admin/ftambah_pendaftar.html',
+                halaman='pendaftar',
+                periode=periode,
+                daftar_program=daftar_program,
+                daftar_level=daftar_level,
+                error='Format tanggal lahir tidak valid.'
+            )
+
+        pendaftar_baru = Pendaftar(
+            periode_id=periode.id,
+            nama=nama,
+            whatsapp=whatsapp,
+            email=request.form.get('email', '').strip() or None,
+            alamat=request.form.get('alamat', '').strip() or None,
+            program=program,
+            level=level or None,
+            jenis_kelamin=request.form.get('jenis_kelamin') or None,
+            tempat_lahir=request.form.get('tempat_lahir', '').strip() or None,
+            tanggal_lahir=tanggal_lahir,
+            nomor_identitas=request.form.get('nomor_identitas', '').strip() or None,
+            telepon=request.form.get('telepon', '').strip() or None,
+            provinsi=request.form.get('provinsi', '').strip() or None,
+            kabupaten=request.form.get('kabupaten', '').strip() or None,
+            kecamatan=request.form.get('kecamatan', '').strip() or None,
+            kelurahan=request.form.get('kelurahan', '').strip() or None,
+            pendidikan=request.form.get('pendidikan') or None,
+            tujuan_belajar=request.form.get('tujuan_belajar') or None,
+            sumber_info=request.form.get('sumber_info') or None,
+            catatan=request.form.get('catatan', '').strip() or None,
+            status='Baru',
+            sudah_bayar=False
+        )
+
+        # Gunakan waktu pendaftaran yang dibuat oleh model
+        db.session.add(pendaftar_baru)
+        db.session.flush()
+
+        pendaftar_baru.id_pendaftar = Pendaftar.buat_id_pendaftar(
+            pendaftar_baru.program,
+            pendaftar_baru.waktu_daftar
+        )
+
+        db.session.commit()
+
+        return redirect(
+            url_for(
+                'admin_pendaftar.detail',
+                periode_id=periode.id
+            )
+        )
+
+    return render_template(
+        'admin/tambah_pendaftar.html',
+        halaman='pendaftar',
+        periode=periode,
+        daftar_program=daftar_program,
+        daftar_level=daftar_level
+    )
+
+@pendaftar_bp.route('/pendaftar/data/<int:pendaftar_id>')
+def detail_data(pendaftar_id):
+    cek = cek_login()
+    if cek:
+        return cek
+
+    pendaftar = Pendaftar.query.get_or_404(pendaftar_id)
+
+    return render_template(
+        'admin/detail_data_pendaftar.html',
+        halaman='pendaftar',
+        pendaftar=pendaftar
+    )
+
+# ===== EDIT DATA PENDAFTAR =====
+@pendaftar_bp.route(
+    '/pendaftar/edit/<int:pendaftar_id>',
+    methods=['GET', 'POST']
+)
+def edit_pendaftar(pendaftar_id):
+    cek = cek_login()
+    if cek:
+        return cek
+
+    p = Pendaftar.query.get_or_404(pendaftar_id)
+    periode = Periode.query.get_or_404(p.periode_id)
+
+    # Program dan level yang tersedia pada periode asal pendaftar
+    daftar_nama_program = [
+        nama.strip()
+        for nama in (periode.program_dibuka or '').split(',')
+        if nama.strip()
+    ]
+
+    daftar_program = ProgramKursus.query.filter(
+        ProgramKursus.nama.in_(daftar_nama_program)
+    ).order_by(ProgramKursus.nama.asc()).all()
+
+    daftar_nama_level = [
+        nama.strip()
+        for nama in (periode.level_dibuka or '').split(',')
+        if nama.strip()
+    ]
+
+    daftar_level = Level.query.filter(
+        Level.nama.in_(daftar_nama_level)
+    ).order_by(Level.nama.asc()).all()
+
+    if request.method == 'POST':
+        nama = request.form.get('nama', '').strip()
+        whatsapp = request.form.get('whatsapp', '').strip()
+        program = request.form.get('program', '').strip()
+        level = request.form.get('level', '').strip()
+
+        # Validasi data wajib
+        if not nama or not whatsapp or not program:
+            return render_template(
+                'admin/tambah_pendaftar.html',
+                halaman='pendaftar',
+                periode=periode,
+                daftar_program=daftar_program,
+                daftar_level=daftar_level,
+                pendaftar=p,
+                mode_edit=True,
+                error='Nama lengkap, WhatsApp, dan program wajib diisi.'
+            )
+
+        if program not in daftar_nama_program:
+            return render_template(
+                'admin/tambah_pendaftar.html',
+                halaman='pendaftar',
+                periode=periode,
+                daftar_program=daftar_program,
+                daftar_level=daftar_level,
+                pendaftar=p,
+                mode_edit=True,
+                error='Program tidak tersedia pada periode ini.'
+            )
+
+        if level and level not in daftar_nama_level:
+            return render_template(
+                'admin/tambah_pendaftar.html',
+                halaman='pendaftar',
+                periode=periode,
+                daftar_program=daftar_program,
+                daftar_level=daftar_level,
+                pendaftar=p,
+                mode_edit=True,
+                error='Level tidak tersedia pada periode ini.'
+            )
+
+        tanggal_lahir_str = request.form.get(
+            'tanggal_lahir', ''
+        ).strip()
+
+        try:
+            tanggal_lahir = (
+                datetime.strptime(
+                    tanggal_lahir_str, '%Y-%m-%d'
+                ).date()
+                if tanggal_lahir_str else None
+            )
+        except ValueError:
+            return render_template(
+                'admin/tambah_pendaftar.html',
+                halaman='pendaftar',
+                periode=periode,
+                daftar_program=daftar_program,
+                daftar_level=daftar_level,
+                pendaftar=p,
+                mode_edit=True,
+                error='Format tanggal lahir tidak valid.'
+            )
+
+        # Perbarui data pendaftar yang sudah ada
+        p.nama = nama
+        p.whatsapp = whatsapp
+        p.program = program
+        p.level = level or None
+
+        p.email = request.form.get('email', '').strip() or None
+        p.alamat = request.form.get('alamat', '').strip() or None
+        p.jenis_kelamin = request.form.get('jenis_kelamin') or None
+        p.tempat_lahir = (
+            request.form.get('tempat_lahir', '').strip() or None
+        )
+        p.tanggal_lahir = tanggal_lahir
+        p.nomor_identitas = (
+            request.form.get('nomor_identitas', '').strip() or None
+        )
+        p.telepon = request.form.get('telepon', '').strip() or None
+
+        p.provinsi = request.form.get('provinsi', '').strip() or None
+        p.kabupaten = request.form.get('kabupaten', '').strip() or None
+        p.kecamatan = request.form.get('kecamatan', '').strip() or None
+        p.kelurahan = request.form.get('kelurahan', '').strip() or None
+
+        p.pendidikan = request.form.get('pendidikan') or None
+        p.tujuan_belajar = request.form.get('tujuan_belajar') or None
+        p.sumber_info = request.form.get('sumber_info') or None
+        p.catatan = request.form.get('catatan', '').strip() or None
+
+        # Jangan mengubah periode_id, status, waktu_daftar,
+        # id_pendaftar, atau status pembayaran saat edit profil.
+
+        db.session.commit()
+
+        return redirect(
+            url_for(
+                'admin_pendaftar.detail',
+                periode_id=p.periode_id
+            )
+        )
+
+    return render_template(
+        'admin/tambah_pendaftar.html',
+        halaman='pendaftar',
+        periode=periode,
+        daftar_program=daftar_program,
+        daftar_level=daftar_level,
+        pendaftar=p,
+        mode_edit=True
+    )

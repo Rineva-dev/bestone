@@ -128,7 +128,7 @@
       <div class="bo-stat-body">
         <p class="bo-stat-label">Program Kursus</p>
         <h3 class="bo-stat-number">
-          {{ total_program if total_program is not none else 3 }}
+          {{ total_program | default(0, true) }}
         </h3>
         <p class="bo-stat-description">
           <i data-lucide="graduation-cap"></i>

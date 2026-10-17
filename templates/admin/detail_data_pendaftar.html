@@ -1,0 +1,847 @@
+
+{% extends "admin/base_admin.html" %}
+
+{% block judul %}Detail Pendaftar — BestOne{% endblock %}
+{% block judul_halaman %}Detail Pendaftar{% endblock %}
+
+{% block isi %}
+
+<div class="dp-page">
+
+    <!-- HEADER -->
+    <div class="dp-header">
+        <div class="dp-header-left">
+            <div>
+                <h2 class="dp-title">Detail Pendaftar</h2>
+                <p class="dp-subtitle">
+                    Informasi lengkap data pendaftar BestOne.
+                </p>
+            </div>
+        </div>
+
+        <a href="{{ url_for('admin_pendaftar.detail', periode_id=pendaftar.periode_id) }}"
+           class="dp-btn dp-btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M19 12H5M12 19L5 12L12 5"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
+            </svg>
+            Kembali ke Daftar
+        </a>
+    </div>
+
+    <!-- RINGKASAN PENDAFTAR -->
+    <section class="dp-profile-card">
+        <div class="dp-avatar">
+            {{ (pendaftar.nama or 'P')[0]|upper }}
+        </div>
+
+        <div class="dp-profile-info">
+            <h3>{{ pendaftar.nama or '-' }}</h3>
+
+            <div class="dp-profile-meta">
+                <span class="dp-id">
+                    ID: {{ pendaftar.id_pendaftar or 'Belum tersedia' }}
+                </span>
+
+                <span class="dp-meta-divider"></span>
+
+                <span>
+                    {{ pendaftar.program or 'Program belum ditentukan' }}
+                </span>
+            </div>
+
+            <div class="dp-badges">
+                <span class="dp-badge
+                    {% if pendaftar.status == 'Baru' %}
+                        dp-badge-new
+                    {% elif pendaftar.status == 'Diterima' %}
+                        dp-badge-success
+                    {% else %}
+                        dp-badge-neutral
+                    {% endif %}">
+                    {{ pendaftar.status or 'Belum ada status' }}
+                </span>
+
+                <span class="dp-badge
+                    {% if pendaftar.sudah_bayar %}
+                        dp-badge-paid
+                    {% else %}
+                        dp-badge-unpaid
+                    {% endif %}">
+                    {{ 'Sudah Bayar' if pendaftar.sudah_bayar else 'Belum Bayar' }}
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- INFORMASI GELOMBANG -->
+    <section class="dp-card dp-period-card">
+        <div class="dp-section-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="16" rx="2"
+                      stroke="currentColor" stroke-width="1.7"/>
+                <path d="M16 3V7M8 3V7M3 10H21"
+                      stroke="currentColor" stroke-width="1.7"
+                      stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div class="dp-period-info">
+            <span class="dp-label">Gelombang Pendaftaran</span>
+            <strong>
+                {{ pendaftar.periode.nama if pendaftar.periode else '-' }}
+            </strong>
+        </div>
+
+        <div class="dp-period-date">
+            <span class="dp-label">Waktu Pendaftaran</span>
+            <strong>
+                {% if pendaftar.waktu_daftar %}
+                    {{ pendaftar.waktu_daftar.strftime('%d-%m-%Y, %H:%M') }}
+                {% else %}
+                    -
+                {% endif %}
+            </strong>
+        </div>
+    </section>
+
+    <!-- IDENTITAS -->
+    <section class="dp-card">
+        <div class="dp-section-heading">
+            <div class="dp-section-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4"
+                            stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M4 21C4 16.6 7.6 13 12 13C16.4 13 20 16.6 20 21"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div>
+                <h3>Identitas Pendaftar</h3>
+                <p>Informasi pribadi calon peserta.</p>
+            </div>
+        </div>
+
+        <div class="dp-grid">
+            <div class="dp-field">
+                <span class="dp-label">Nama Lengkap</span>
+                <strong>{{ pendaftar.nama or '-' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Jenis Kelamin</span>
+                <strong>{{ pendaftar.jenis_kelamin or '-' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Tempat Lahir</span>
+                <strong>{{ pendaftar.tempat_lahir or '-' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Tanggal Lahir</span>
+                <strong>
+                    {% if pendaftar.tanggal_lahir %}
+                        {{ pendaftar.tanggal_lahir.strftime('%d-%m-%Y') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="dp-field dp-field-full">
+                <span class="dp-label">Nomor Identitas</span>
+                <strong>{{ pendaftar.nomor_identitas or '-' }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <!-- KONTAK -->
+    <section class="dp-card">
+        <div class="dp-section-heading">
+            <div class="dp-section-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M21 16.5V19.5C21 20.3 20.3 21 19.5 21C10.4 21 3 13.6 3 4.5C3 3.7 3.7 3 4.5 3H7.5C8.2 3 8.8 3.5 9 4.2L9.8 7.4C10 8 9.8 8.7 9.3 9.1L7.6 10.5C8.8 13 11 15.2 13.5 16.4L14.9 14.7C15.3 14.2 16 14 16.6 14.2L19.8 15C20.5 15.2 21 15.8 21 16.5Z"
+                          stroke="currentColor" stroke-width="1.6"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>
+                <h3>Informasi Kontak</h3>
+                <p>Informasi untuk menghubungi pendaftar.</p>
+            </div>
+        </div>
+
+        <div class="dp-grid">
+            <div class="dp-field">
+                <span class="dp-label">Nomor WhatsApp</span>
+                <strong>{{ pendaftar.whatsapp or '-' }}</strong>
+
+                {% if pendaftar.whatsapp %}
+                <a class="dp-inline-link"
+                   href="https://wa.me/{{ pendaftar.whatsapp|replace('+', '')|replace(' ', '')|replace('-', '')|replace('(', '')|replace(')', '') }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Buka WhatsApp
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M7 17L17 7M8 7H17V16"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Telepon Alternatif</span>
+                <strong>{{ pendaftar.telepon or '-' }}</strong>
+            </div>
+
+            <div class="dp-field dp-field-full">
+                <span class="dp-label">Alamat Email</span>
+                {% if pendaftar.email %}
+                    <a class="dp-email" href="mailto:{{ pendaftar.email }}">
+                        {{ pendaftar.email }}
+                    </a>
+                {% else %}
+                    <strong>-</strong>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- ALAMAT -->
+    <section class="dp-card">
+        <div class="dp-section-heading">
+            <div class="dp-section-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20 10C20 15 12 22 12 22S4 15 4 10C4 5.6 7.6 2 12 2C16.4 2 20 5.6 20 10Z"
+                          stroke="currentColor" stroke-width="1.7"/>
+                    <circle cx="12" cy="10" r="2.5"
+                            stroke="currentColor" stroke-width="1.7"/>
+                </svg>
+            </div>
+            <div>
+                <h3>Alamat Domisili</h3>
+                <p>Informasi alamat tempat tinggal pendaftar.</p>
+            </div>
+        </div>
+
+        <div class="dp-grid">
+            <div class="dp-field">
+                <span class="dp-label">Provinsi</span>
+                <strong>{{ pendaftar.provinsi or '-' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Kabupaten/Kota</span>
+                <strong>{{ pendaftar.kabupaten or '-' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Kecamatan</span>
+                <strong>{{ pendaftar.kecamatan or '-' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Desa/Kelurahan</span>
+                <strong>{{ pendaftar.kelurahan or '-' }}</strong>
+            </div>
+
+            <div class="dp-field dp-field-full">
+                <span class="dp-label">Alamat Lengkap</span>
+                <div class="dp-long-text">{{ pendaftar.alamat or '-' }}</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROGRAM KURSUS -->
+    <section class="dp-card">
+        <div class="dp-section-heading">
+            <div class="dp-section-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 5.5C4 4.7 4.7 4 5.5 4H20V18H5.5C4.7 18 4 18.7 4 19.5C4 20.3 4.7 21 5.5 21H20"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4 5.5V19.5M8 8H16M8 11H14"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div>
+                <h3>Program Kursus</h3>
+                <p>Informasi program yang dipilih pendaftar.</p>
+            </div>
+        </div>
+
+        <div class="dp-grid">
+            <div class="dp-field">
+                <span class="dp-label">Program</span>
+                <strong>{{ pendaftar.program or '-' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Level</span>
+                <strong>{{ pendaftar.level or '-' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Gelombang</span>
+                <strong>
+                    {{ pendaftar.periode.nama if pendaftar.periode else '-' }}
+                </strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Status Pembayaran</span>
+                <strong>
+                    {{ 'Sudah Bayar' if pendaftar.sudah_bayar else 'Belum Bayar' }}
+                </strong>
+            </div>
+        </div>
+    </section>
+
+    <!-- INFORMASI TAMBAHAN -->
+    <section class="dp-card">
+        <div class="dp-section-heading">
+            <div class="dp-section-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M8 4H6C4.9 4 4 4.9 4 6V20H20V6C20 4.9 19.1 4 18 4H16"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linejoin="round"/>
+                    <path d="M9 3H15V7H9V3ZM8 12H16M8 16H14"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>
+                <h3>Informasi Tambahan</h3>
+                <p>Informasi pendidikan dan kebutuhan belajar.</p>
+            </div>
+        </div>
+
+        <div class="dp-grid">
+            <div class="dp-field">
+                <span class="dp-label">Pendidikan Terakhir</span>
+                <strong>{{ pendaftar.pendidikan or '-' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Tujuan Belajar</span>
+                <strong>{{ pendaftar.tujuan_belajar or '-' }}</strong>
+            </div>
+
+            <div class="dp-field dp-field-full">
+                <span class="dp-label">Sumber Informasi</span>
+                <strong>{{ pendaftar.sumber_info or '-' }}</strong>
+            </div>
+
+            <div class="dp-field dp-field-full">
+                <span class="dp-label">Catatan</span>
+                <div class="dp-long-text">{{ pendaftar.catatan or '-' }}</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INFORMASI SISTEM -->
+    <section class="dp-card dp-system-card">
+        <h3>Informasi Pendaftaran</h3>
+
+        <div class="dp-grid">
+            <div class="dp-field">
+                <span class="dp-label">ID Database</span>
+                <strong>#{{ pendaftar.id }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">ID Pendaftar</span>
+                <strong>{{ pendaftar.id_pendaftar or 'Belum tersedia' }}</strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Waktu Daftar</span>
+                <strong>
+                    {% if pendaftar.waktu_daftar %}
+                        {{ pendaftar.waktu_daftar.strftime('%d-%m-%Y %H:%M:%S') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="dp-field">
+                <span class="dp-label">Status</span>
+                <strong>{{ pendaftar.status or '-' }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <div class="dp-bottom-action">
+        <a href="{{ url_for('admin_pendaftar.detail', periode_id=pendaftar.periode_id) }}"
+           class="dp-btn dp-btn-secondary">
+            Kembali ke Daftar Pendaftar
+        </a>
+    </div>
+
+</div>
+
+<style>
+.dp-page {
+    --dp-primary: #991e32;
+    --dp-text: #202632;
+    --dp-muted: #7b8492;
+    --dp-border: #e6e9ef;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 8px 0 30px;
+    color: var(--dp-text);
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.dp-page *,
+.dp-page *::before,
+.dp-page *::after {
+    box-sizing: border-box;
+}
+
+.dp-page .dp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.dp-page .dp-header-left {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.dp-page .dp-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border: 1px solid var(--dp-border);
+    border-radius: 12px;
+    color: #515b69;
+    background: #fff;
+    text-decoration: none;
+}
+
+.dp-page .dp-back:hover {
+    color: var(--dp-primary);
+    border-color: #d9a7b0;
+    background: #fff8f9;
+}
+
+.dp-page .dp-back svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.dp-page .dp-title {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 750;
+    line-height: 1.35;
+    letter-spacing: -.4px;
+}
+
+.dp-page .dp-subtitle {
+    margin: 5px 0 0;
+    color: var(--dp-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.dp-page .dp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 10px 14px;
+    border: 1px solid var(--dp-border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.dp-page .dp-btn svg {
+    display: block;
+    width: 17px;
+    height: 17px;
+}
+
+.dp-page .dp-btn-secondary {
+    color: #515b69;
+    background: #fff;
+}
+
+.dp-page .dp-btn-secondary:hover {
+    color: var(--dp-primary);
+    border-color: #d9a7b0;
+    background: #fff8f9;
+}
+
+.dp-page .dp-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px;
+    margin-bottom: 18px;
+    border: 1px solid #f0dce0;
+    border-radius: 16px;
+    background: linear-gradient(115deg, #fff7f8, #fff 80%);
+}
+
+.dp-page .dp-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 66px;
+    height: 66px;
+    flex: 0 0 66px;
+    border: 1px solid #efd4da;
+    border-radius: 18px;
+    color: var(--dp-primary);
+    background: #f8e8ec;
+    font-size: 27px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.dp-page .dp-profile-info {
+    min-width: 0;
+}
+
+.dp-page .dp-profile-info h3 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 750;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.dp-page .dp-profile-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+    color: var(--dp-muted);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.dp-page .dp-id {
+    color: var(--dp-primary);
+    font-weight: 700;
+}
+
+.dp-page .dp-meta-divider {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #b9bec8;
+}
+
+.dp-page .dp-badges {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.dp-page .dp-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.dp-page .dp-badge-new {
+    color: #875600;
+    background: #fff3cf;
+}
+
+.dp-page .dp-badge-success,
+.dp-page .dp-badge-paid {
+    color: #176c45;
+    background: #e2f6eb;
+}
+
+.dp-page .dp-badge-neutral {
+    color: #596273;
+    background: #edf0f4;
+}
+
+.dp-page .dp-badge-unpaid {
+    color: #a12a3d;
+    background: #fde9ec;
+}
+
+.dp-page .dp-card {
+    min-width: 0;
+    padding: 24px;
+    margin-bottom: 18px;
+    border: 1px solid var(--dp-border);
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(28, 36, 50, .025);
+}
+
+.dp-page .dp-period-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 19px 22px;
+    border-color: #f0dce0;
+    background: #fffafb;
+}
+
+.dp-page .dp-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 18px;
+    margin-bottom: 21px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.dp-page .dp-section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 12px;
+    color: var(--dp-primary);
+    background: #fbf0f2;
+}
+
+.dp-page .dp-section-icon svg {
+    display: block;
+    width: 21px;
+    height: 21px;
+}
+
+.dp-page .dp-section-heading h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.4;
+}
+
+.dp-page .dp-section-heading p {
+    margin: 4px 0 0;
+    color: var(--dp-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.dp-page .dp-period-info,
+.dp-page .dp-period-date {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.dp-page .dp-period-info {
+    flex: 1;
+    min-width: 150px;
+}
+
+.dp-page .dp-period-date {
+    min-width: 150px;
+}
+
+.dp-page .dp-label {
+    display: block;
+    color: var(--dp-muted);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.dp-page .dp-period-info strong,
+.dp-page .dp-period-date strong {
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.dp-page .dp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 23px 30px;
+}
+
+.dp-page .dp-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+    min-width: 0;
+}
+
+.dp-page .dp-field-full {
+    grid-column: 1 / -1;
+}
+
+.dp-page .dp-field > strong,
+.dp-page .dp-email {
+    color: #303847;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.dp-page .dp-email {
+    color: var(--dp-primary);
+    text-decoration: none;
+}
+
+.dp-page .dp-email:hover {
+    text-decoration: underline;
+}
+
+.dp-page .dp-inline-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 2px;
+    color: #16804f;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.dp-page .dp-inline-link:hover {
+    text-decoration: underline;
+}
+
+.dp-page .dp-inline-link svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+}
+
+.dp-page .dp-long-text {
+    width: 100%;
+    color: #303847;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.dp-page .dp-system-card {
+    background: #fafbfc;
+}
+
+.dp-page .dp-system-card > h3 {
+    margin: 0 0 22px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--dp-border);
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.dp-page .dp-bottom-action {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 2px;
+}
+
+@media (max-width: 650px) {
+    .dp-page .dp-title {
+        font-size: 20px;
+    }
+
+    .dp-page .dp-header {
+        align-items: flex-start;
+    }
+
+    .dp-page .dp-header > .dp-btn {
+        margin-left: 55px;
+    }
+
+    .dp-page .dp-profile-card {
+        align-items: flex-start;
+        gap: 13px;
+        padding: 18px;
+    }
+
+    .dp-page .dp-avatar {
+        width: 52px;
+        height: 52px;
+        flex-basis: 52px;
+        border-radius: 14px;
+        font-size: 22px;
+    }
+
+    .dp-page .dp-profile-info h3 {
+        font-size: 18px;
+    }
+
+    .dp-page .dp-card {
+        padding: 18px;
+    }
+
+    .dp-page .dp-grid {
+        gap: 19px 15px;
+    }
+
+    .dp-page .dp-period-date {
+        flex-basis: 100%;
+        padding-top: 12px;
+        border-top: 1px solid #f0dce0;
+    }
+}
+
+@media (max-width: 440px) {
+    .dp-page .dp-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 17px;
+    }
+
+    .dp-page .dp-field-full {
+        grid-column: auto;
+    }
+
+    .dp-page .dp-profile-card {
+        flex-direction: column;
+    }
+
+    .dp-page .dp-section-heading {
+        align-items: flex-start;
+    }
+}
+</style>
+
+{% endblock %}

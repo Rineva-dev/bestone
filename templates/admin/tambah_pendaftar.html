@@ -1,0 +1,1191 @@
+{% extends "admin/base_admin.html" %}
+
+{% block judul %}
+    {{ 'Edit Pendaftar' if mode_edit else 'Tambah Pendaftar' }} — BestOne
+{% endblock %}
+
+{% block judul_halaman %}
+    {{ 'Edit Pendaftar' if mode_edit else 'Tambah Pendaftar' }}
+{% endblock %}
+
+{% block isi %}
+
+<div class="tp-page">
+
+    <!-- HEADER -->
+    <div class="tp-header">
+        <div class="tp-header-left">
+            <a href="{{ url_for('admin_pendaftar.detail', periode_id=periode.id) }}"
+               class="tp-back-btn"
+               aria-label="Kembali ke daftar pendaftar">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M15 18L9 12L15 6"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+            </a>
+
+            <div>
+                <h2 class="tp-title">
+                    {{ 'Edit Data Pendaftar' if mode_edit else 'Tambah Pendaftar' }}
+                </h2>
+
+                <p class="tp-subtitle">
+                    {% if mode_edit %}
+                        Perbarui informasi pendaftar yang sudah terdaftar.
+                    {% else %}
+                        Tambahkan data pendaftar baru ke gelombang yang dipilih.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class="tp-period-badge">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="16" rx="2"
+                      stroke="currentColor" stroke-width="1.7"/>
+                <path d="M16 3V7M8 3V7M3 10H21"
+                      stroke="currentColor" stroke-width="1.7"
+                      stroke-linecap="round"/>
+            </svg>
+            <span>{{ periode.nama }}</span>
+        </div>
+    </div>
+
+    <!-- INFORMASI GELOMBANG -->
+    <div class="tp-period-card">
+        <div class="tp-period-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3L14.8 8.7L21 9.6L16.5 14L17.6 20.2L12 17.3L6.4 20.2L7.5 14L3 9.6L9.2 8.7L12 3Z"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linejoin="round"/>
+            </svg>
+        </div>
+
+        <div class="tp-period-info">
+            <span class="tp-period-label">Gelombang pendaftaran</span>
+            <strong>{{ periode.nama }}</strong>
+            <small>Data yang disimpan akan terhubung dengan gelombang ini.</small>
+        </div>
+    </div>
+
+    <!-- ERROR -->
+    {% if error %}
+    <div class="tp-alert tp-alert-error" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"
+                    stroke="currentColor" stroke-width="1.8"/>
+            <path d="M12 8V12M12 16H12.01"
+                  stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round"/>
+        </svg>
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    <!-- FORM -->
+    <form method="POST"
+        action="{% if mode_edit %}{{ url_for('admin_pendaftar.edit_pendaftar', pendaftar_id=pendaftar.id) }}{% else %}{{ url_for('admin_pendaftar.tambah_manual', periode_id=periode.id) }}{% endif %}"
+        id="formTambahPendaftar"
+        class="tp-form">
+
+        <!-- IDENTITAS -->
+        <section class="tp-card">
+            <div class="tp-section-heading">
+                <div class="tp-section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4"
+                                stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M4 21C4 16.6 7.6 13 12 13C16.4 13 20 16.6 20 21"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Identitas Pendaftar</h3>
+                    <p>Masukkan informasi identitas calon peserta.</p>
+                </div>
+            </div>
+
+            <div class="tp-grid">
+                <div class="tp-field tp-field-full">
+                    <label for="tp-nama">
+                        Nama Lengkap <span class="tp-required">*</span>
+                    </label>
+                    <input type="text"
+                           id="tp-nama"
+                           name="nama"
+                           placeholder="Masukkan nama lengkap"
+                           value="{{ request.form.get('nama', pendaftar.nama if mode_edit else '') }}"
+                           maxlength="100"
+                           autocomplete="name"
+                           required>
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-jenis-kelamin">Jenis Kelamin</label>
+                    <select id="tp-jenis-kelamin" name="jenis_kelamin">
+                        <option value="">Pilih jenis kelamin</option>
+                        <option value="Laki-laki"
+                            {% if request.form.get('jenis_kelamin', pendaftar.jenis_kelamin if mode_edit else '') == 'Laki-laki' %}selected{% endif %}>
+                            Laki-laki
+                        </option>
+
+                        <option value="Perempuan"
+                            {% if request.form.get('jenis_kelamin', pendaftar.jenis_kelamin if mode_edit else '') == 'Perempuan' %}selected{% endif %}>
+                            Perempuan
+                        </option>
+                    </select>
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-nomor-identitas">Nomor Identitas</label>
+                    <input type="text"
+                           id="tp-nomor-identitas"
+                           name="nomor_identitas"
+                           placeholder="Nomor identitas"
+                           value="{{ request.form.get('nomor_identitas', pendaftar.nomor_identitas if mode_edit else '') }}"
+                           maxlength="50">
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-tempat-lahir">Tempat Lahir</label>
+                    <input type="text"
+                           id="tp-tempat-lahir"
+                           name="tempat_lahir"
+                           placeholder="Kota tempat lahir"
+                           value="{{ request.form.get('tempat_lahir', pendaftar.tempat_lahir if mode_edit else '') }}"
+                           maxlength="100">
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-tanggal-lahir">Tanggal Lahir</label>
+                    <input type="date"
+                           id="tp-tanggal-lahir"
+                           name="tanggal_lahir"
+                           value="{{ request.form.get('tanggal_lahir', pendaftar.tanggal_lahir.strftime('%Y-%m-%d') if mode_edit and pendaftar.tanggal_lahir else '') }}">
+                </div>
+            </div>
+        </section>
+
+        <!-- KONTAK -->
+        <section class="tp-card">
+            <div class="tp-section-heading">
+                <div class="tp-section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M21 16.5V19.5C21 20.3 20.3 21 19.5 21C10.4 21 3 13.6 3 4.5C3 3.7 3.7 3 4.5 3H7.5C8.2 3 8.8 3.5 9 4.2L9.8 7.4C10 8 9.8 8.7 9.3 9.1L7.6 10.5C8.8 13 11 15.2 13.5 16.4L14.9 14.7C15.3 14.2 16 14 16.6 14.2L19.8 15C20.5 15.2 21 15.8 21 16.5Z"
+                              stroke="currentColor" stroke-width="1.6"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Informasi Kontak</h3>
+                    <p>Kontak yang dapat digunakan untuk menghubungi pendaftar.</p>
+                </div>
+            </div>
+
+            <div class="tp-grid">
+                <div class="tp-field">
+                    <label for="tp-whatsapp">
+                        Nomor WhatsApp <span class="tp-required">*</span>
+                    </label>
+                    <input type="tel"
+                           id="tp-whatsapp"
+                           name="whatsapp"
+                           placeholder="Contoh: 081234567890"
+                           value="{{ request.form.get('whatsapp', pendaftar.whatsapp if mode_edit else '') }}"
+                           maxlength="20"
+                           autocomplete="tel"
+                           required>
+                    <small class="tp-help">Gunakan nomor WhatsApp yang aktif.</small>
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-telepon">Nomor Telepon Alternatif</label>
+                    <input type="tel"
+                           id="tp-telepon"
+                           name="telepon"
+                           placeholder="Nomor telepon alternatif"
+                           value="{{ request.form.get('telepon', pendaftar.telepon if mode_edit else '') }}"
+                           maxlength="20">
+                </div>
+
+                <div class="tp-field tp-field-full">
+                    <label for="tp-email">Email</label>
+                    <input type="email"
+                           id="tp-email"
+                           name="email"
+                           placeholder="nama@email.com"
+                           value="{{ request.form.get('email', pendaftar.email if mode_edit else '') }}"
+                           maxlength="100"
+                           autocomplete="email">
+                </div>
+            </div>
+        </section>
+
+        <!-- ALAMAT -->
+        <section class="tp-card">
+            <div class="tp-section-heading">
+                <div class="tp-section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M20 10C20 15 12 22 12 22S4 15 4 10C4 5.6 7.6 2 12 2C16.4 2 20 5.6 20 10Z"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <circle cx="12" cy="10" r="2.5"
+                                stroke="currentColor" stroke-width="1.7"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Alamat Domisili</h3>
+                    <p>Pilih wilayah secara berurutan dari provinsi hingga kelurahan/desa.</p>
+                </div>
+            </div>
+
+            <div class="tp-grid">
+                <div class="tp-field">
+                    <label for="tp-provinsi">
+                        Provinsi <span class="tp-required">*</span>
+                    </label>
+                    <select id="tp-provinsi" name="provinsi" data-selected="{{ request.form.get('provinsi', pendaftar.provinsi if mode_edit else '') }}" required>
+                        <option value="">— Pilih Provinsi —</option>
+                    </select>
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-kabupaten">
+                        Kabupaten/Kota <span class="tp-required">*</span>
+                    </label>
+                    <select id="tp-kabupaten" name="kabupaten" data-selected="{{ request.form.get('kabupaten', pendaftar.kabupaten if mode_edit else '') }}" required disabled>
+                        <option value="">— Pilih Kabupaten/Kota —</option>
+                    </select>
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-kecamatan">
+                        Kecamatan <span class="tp-required">*</span>
+                    </label>
+                    <select id="tp-kecamatan" name="kecamatan" data-selected="{{ request.form.get('kecamatan', pendaftar.kecamatan if mode_edit else '') }}" required disabled>
+                        <option value="">— Pilih Kecamatan —</option>
+                    </select>
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-kelurahan">
+                        Desa/Kelurahan <span class="tp-required">*</span>
+                    </label>
+                    <select id="tp-kelurahan" name="kelurahan" data-selected="{{ request.form.get('kelurahan', pendaftar.kelurahan if mode_edit else '') }}" required disabled>
+                        <option value="">— Pilih Desa/Kelurahan —</option>
+                    </select>
+                </div>
+
+                <div class="tp-field tp-field-full">
+                    <label for="tp-alamat">Alamat Lengkap</label>
+                    <textarea id="tp-alamat"
+                              name="alamat"
+                              rows="3"
+                              placeholder="Nama jalan, nomor rumah, RT/RW, dusun, atau patokan alamat">{{ request.form.get('alamat', pendaftar.alamat if mode_edit else '') }}</textarea>
+                </div>
+            </div>
+            <p class="tp-help tp-region-help" id="tp-region-status" aria-live="polite"></p>
+        </section>
+
+        <!-- PROGRAM -->
+        <section class="tp-card">
+            <div class="tp-section-heading">
+                <div class="tp-section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M4 5.5C4 4.7 4.7 4 5.5 4H20V18H5.5C4.7 18 4 18.7 4 19.5C4 20.3 4.7 21 5.5 21H20"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M4 5.5V19.5M8 8H16M8 11H14"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Program Pendaftaran</h3>
+                    <p>Pilih program dan level yang tersedia pada gelombang ini.</p>
+                </div>
+            </div>
+
+            <div class="tp-grid">
+                <div class="tp-field">
+                    <label for="tp-program">
+                        Program Kursus <span class="tp-required">*</span>
+                    </label>
+                    <select id="tp-program" name="program" data-selected="{{ request.form.get('program', pendaftar.program if mode_edit else '') }}" required>
+                        <option value="">Pilih program kursus</option>
+                        {% for p in daftar_program %}
+                        <option value="{{ p.nama }}"
+                            {% if request.form.get('program', pendaftar.program if mode_edit else '') == p.nama %}selected{% endif %}>
+                            {{ p.nama }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    {% if not daftar_program %}
+                    <small class="tp-warning">
+                        Belum ada program yang cocok dengan program yang dibuka pada gelombang ini.
+                    </small>
+                    {% endif %}
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-level">Level</label>
+                    <select id="tp-level" name="level" data-selected="{{ request.form.get('level', pendaftar.level if mode_edit else '') }}">
+                        <option value="">Pilih level (opsional)</option>
+                        {% for l in daftar_level %}
+                        <option value="{{ l.nama }}"
+                            {% if request.form.get('level', pendaftar.level if mode_edit else '') == l.nama %}selected{% endif %}>
+                            {{ l.nama }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <small class="tp-help">Pilih jika pendaftar memiliki level tertentu.</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- INFORMASI TAMBAHAN -->
+        <section class="tp-card">
+            <div class="tp-section-heading">
+                <div class="tp-section-icon">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 3V21M3 12H21"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                        <rect x="4" y="4" width="16" height="16" rx="3"
+                              stroke="currentColor" stroke-width="1.7"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Informasi Tambahan</h3>
+                    <p>Lengkapi informasi pendidikan dan kebutuhan belajar pendaftar.</p>
+                </div>
+            </div>
+
+            <div class="tp-grid">
+                <div class="tp-field">
+                    <label for="tp-pendidikan">Pendidikan Terakhir</label>
+                    <select id="tp-pendidikan" name="pendidikan" data-selected="{{ request.form.get('pendidikan', pendaftar.pendidikan if mode_edit else '') }}">
+                        <option value="">Pilih pendidikan</option>
+                        {% for item in ['SD', 'SMP', 'SMA/SMK', 'Diploma', 'S1', 'S2', 'S3', 'Lainnya'] %}
+                        <option value="{{ item }}"
+                            {% if request.form.get('pendidikan', pendaftar.pendidikan if mode_edit else '') == item %}selected{% endif %}>
+                            {{ item }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="tp-field">
+                    <label for="tp-tujuan-belajar">Tujuan Belajar</label>
+                    <select id="tp-tujuan-belajar" name="tujuan_belajar" data-selected="{{ request.form.get('tujuan_belajar', pendaftar.tujuan_belajar if mode_edit else '') }}">
+                        <option value="">Pilih tujuan belajar</option>
+                        {% for item in ['Sekolah/Kuliah', 'Pekerjaan', 'Karier', 'Bisnis', 'Kebutuhan pribadi', 'Lainnya'] %}
+                        <option value="{{ item }}"
+                            {% if request.form.get('tujuan_belajar', pendaftar.tujuan_belajar if mode_edit else '') == item %}selected{% endif %}>
+                            {{ item }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="tp-field tp-field-full">
+                    <label for="tp-sumber-info">Sumber Informasi</label>
+                    <select id="tp-sumber-info" name="sumber_info" data-selected="{{ request.form.get('sumber_info', pendaftar.sumber_info if mode_edit else '') }}">
+                        <option value="">Mengetahui BestOne dari mana?</option>
+                        {% for item in ['Instagram', 'Facebook', 'TikTok', 'WhatsApp', 'Teman/Keluarga', 'Google', 'Website', 'Lainnya'] %}
+                        <option value="{{ item }}"
+                            {% if request.form.get('sumber_info', pendaftar.sumber_info if mode_edit else '') == item %}selected{% endif %}>
+                            {{ item }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="tp-field tp-field-full">
+                    <label for="tp-catatan">Catatan</label>
+                    <textarea id="tp-catatan"
+                              name="catatan"
+                              rows="4"
+                              placeholder="Tambahkan catatan jika diperlukan">{{ request.form.get('catatan', pendaftar.catatan if mode_edit else '') }}</textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER FORM -->
+        <div class="tp-form-footer">
+            <p class="tp-required-note">
+                <span class="tp-required">*</span>
+                Wajib diisi
+            </p>
+
+            <div class="tp-form-actions">
+                <a href="{{ url_for('admin_pendaftar.detail', periode_id=periode.id) }}"
+                   class="tp-btn tp-btn-cancel">
+                    Batal
+                </a>
+
+                <button type="submit" class="tp-btn tp-btn-submit" id="tp-submit">
+                    {% if mode_edit %}
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M5 12.5L10 17L19 7"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"/>
+                        </svg>
+                        <span>Simpan Perubahan</span>
+                    {% else %}
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 5V19M5 12H19"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"/>
+                        </svg>
+                        <span>Simpan Pendaftar</span>
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<style>
+/* =========================================================
+   TAMBAH PENDAFTAR — STYLE KHUSUS HALAMAN INI
+   Seluruh selector dibatasi dalam .tp-page
+   ========================================================= */
+
+.tp-page {
+    --tp-primary: #991e32;
+    --tp-primary-dark: #781729;
+    --tp-text: #202632;
+    --tp-muted: #78808d;
+    --tp-border: #e5e8ee;
+    --tp-surface: #ffffff;
+    --tp-soft: #faf7f8;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 8px 0 30px;
+    color: var(--tp-text);
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.tp-page *,
+.tp-page *::before,
+.tp-page *::after {
+    box-sizing: border-box;
+}
+
+.tp-page .tp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.tp-page .tp-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.tp-page .tp-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border: 1px solid var(--tp-border);
+    border-radius: 12px;
+    color: #525b69;
+    background: #fff;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.tp-page .tp-back-btn:hover {
+    color: var(--tp-primary);
+    border-color: #d9a7b0;
+    background: #fff8f9;
+}
+
+.tp-page .tp-back-btn svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.tp-page .tp-title {
+    margin: 0;
+    color: var(--tp-text);
+    font-size: 23px;
+    line-height: 1.35;
+    font-weight: 750;
+    letter-spacing: -.45px;
+}
+
+.tp-page .tp-subtitle {
+    margin: 5px 0 0;
+    color: var(--tp-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.tp-page .tp-period-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    padding: 10px 13px;
+    border: 1px solid #f0dce0;
+    border-radius: 11px;
+    color: var(--tp-primary);
+    background: #fff8f9;
+    font-size: 12px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.tp-page .tp-period-badge svg {
+    display: block;
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+}
+
+.tp-page .tp-period-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 17px 19px;
+    margin-bottom: 20px;
+    border: 1px solid #f0dce0;
+    border-radius: 15px;
+    background: linear-gradient(110deg, #fff8f9, #fff 85%);
+}
+
+.tp-page .tp-period-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    border-radius: 13px;
+    color: var(--tp-primary);
+    background: #f8e9ec;
+}
+
+.tp-page .tp-period-icon svg {
+    display: block;
+    width: 21px;
+    height: 21px;
+}
+
+.tp-page .tp-period-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.tp-page .tp-period-label {
+    color: var(--tp-muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.tp-page .tp-period-info strong {
+    color: var(--tp-text);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.tp-page .tp-period-info small {
+    color: var(--tp-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.tp-page .tp-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 15px;
+    margin-bottom: 20px;
+    border-radius: 11px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.tp-page .tp-alert-error {
+    border: 1px solid #f0c8ce;
+    color: #9c2639;
+    background: #fff3f4;
+}
+
+.tp-page .tp-alert svg {
+    display: block;
+    width: 19px;
+    height: 19px;
+    flex: 0 0 19px;
+    margin-top: 1px;
+}
+
+.tp-page .tp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+}
+
+.tp-page .tp-card {
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid var(--tp-border);
+    border-radius: 16px;
+    background: var(--tp-surface);
+    box-shadow: 0 3px 12px rgba(28, 36, 50, .025);
+}
+
+.tp-page .tp-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 19px;
+    margin-bottom: 21px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.tp-page .tp-section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 12px;
+    color: var(--tp-primary);
+    background: #fbf0f2;
+}
+
+.tp-page .tp-section-icon svg {
+    display: block;
+    width: 21px;
+    height: 21px;
+}
+
+.tp-page .tp-section-heading h3 {
+    margin: 0;
+    color: var(--tp-text);
+    font-size: 15px;
+    line-height: 1.4;
+    font-weight: 750;
+}
+
+.tp-page .tp-section-heading p {
+    margin: 4px 0 0;
+    color: var(--tp-muted);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.tp-page .tp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 22px;
+}
+
+.tp-page .tp-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 8px;
+}
+
+.tp-page .tp-field-full {
+    grid-column: 1 / -1;
+}
+
+.tp-page .tp-field label {
+    display: block;
+    margin: 0;
+    color: #343b48;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.tp-page .tp-required {
+    color: #c52d43;
+    font-weight: 800;
+}
+
+.tp-page .tp-field input,
+.tp-page .tp-field select,
+.tp-page .tp-field textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin: 0;
+    padding: 11px 13px;
+    border: 1px solid #dfe3e9;
+    border-radius: 10px;
+    outline: none;
+    color: #29313e;
+    background-color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    box-shadow: none;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.tp-page .tp-field select {
+    padding-right: 34px;
+    cursor: pointer;
+}
+
+.tp-page .tp-field textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.tp-page .tp-field input::placeholder,
+.tp-page .tp-field textarea::placeholder {
+    color: #a1a8b3;
+    opacity: 1;
+}
+
+.tp-page .tp-field input:focus,
+.tp-page .tp-field select:focus,
+.tp-page .tp-field textarea:focus {
+    border-color: #c66a7a;
+    box-shadow: 0 0 0 3px rgba(153, 30, 50, .08);
+}
+
+.tp-page .tp-field input:disabled,
+.tp-page .tp-field select:disabled,
+.tp-page .tp-field textarea:disabled {
+    color: #9299a5;
+    background-color: #f5f6f8;
+    cursor: not-allowed;
+}
+
+.tp-page .tp-help {
+    display: block;
+    margin: 0;
+    color: #8b929e;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.tp-page .tp-warning {
+    display: block;
+    color: #b45309;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.tp-page .tp-region-help {
+    margin-top: 15px;
+}
+
+.tp-page .tp-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding: 19px 22px;
+    border: 1px solid var(--tp-border);
+    border-radius: 15px;
+    background: #fff;
+}
+
+.tp-page .tp-required-note {
+    margin: 0;
+    color: var(--tp-muted);
+    font-size: 12px;
+}
+
+.tp-page .tp-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.tp-page .tp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 43px;
+    padding: 11px 17px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease,
+                box-shadow .2s ease, transform .2s ease;
+}
+
+.tp-page .tp-btn svg {
+    display: block;
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+}
+
+.tp-page .tp-btn-cancel {
+    border-color: #dfe3e9;
+    color: #5b6370;
+    background: #fff;
+}
+
+.tp-page .tp-btn-cancel:hover {
+    border-color: #cbd0d9;
+    background: #f8f9fb;
+}
+
+.tp-page .tp-btn-submit {
+    border-color: var(--tp-primary);
+    color: #fff;
+    background: linear-gradient(135deg, #a9253b, #81192c);
+    box-shadow: 0 4px 12px rgba(153, 30, 50, .16);
+}
+
+.tp-page .tp-btn-submit:hover {
+    background: linear-gradient(135deg, #941c32, #701426);
+    box-shadow: 0 7px 16px rgba(153, 30, 50, .22);
+    transform: translateY(-1px);
+}
+
+.tp-page .tp-btn-submit:disabled {
+    opacity: .7;
+    cursor: wait;
+    transform: none;
+}
+
+@media (max-width: 760px) {
+    .tp-page {
+        padding-top: 4px;
+    }
+
+    .tp-page .tp-header {
+        align-items: flex-start;
+    }
+
+    .tp-page .tp-header-left {
+        gap: 10px;
+    }
+
+    .tp-page .tp-title {
+        font-size: 20px;
+    }
+
+    .tp-page .tp-period-badge {
+        margin-left: 52px;
+    }
+
+    .tp-page .tp-card {
+        padding: 19px;
+    }
+
+    .tp-page .tp-grid {
+        gap: 17px;
+    }
+}
+
+@media (max-width: 520px) {
+    .tp-page .tp-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .tp-page .tp-field-full {
+        grid-column: auto;
+    }
+
+    .tp-page .tp-card {
+        padding: 16px;
+        border-radius: 13px;
+    }
+
+    .tp-page .tp-section-heading {
+        align-items: flex-start;
+        gap: 10px;
+        padding-bottom: 15px;
+        margin-bottom: 17px;
+    }
+
+    .tp-page .tp-section-icon {
+        width: 37px;
+        height: 37px;
+        flex-basis: 37px;
+    }
+
+    .tp-page .tp-section-heading h3 {
+        font-size: 14px;
+    }
+
+    .tp-page .tp-section-heading p {
+        font-size: 11px;
+    }
+
+    .tp-page .tp-form-footer {
+        align-items: stretch;
+        padding: 16px;
+    }
+
+    .tp-page .tp-form-actions {
+        width: 100%;
+    }
+
+    .tp-page .tp-btn {
+        flex: 1;
+        padding: 11px 10px;
+    }
+
+    .tp-page .tp-period-badge {
+        margin-left: 0;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const provEl = document.getElementById('tp-provinsi');
+    const kabEl = document.getElementById('tp-kabupaten');
+    const kecEl = document.getElementById('tp-kecamatan');
+    const kelEl = document.getElementById('tp-kelurahan');
+    const statusEl = document.getElementById('tp-region-status');
+
+    if (!provEl || !kabEl || !kecEl || !kelEl) return;
+
+    const BASE_URL = 'https://www.emsifa.com/api-wilayah-indonesia/v2';
+
+    const nilaiAwal = {
+        provinsi: provEl.dataset.selected || '',
+        kabupaten: kabEl.dataset.selected || '',
+        kecamatan: kecEl.dataset.selected || '',
+        kelurahan: kelEl.dataset.selected || ''
+    };
+
+    async function ambilData(url) {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${url}`);
+        }
+
+        const data = await response.json();
+        return Array.isArray(data) ? data : data.data;
+    }
+
+    function isiSelect(el, data, label) {
+        el.replaceChildren(new Option(`— Pilih ${label} —`, ''));
+
+        data.forEach(item => {
+            const option = new Option(item.name, item.name);
+            option.dataset.id = item.id;
+            el.add(option);
+        });
+
+        el.disabled = false;
+    }
+
+    function resetSelect(el, label) {
+        el.replaceChildren(new Option(`— Pilih ${label} —`, ''));
+        el.disabled = true;
+    }
+
+    function pilihNama(el, nama) {
+        if (!nama) return false;
+
+        const option = Array.from(el.options).find(
+            opt => opt.value.trim().toLowerCase() === nama.trim().toLowerCase()
+        );
+
+        if (!option) return false;
+
+        el.value = option.value;
+        return true;
+    }
+
+    function idTerpilih(el) {
+        return el.options[el.selectedIndex]?.dataset.id || '';
+    }
+
+    async function muatKabupaten(idProvinsi) {
+        resetSelect(kabEl, 'Kabupaten/Kota');
+        resetSelect(kecEl, 'Kecamatan');
+        resetSelect(kelEl, 'Desa/Kelurahan');
+
+        if (!idProvinsi) return;
+
+        kabEl.replaceChildren(new Option('— Memuat... —', ''));
+
+        try {
+            const data = await ambilData(
+                `${BASE_URL}/regencies/${idProvinsi}.json`
+            );
+            isiSelect(kabEl, data, 'Kabupaten/Kota');
+        } catch (error) {
+            console.error('Gagal memuat kabupaten/kota:', error);
+            resetSelect(kabEl, 'Gagal memuat Kabupaten/Kota');
+            throw error;
+        }
+    }
+
+    async function muatKecamatan(idKabupaten) {
+        resetSelect(kecEl, 'Kecamatan');
+        resetSelect(kelEl, 'Desa/Kelurahan');
+
+        if (!idKabupaten) return;
+
+        kecEl.replaceChildren(new Option('— Memuat... —', ''));
+
+        try {
+            const data = await ambilData(
+                `${BASE_URL}/districts/${idKabupaten}.json`
+            );
+            isiSelect(kecEl, data, 'Kecamatan');
+        } catch (error) {
+            console.error('Gagal memuat kecamatan:', error);
+            resetSelect(kecEl, 'Gagal memuat Kecamatan');
+            throw error;
+        }
+    }
+
+    async function muatKelurahan(idKecamatan) {
+        resetSelect(kelEl, 'Desa/Kelurahan');
+
+        if (!idKecamatan) return;
+
+        kelEl.replaceChildren(new Option('— Memuat... —', ''));
+
+        try {
+            const data = await ambilData(
+                `${BASE_URL}/villages/${idKecamatan}.json`
+            );
+            isiSelect(kelEl, data, 'Desa/Kelurahan');
+        } catch (error) {
+            console.error('Gagal memuat desa/kelurahan:', error);
+            resetSelect(kelEl, 'Gagal memuat Desa/Kelurahan');
+            throw error;
+        }
+    }
+
+    provEl.addEventListener('change', async () => {
+        resetSelect(kabEl, 'Kabupaten/Kota');
+        resetSelect(kecEl, 'Kecamatan');
+        resetSelect(kelEl, 'Desa/Kelurahan');
+
+        if (!idTerpilih(provEl)) return;
+
+        try {
+            await muatKabupaten(idTerpilih(provEl));
+        } catch (_) {
+            if (statusEl) {
+                statusEl.textContent = 'Kabupaten/kota gagal dimuat. Periksa koneksi lalu coba lagi.';
+            }
+        }
+    });
+
+    kabEl.addEventListener('change', async () => {
+        resetSelect(kecEl, 'Kecamatan');
+        resetSelect(kelEl, 'Desa/Kelurahan');
+
+        if (!idTerpilih(kabEl)) return;
+
+        try {
+            await muatKecamatan(idTerpilih(kabEl));
+        } catch (_) {
+            if (statusEl) {
+                statusEl.textContent = 'Kecamatan gagal dimuat. Periksa koneksi lalu coba lagi.';
+            }
+        }
+    });
+
+    kecEl.addEventListener('change', async () => {
+        resetSelect(kelEl, 'Desa/Kelurahan');
+
+        if (!idTerpilih(kecEl)) return;
+
+        try {
+            await muatKelurahan(idTerpilih(kecEl));
+        } catch (_) {
+            if (statusEl) {
+                statusEl.textContent = 'Desa/kelurahan gagal dimuat. Periksa koneksi lalu coba lagi.';
+            }
+        }
+    });
+
+    async function mulai() {
+        provEl.disabled = true;
+        provEl.replaceChildren(new Option('— Memuat provinsi... —', ''));
+
+        resetSelect(kabEl, 'Kabupaten/Kota');
+        resetSelect(kecEl, 'Kecamatan');
+        resetSelect(kelEl, 'Desa/Kelurahan');
+
+        try {
+            const provinsi = await ambilData(`${BASE_URL}/provinces.json`);
+            isiSelect(provEl, provinsi, 'Provinsi');
+
+            // Untuk mode edit atau ketika form dikembalikan setelah error.
+            if (pilihNama(provEl, nilaiAwal.provinsi)) {
+                await muatKabupaten(idTerpilih(provEl));
+
+                if (pilihNama(kabEl, nilaiAwal.kabupaten)) {
+                    await muatKecamatan(idTerpilih(kabEl));
+
+                    if (pilihNama(kecEl, nilaiAwal.kecamatan)) {
+                        await muatKelurahan(idTerpilih(kecEl));
+                        pilihNama(kelEl, nilaiAwal.kelurahan);
+                    }
+                }
+            }
+
+            if (statusEl) {
+                statusEl.textContent = '';
+            }
+        } catch (error) {
+            console.error('Gagal memuat wilayah:', error);
+
+            if (statusEl) {
+                statusEl.textContent =
+                    'Data wilayah gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.';
+            }
+        } finally {
+            provEl.disabled = false;
+        }
+    }
+
+    mulai();
+});
+</script>
+
+{% endblock %}

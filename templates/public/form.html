@@ -892,6 +892,7 @@ select.input-baku:disabled {
 
 <!-- === DATA WILAYAH INDONESIA === -->
 
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const provEl = document.getElementById('provinsi');
@@ -902,7 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const BASE_URL =
     'https://www.emsifa.com/api-wilayah-indonesia/v2';
 
-  // Mengambil data JSON dari API
+  // Mengambil data dari API
   async function ambilData(url) {
     const response = await fetch(url);
 
@@ -911,38 +912,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const hasil = await response.json();
-    return hasil.data;
+
+    // API dapat mengembalikan array secara langsung
+    return Array.isArray(hasil) ? hasil : hasil.data;
   }
 
-  // Mengisi pilihan dropdown
+  // Dropdown menampilkan dan mengirim NAMA,
+  // tetapi ID tetap disimpan untuk permintaan API berikutnya.
   function isiSelect(el, data, label) {
     el.replaceChildren(new Option(`— Pilih ${label} —`, ''));
 
     data.forEach(item => {
-      el.add(new Option(item.name, item.id));
+      const option = new Option(item.name, item.name);
+      option.dataset.id = item.id;
+      el.add(option);
     });
 
     el.disabled = false;
   }
 
-  // Mengosongkan dropdown berikutnya
   function resetSelect(el, label) {
     el.replaceChildren(new Option(`— Pilih ${label} —`, ''));
     el.disabled = true;
   }
 
+  function ambilIdTerpilih(el) {
+    return el.options[el.selectedIndex]?.dataset.id || '';
+  }
+
   // 1. Muat provinsi
   async function muatProvinsi() {
     provEl.disabled = true;
-    provEl.replaceChildren(new Option('— Memuat provinsi... —', ''));
+    provEl.replaceChildren(
+      new Option('— Memuat provinsi... —', '')
+    );
 
     try {
-      const data = await ambilData(`${BASE_URL}/provinces.json`);
+      const data = await ambilData(
+        `${BASE_URL}/provinces.json`
+      );
+
       isiSelect(provEl, data, 'Provinsi');
     } catch (error) {
       console.error('Gagal memuat provinsi:', error);
       provEl.replaceChildren(
-        new Option('Gagal memuat — coba muat ulang halaman', '')
+        new Option('Gagal memuat provinsi', '')
       );
     } finally {
       provEl.disabled = false;
@@ -951,22 +965,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 2. Provinsi → Kabupaten/Kota
   provEl.addEventListener('change', async () => {
-    resetSelect(kabEl, 'Memilih Kabupaten/Kota');
+    resetSelect(kabEl, 'Kabupaten/Kota');
     resetSelect(kecEl, 'Kecamatan');
     resetSelect(kelEl, 'Desa/Kelurahan');
 
-    if (!provEl.value) return;
+    const idProvinsi = ambilIdTerpilih(provEl);
+    if (!idProvinsi) return;
 
     kabEl.disabled = true;
-    kabEl.replaceChildren(new Option('— Memuat... —', ''));
+    kabEl.replaceChildren(
+      new Option('— Memuat kabupaten/kota... —', '')
+    );
 
     try {
       const data = await ambilData(
-        `${BASE_URL}/regencies/${provEl.value}.json`
+        `${BASE_URL}/regencies/${idProvinsi}.json`
       );
+
       isiSelect(kabEl, data, 'Kabupaten/Kota');
     } catch (error) {
-      console.error('Gagal memuat kabupaten:', error);
+      console.error('Gagal memuat kabupaten/kota:', error);
       resetSelect(kabEl, 'Gagal memuat Kabupaten/Kota');
     }
   });
@@ -976,15 +994,19 @@ document.addEventListener('DOMContentLoaded', () => {
     resetSelect(kecEl, 'Kecamatan');
     resetSelect(kelEl, 'Desa/Kelurahan');
 
-    if (!kabEl.value) return;
+    const idKabupaten = ambilIdTerpilih(kabEl);
+    if (!idKabupaten) return;
 
     kecEl.disabled = true;
-    kecEl.replaceChildren(new Option('— Memuat... —', ''));
+    kecEl.replaceChildren(
+      new Option('— Memuat kecamatan... —', '')
+    );
 
     try {
       const data = await ambilData(
-        `${BASE_URL}/districts/${kabEl.value}.json`
+        `${BASE_URL}/districts/${idKabupaten}.json`
       );
+
       isiSelect(kecEl, data, 'Kecamatan');
     } catch (error) {
       console.error('Gagal memuat kecamatan:', error);
@@ -996,15 +1018,19 @@ document.addEventListener('DOMContentLoaded', () => {
   kecEl.addEventListener('change', async () => {
     resetSelect(kelEl, 'Desa/Kelurahan');
 
-    if (!kecEl.value) return;
+    const idKecamatan = ambilIdTerpilih(kecEl);
+    if (!idKecamatan) return;
 
     kelEl.disabled = true;
-    kelEl.replaceChildren(new Option('— Memuat... —', ''));
+    kelEl.replaceChildren(
+      new Option('— Memuat desa/kelurahan... —', '')
+    );
 
     try {
       const data = await ambilData(
-        `${BASE_URL}/villages/${kecEl.value}.json`
+        `${BASE_URL}/villages/${idKecamatan}.json`
       );
+
       isiSelect(kelEl, data, 'Desa/Kelurahan');
     } catch (error) {
       console.error('Gagal memuat desa/kelurahan:', error);
@@ -1012,7 +1038,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Jalankan saat halaman dibuka
+  // Kondisi awal
   resetSelect(kabEl, 'Kabupaten/Kota');
   resetSelect(kecEl, 'Kecamatan');
   resetSelect(kelEl, 'Desa/Kelurahan');
@@ -1020,5 +1046,6 @@ document.addEventListener('DOMContentLoaded', () => {
   muatProvinsi();
 });
 </script>
+
 
 {% endblock %}
