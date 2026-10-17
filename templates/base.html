@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>{% block title %}BestOne Education — Kursus Bahasa Inggris{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo1.png') }}">
+
   <meta name="description" content="BestOne Education — kembangkan kemampuan bahasa Inggris melalui pembelajaran yang praktis, terarah, dan menyenangkan.">
   <meta name="theme-color" content="#991E32">
 
@@ -55,7 +57,7 @@
       <!-- Logo -->
       <a href="/" class="bo-brand" aria-label="BestOne Education — Beranda">
         <span class="bo-brand-mark">
-          <span>B</span>
+          <span><img src="{{ url_for('static', filename='img/logo1.png') }}" alt="Logo BestOne"></span>
           <i class="fa-solid fa-graduation-cap"></i>
         </span>
 
@@ -201,7 +203,7 @@
         <div class="bo-footer-brand-column">
           <a href="/" class="bo-brand bo-brand-footer">
             <span class="bo-brand-mark">
-              <span>B</span>
+              <span><img src="{{ url_for('static', filename='img/logo1.png') }}" alt="Logo BestOne"></span>
               <i class="fa-solid fa-graduation-cap"></i>
             </span>
 

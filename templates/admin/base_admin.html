@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block judul %}Panel Admin — BestOne{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/base.css') }}">
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -18,7 +19,7 @@
 
         <!-- Logo -->
         <a href="{{ url_for('admin_dashboard.dashboard') }}" class="sidebar-logo">
-          <span class="logo-mark">B</span>
+          <span class="logo-mark"><img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo BestOne"></span>
           <span class="logo-text">BestOne</span>
         </a>
 
