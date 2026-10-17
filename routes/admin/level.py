@@ -12,7 +12,11 @@ def daftar_level():
     cek = cek_login()
     if cek: return cek
     daftar_level = Level.query.order_by(Level.kode).all()
-    return render_template('admin/level.html', daftar_level=daftar_level)
+    return render_template(
+        'admin/level.html',
+        daftar_level=daftar_level,
+        halaman='daftar_level'
+    )
 
 @level_bp.route('/level/tambah', methods=['POST'])
 def tambah():
