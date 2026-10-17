@@ -6,57 +6,121 @@
 {# PANGGIL NOTIFIKASI #}
 {% include "notif.html" %}
 
-<!-- Bar Atas -->
+<!-- Bar atas -->
 <div class="bar-atas">
-  <button class="btn-utama" id="btnBukaTambah">+ Tambah Level</button>
-  <div class="pencarian">
-    <input type="text" id="cariLevel" placeholder="Cari level..." class="form-input">
+  <div class="program-heading">
+    <div class="program-heading-info">
+      <span class="program-eyebrow">MANAJEMEN KURSUS</span>
+      <h2>Daftar Level</h2>
+      <p>Kelola kode, nama, dan keterangan level kursus.</p>
+    </div>
   </div>
+
+  <div class="program-toolbar">
+      <div class="pencarian">
+        <span class="ikon-cari">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.8"></circle>
+            <path d="m16 16 4.5 4.5"></path>
+          </svg>
+        </span>
+        <input
+          type="text"
+          id="cariLevel"
+          placeholder="Cari kode, nama level..."
+          class="form-input"
+          autocomplete="off"
+        >
+      </div>
+    </div>
+    <button class="btn-utama" id="btnBukaTambah" type="button">
+      <span class="ikon-tambah">+</span>
+      Tambah Level
+    </button>
 </div>
 
-<!-- Tabel Daftar -->
-<div class="kartu-biasa">
+<!-- Kartu Tabel -->
+<div class="kartu-biasa program-card">
+  <div class="program-card-header">
+    <div>
+      <h3>Data Level Kursus</h3>
+      <p>Daftar seluruh level yang tersedia.</p>
+    </div>
+    <span class="program-total">
+      {{ daftar_level|length }} level
+    </span>
+  </div>
+
   <div class="tabel-wrapper">
     <table class="tabel-data" id="tabelLevel">
       <thead>
         <tr>
-          <th>No</th>
+          <th class="kolom-no">No</th>
           <th>Kode</th>
           <th>Nama Level</th>
           <th>Keterangan</th>
-          <th>Aksi</th>
+          <th class="kolom-aksi">Aksi</th>
         </tr>
       </thead>
+
       <tbody>
         {% for lv in daftar_level %}
         <tr class="baris-level">
-          <td>{{ loop.index }}</td>
-          <td><span class="kode-level">{{ lv.kode }}</span></td>
-          <td><strong>{{ lv.nama }}</strong></td>
-          <td><small>{{ lv.keterangan[:60] ~ '...' if lv.keterangan and lv.keterangan|length > 60 else (lv.keterangan or '-') }}</small></td>
+          <td class="nomor-baris">{{ loop.index }}</td>
+
+          <td>
+            <span class="kode-level">{{ lv.kode }}</span>
+          </td>
+
+          <td>
+            <span class="nama-level">{{ lv.nama }}</span>
+          </td>
+
+          <td class="keterangan-level">
+            {{ lv.keterangan[:60] ~ '...' if lv.keterangan and lv.keterangan|length > 60 else (lv.keterangan or '-') }}
+          </td>
+
           <td>
             <div class="tombol-aksi">
-              <button class="btn-sm btn-abu" 
-                data-id="{{ lv.id }}" 
+              <button
+                type="button"
+                class="btn-sm btn-abu"
+                data-id="{{ lv.id }}"
                 data-kode="{{ lv.kode }}"
-                data-nama="{{ lv.nama }}" 
+                data-nama="{{ lv.nama }}"
                 data-keterangan="{{ lv.keterangan or '' }}"
-                onclick="bukaModalEdit(this)">Ubah</button>
-              <form method="POST" action="{{ url_for('admin_level.hapus', level_id=lv.id) }}" class="form-hapus" onsubmit="return confirm('Yakin hapus level ini?')">
-                <button type="submit" class="btn-sm btn-merah">Hapus</button>
+                onclick="bukaModalEdit(this)"
+              >Ubah</button>
+
+              <form
+                method="POST"
+                action="{{ url_for('admin_level.hapus', level_id=lv.id) }}"
+                class="form-hapus"
+                onsubmit="return confirm('Yakin hapus level ini?')"
+              >
+                <button type="submit" class="btn-sm btn-merah">
+                  Hapus
+                </button>
               </form>
             </div>
           </td>
         </tr>
         {% else %}
         <tr>
-          <td colspan="5" class="kosong">Belum ada level. Klik "Tambah Level" untuk memulai.</td>
+          <td colspan="5" class="kosong">
+            <div class="kosong-konten">
+              <span class="kosong-ikon">—</span>
+              <strong>Belum ada level kursus</strong>
+              <p>Klik tombol Tambah Level untuk menambahkan data pertama.</p>
+            </div>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
+
 
 <!-- Modal Tambah -->
 <div id="modalTambah" class="modal-latar">
@@ -115,35 +179,623 @@
 </div>
 
 <style>
-.bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
-.pencarian { max-width: 300px; width: 100%; }
-.form-kelompok { margin-bottom: 14px; }
-.form-kelompok label { display: block; margin-bottom: 6px; font-weight: 500; color: #333; font-size: 14px; }
-.form-input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-.wajib { color: #e11d48; }
-.kode-level { 
-  font-family: monospace; 
-  font-weight: bold; 
-  color: #991e32; 
-  background: #fef2f4; 
-  padding: 3px 8px; 
-  border-radius: 4px; 
+
+/* ================================
+   HEADER HALAMAN
+================================ */
+.program-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.program-heading-info {
+  min-width: 0;
+}
+
+.program-eyebrow {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: #991e32;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.program-heading h2 {
+  margin: 0;
+  color: #202533;
+  font-size: 27px;
+  line-height: 1.3;
+  font-weight: 750;
+}
+
+.program-heading p {
+  margin: 7px 0 0;
+  color: #788091;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ================================
+   TOOLBAR DAN PENCARIAN
+================================ */
+.bar-atas.program-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+
+.pencarian .form-input {
+  width: 100%;
+  min-height: 43px;
+  box-sizing: border-box;
+  padding: 11px 14px 11px 41px;
+  border: 1px solid #e0e4eb;
+  border-radius: 9px;
+  background: #fff;
+  color: #252b38;
+  font-size: 13px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.pencarian .form-input::placeholder {
+  color: #a0a6b3;
+}
+
+.pencarian .form-input:focus {
+  border-color: #bd6877;
+  box-shadow: 0 0 0 3px rgba(153, 30, 50, .08);
+}
+
+.ikon-cari {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  display: flex;
+  width: 17px;
+  height: 17px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.ikon-cari svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #9299a8;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bar-atas,
+.program-heading,
+.program-toolbar,
+.program-card-header,
+.nama-program,
+.tombol-aksi,
+.program-card-header > div {
+  min-width: 0;
+}
+
+.bar-atas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-bottom: 26px;
+}
+
+.program-heading h2 {
+  margin: 0 0 7px;
+  color: #191b23;
+  font-size: clamp(22px, 2vw, 28px);
+  font-weight: 750;
+  letter-spacing: -0.7px;
+}
+
+.program-heading p,
+.program-card-header p {
+  margin: 0;
+  color: #858995;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.program-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 1;
+}
+
+.pencarian {
+  position: relative;
+  width: 100%;
+  max-width: 330px;
+}
+
+.pencarian .form-input {
+  padding-left: 39px;
+}
+
+.ikon-cari {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-54%);
+  color: #9296a2;
+  font-size: 23px;
+  pointer-events: none;
+}
+
+.ikon-tambah {
+  margin-right: 5px;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.btn-utama {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
+  min-height: 43px;
+  padding: 11px 17px;
+  border: 1px solid #991e32;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #a5243b, #85172a);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 650;
+  box-shadow: 0 4px 10px rgba(153, 30, 50, .13);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.btn-utama:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 16px rgba(153, 30, 50, .2);
+}
+
+.form-input::placeholder {
+  color: #a4a7b0;
+}
+
+.form-input:focus {
+  border-color: #b84b5d;
+  box-shadow: 0 0 0 3px rgba(153, 30, 50, .08);
+}
+
+/* ================================
+   KARTU DATA
+================================ */
+.program-card {
+  overflow: hidden;
+  border: 1px solid #e9ebf1;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(27, 36, 54, .035);
+}
+
+.program-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 21px 23px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.program-card-header h3 {
+  margin: 0;
+  color: #252b38;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.program-card-header p {
+  margin: 5px 0 0;
+  color: #858c9a;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.program-total {
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border: 1px solid #f0dce0;
+  border-radius: 7px;
+  background: #fcf3f5;
+  color: #991e32;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ================================
+   TABEL
+================================ */
+.tabel-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#tabelLevel {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#tabelLevel thead th {
+  padding: 14px 18px;
+  border-bottom: 1px solid #e9edf2;
+  background: #f8f9fb;
+  color: #737b8b;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .45px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+#tabelLevel tbody td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #eff1f5;
+  color: #525b6b;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+#tabelLevel tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#tabelLevel tbody tr.baris-level {
+  transition: background .15s ease;
+}
+
+#tabelLevel tbody tr.baris-level:hover {
+  background: #fdf9fa;
+}
+
+#tabelLevel .kolom-no {
+  width: 55px;
+}
+
+#tabelLevel .kolom-aksi {
+  width: 150px;
+}
+
+.nomor-baris {
+  color: #9399a6 !important;
+  font-size: 12px !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.kode-level {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border: 1px solid #f0dce0;
+  border-radius: 6px;
+  background: #fcf3f5;
+  color: #991e32;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.nama-level {
+  color: #252b38;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.keterangan-level {
+  max-width: 350px;
+  color: #737b8b !important;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+/* ================================
+   TOMBOL AKSI
+================================ */
+.tombol-aksi {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.form-hapus {
+  margin: 0;
+}
+
+.btn-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  padding: 7px 11px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+
+.btn-abu {
+  border-color: #e2e5eb;
+  background: #f5f6f8;
+  color: #4c5565;
+}
+
+.btn-abu:hover {
+  border-color: #cbd0da;
+  background: #e9ecf1;
+}
+
+.btn-merah {
+  border-color: #f6d9dd;
+  background: #fff3f4;
+  color: #c52e43;
+}
+
+.btn-merah:hover {
+  border-color: #efb9c1;
+  background: #ffe5e8;
+}
+
+/* ================================
+   DATA KOSONG
+================================ */
+#tabelLevel .kosong {
+  padding: 42px 20px;
+  text-align: center;
+}
+
+.kosong-konten {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.kosong-ikon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f7f0f2;
+  color: #991e32;
+  font-size: 22px;
+}
+
+.kosong-konten strong {
+  color: #343b49;
+  font-size: 14px;
+}
+
+.kosong-konten p {
+  margin: 0;
+  color: #8a91a0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* ================================
+   FORM DAN MODAL
+================================ */
+.form-kelompok {
+  margin-bottom: 17px;
+}
+
+.form-kelompok label {
+  display: block;
+  margin-bottom: 7px;
+  color: #343b49;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.form-kelompok .form-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid #dfe3ea;
+  border-radius: 8px;
+  background: #fff;
+  color: #252b38;
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.form-kelompok .form-input:focus {
+  border-color: #bd6877;
+  box-shadow: 0 0 0 3px rgba(153, 30, 50, .08);
+}
+
+.form-kelompok textarea.form-input {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.wajib {
+  color: #e11d48;
+}
+
+.modal-latar {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(20, 25, 37, .58);
+  backdrop-filter: blur(3px);
+}
+
+.modal-latar.tampil {
+  display: flex;
+}
+
+.modal-kotak {
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 25px;
+  border: 1px solid rgba(255, 255, 255, .7);
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 20px 65px rgba(0, 0, 0, .2);
+  animation: levelModalMasuk .2s ease-out;
+}
+
+@keyframes levelModalMasuk {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-judul {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 23px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.modal-judul h3 {
+  margin: 0;
+  color: #252b38;
+  font-size: 19px;
+  font-weight: 750;
+}
+
+.tombol-tutup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: #f4f5f7;
+  color: #737b8b;
+  font-size: 23px;
+  cursor: pointer;
+}
+
+.tombol-tutup:hover {
+  background: #eceef2;
+  color: #252b38;
+}
+
+.modal-tombol {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 17px;
+  border-top: 1px solid #edf0f4;
+}
+
+.modal-tombol button {
+  min-height: 40px;
+  padding: 10px 20px;
+  border-radius: 8px;
   font-size: 13px;
 }
-.tombol-aksi { display: flex; gap: 6px; align-items: center; }
-.form-hapus { margin: 0; }
-.btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-block; }
-.btn-utama { background: #991e32; color: white; border: none; cursor: pointer; padding: 10px 16px; border-radius: 6px; }
-.btn-abu { background: #e5e7eb; color: #4b5563; min-width: 64px; }
-.btn-merah { background: #ef4444; color: white; min-width: 64px; }
-.modal-latar { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
-.modal-latar.tampil { display: flex; }
-.modal-kotak { background: white; border-radius: 12px; width: 90%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 24px; }
-.modal-judul { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.modal-judul h3 { margin: 0; font-size: 18px; color: #1f2937; }
-.tombol-tutup { background: none; border: none; font-size: 22px; cursor: pointer; color: #6b7280; }
-.modal-tombol { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
-.modal-tombol button { padding: 10px 24px; border-radius: 8px; font-size: 14px; }
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 640px) {
+  .program-heading {
+    margin-bottom: 19px;
+  }
+
+  .program-heading h2 {
+    font-size: 23px;
+  }
+
+  .bar-atas.program-toolbar {
+    align-items: stretch;
+  }
+
+  .bar-atas.program-toolbar > .btn-utama,
+  .bar-atas.program-toolbar > .pencarian {
+    width: 100%;
+    max-width: none;
+  }
+
+  .bar-atas.program-toolbar > .btn-utama {
+    justify-content: center;
+  }
+
+  .program-card-header {
+    padding: 17px 15px;
+  }
+
+  #tabelLevel thead th,
+  #tabelLevel tbody td {
+    padding: 13px 14px;
+  }
+
+  .modal-latar {
+    padding: 12px;
+  }
+
+  .modal-kotak {
+    max-height: calc(100vh - 24px);
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .modal-tombol {
+    gap: 8px;
+  }
+
+  .modal-tombol button {
+    flex: 1;
+    padding: 10px 12px;
+  }
+}
+
 </style>
 
 <script>

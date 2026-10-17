@@ -10,41 +10,83 @@
 <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
 
 <!-- Bar Atas -->
+
+<!-- Bar atas -->
 <div class="bar-atas">
-  <button type="button" class="btn-utama" id="btnBukaTambah">
-    + Tambah Program
-  </button>
-  <div class="pencarian">
-    <input type="text" id="cariProgram" placeholder="Cari program..." class="form-input">
+  <div class="program-heading">
+    <h2>Program Kursus</h2>
+    <p>Kelola program, durasi, dan informasi kursus BestOne.</p>
+  </div>
+
+  <div class="program-toolbar">
+    <div class="pencarian">
+      <span class="ikon-cari">⌕</span>
+      <input
+        type="text"
+        id="cariProgram"
+        placeholder="Cari nama atau kode program..."
+        class="form-input"
+      >
+    </div>
+
+    <button type="button" class="btn-utama" id="btnBukaTambah">
+      <span class="ikon-tambah">+</span>
+      Tambah Program
+    </button>
   </div>
 </div>
 
-<!-- Tabel Daftar -->
-<div class="kartu-biasa">
+<!-- Tabel daftar -->
+<div class="kartu-biasa program-card">
+  <div class="program-card-header">
+    <div>
+      <h3>Daftar Program</h3>
+      <p>Informasi seluruh program kursus yang tersedia.</p>
+    </div>
+    <span class="label-program">Data Program</span>
+  </div>
+
   <div class="tabel-wrapper">
     <table class="tabel-data" id="tabelProgram">
       <thead>
         <tr>
-          <th>No</th>
-          <th>Kode</th>
+          <th class="kolom-no">No</th>
+          <th>Kode Program</th>
           <th>Nama Program</th>
           <th>Durasi</th>
-          <th>Aksi</th>
+          <th class="kolom-aksi">Aksi</th>
         </tr>
       </thead>
+
       <tbody>
         {% for p in daftar %}
         <tr class="baris-program">
-          <td>{{ loop.index }}</td>
-          <td><code class="kode-program">{{ p.kode }}</code></td>
-          <td><strong>{{ p.nama }}</strong></td>
+          <td class="nomor-baris">{{ loop.index }}</td>
+
+          <td>
+            <code class="kode-program">{{ p.kode }}</code>
+          </td>
+
+          <td>
+            <div class="nama-program">
+              <strong>{{ p.nama }}</strong>
+              {% if p.deskripsi_singkat %}
+                <span>{{ p.deskripsi_singkat }}</span>
+              {% endif %}
+            </div>
+          </td>
+
           <td>
             {% if p.durasi_nilai and p.durasi_satuan %}
-              {{ p.durasi_nilai }} {{ p.durasi_satuan }}
+              <span class="durasi-program">
+                {{ p.durasi_nilai }} {{ p.durasi_satuan }}
+              </span>
             {% else %}
-              -
+              <span class="durasi-kosong">Belum diatur</span>
             {% endif %}
           </td>
+
+          
           <td>
             <div class="tombol-aksi">
               <button
@@ -66,19 +108,28 @@
                 Ubah
               </button>
 
-              <form method="POST"
-                    action="{{ url_for('admin_program.hapus', program_id=p.id) }}"
-                    class="form-hapus"
-                    onsubmit="return confirm('Yakin hapus program ini?')">
-                <button type="submit" class="btn-sm btn-merah">Hapus</button>
+              <form
+                method="POST"
+                action="{{ url_for('admin_program.hapus', program_id=p.id) }}"
+                class="form-hapus"
+                onsubmit="return confirm('Yakin hapus program ini?')">
+
+                <button type="submit" class="btn-sm btn-merah">
+                  Hapus
+                </button>
               </form>
             </div>
           </td>
+
         </tr>
         {% else %}
         <tr>
-          <td colspan="6" class="kosong">
-            Belum ada program. Klik "Tambah Program" untuk memulai.
+          <td colspan="5" class="kosong">
+            <div class="kosong-isi">
+              <span class="kosong-ikon">◇</span>
+              <strong>Belum ada program kursus</strong>
+              <span>Tambahkan program pertama untuk mulai mengelola kursus.</span>
+            </div>
           </td>
         </tr>
         {% endfor %}
@@ -86,6 +137,7 @@
     </table>
   </div>
 </div>
+
 
 <!-- ================================================== -->
 <!-- MODAL TAMBAH -->
@@ -252,110 +304,381 @@
 </div>
 
 <style>
+
+/* =========================================
+   PROGRAM KURSUS — PREMIUM ADMIN UI
+========================================= */
+
+.bar-atas,
+.program-heading,
+.program-toolbar,
+.program-card-header,
+.nama-program,
+.tombol-aksi,
+.program-card-header > div {
+  min-width: 0;
+}
+
 .bar-atas {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
+  justify-content: space-between;
   flex-wrap: wrap;
+  gap: 22px;
+  margin-bottom: 26px;
+}
+
+.program-heading h2 {
+  margin: 0 0 7px;
+  color: #191b23;
+  font-size: clamp(22px, 2vw, 28px);
+  font-weight: 750;
+  letter-spacing: -0.7px;
+}
+
+.program-heading p,
+.program-card-header p {
+  margin: 0;
+  color: #858995;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.program-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 1;
 }
 
 .pencarian {
-  max-width: 300px;
+  position: relative;
   width: 100%;
+  max-width: 330px;
 }
 
-.form-dua {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+.pencarian .form-input {
+  padding-left: 39px;
 }
 
-.form-kelompok {
-  margin-bottom: 16px;
+.ikon-cari {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-54%);
+  color: #9296a2;
+  font-size: 23px;
+  pointer-events: none;
 }
 
-.form-kelompok label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #333;
-  font-size: 14px;
+.ikon-tambah {
+  margin-right: 5px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.btn-utama {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
+  min-height: 43px;
+  padding: 11px 17px;
+  border: 1px solid #991e32;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #a5243b, #85172a);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 650;
+  box-shadow: 0 4px 10px rgba(153, 30, 50, .13);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.btn-utama:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 16px rgba(153, 30, 50, .2);
 }
 
 .form-input {
   width: 100%;
-  padding: 10px 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  min-height: 43px;
+  padding: 10px 13px;
   box-sizing: border-box;
+  border: 1px solid #e4e6eb;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: #292c36;
+  font: inherit;
+  font-size: 13px;
+  transition: border-color .18s ease, box-shadow .18s ease;
 }
 
-.wajib {
-  color: #e11d48;
+.form-input::placeholder {
+  color: #a4a7b0;
+}
+
+.form-input:focus {
+  border-color: #b84b5d;
+  box-shadow: 0 0 0 3px rgba(153, 30, 50, .08);
+}
+
+/* Kartu tabel */
+
+.kartu-biasa.program-card {
+  overflow: hidden;
+  border: 1px solid #e9eaf0;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(25, 27, 35, .035);
+}
+
+.program-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 0 0 24px 0;
+  border-bottom: 1px solid #eff0f4;
+}
+
+.program-card-header h3 {
+  margin: 0 0 5px;
+  color: #272934;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.label-program {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border: 1px solid #f0dfe3;
+  border-radius: 7px;
+  background: #fbf3f5;
+  color: #991e32;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.tabel-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#tabelProgram {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#tabelProgram thead th {
+  padding: 14px 19px;
+  border-bottom: 1px solid #eceef2;
+  background: #fafbfc;
+  color: #858995;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .65px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+#tabelProgram tbody td {
+  padding: 17px 19px;
+  border-bottom: 1px solid #f0f1f4;
+  color: #525663;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+#tabelProgram tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#tabelProgram tbody tr.baris-program {
+  transition: background .16s ease;
+}
+
+#tabelProgram tbody tr.baris-program:hover {
+  background: #fdf9fa;
+}
+
+#tabelProgram .kolom-no {
+  width: 55px;
+}
+
+#tabelProgram .kolom-aksi {
+  width: 150px;
+  text-align: right;
+}
+
+#tabelProgram tbody td:last-child {
+  text-align: right;
+}
+
+.nomor-baris {
+  color: #9295a0 !important;
+  font-size: 12px !important;
 }
 
 .kode-program {
-  background: #f3e9ec;
+  display: inline-block;
+  padding: 6px 9px;
+  border: 1px solid #f0dfe3;
+  border-radius: 6px;
+  background: #fbf3f5;
   color: #991e32;
-  padding: 2px 8px;
-  border-radius: 4px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.nama-program {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nama-program strong {
+  color: #292c36;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.nama-program span {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #90939e;
+  font-size: 11px;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.durasi-program {
+  display: inline-block;
+  padding: 6px 9px;
+  border: 1px solid #e6eaf1;
+  border-radius: 6px;
+  background: #f6f8fb;
+  color: #555c6b;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.durasi-kosong {
+  color: #a0a3ad;
   font-size: 12px;
 }
 
 .tombol-aksi {
   display: flex;
-  gap: 6px;
   align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
 }
 
 .form-hapus {
+  display: inline-flex;
   margin: 0;
 }
 
 .btn-sm {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 7px 11px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 650;
   cursor: pointer;
-  font-size: 13px;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-utama {
-  background: #991e32;
-  color: white;
-  border: none;
-  cursor: pointer;
-  padding: 10px 16px;
-  border-radius: 6px;
+  transition: background .18s ease, border-color .18s ease;
 }
 
 .btn-abu {
-  background: #e5e7eb;
-  color: #4b5563;
-  min-width: 64px;
-  border: none;
-  cursor: pointer;
+  border-color: #e6e8ee;
+  background: #fff;
+  color: #555b69;
+}
+
+.btn-abu:hover {
+  border-color: #d8b0b8;
+  background: #fbf3f5;
+  color: #991e32;
 }
 
 .btn-merah {
-  background: #ef4444;
-  color: white;
-  min-width: 64px;
+  border-color: #f5dadd;
+  background: #fff4f4;
+  color: #d73545;
 }
+
+.btn-merah:hover {
+  border-color: #e8a6ad;
+  background: #ffe8ea;
+}
+
+.kosong {
+  padding: 45px 20px !important;
+  text-align: center !important;
+}
+
+.kosong-isi {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kosong-ikon {
+  display: grid;
+  width: 43px;
+  height: 43px;
+  margin-bottom: 5px;
+  place-items: center;
+  border-radius: 12px;
+  background: #fbf0f2;
+  color: #991e32;
+  font-size: 25px;
+}
+
+.kosong-isi strong {
+  color: #343743;
+  font-size: 13px;
+}
+
+.kosong-isi span:last-child {
+  color: #9295a0;
+  font-size: 12px;
+}
+
+/* Modal */
 
 .modal-latar {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, .5);
   z-index: 999;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 20px;
+  background: rgba(22, 24, 32, .58);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .modal-latar.tampil {
@@ -363,132 +686,273 @@
 }
 
 .modal-kotak {
-  background: white;
-  border-radius: 12px;
   width: 100%;
   max-width: 560px;
   max-height: 90vh;
   overflow-y: auto;
-  padding: 24px;
   box-sizing: border-box;
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, .7);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .2);
+  animation: modalMasuk .2s ease-out;
 }
 
 .modal-lebar {
   max-width: 760px;
 }
 
+@keyframes modalMasuk {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .modal-judul {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  gap: 15px;
+  margin: -2px 0 24px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #eff0f4;
 }
 
 .modal-judul h3 {
   margin: 0;
-  font-size: 18px;
-  color: #1f2937;
+  color: #262832;
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: -.35px;
 }
 
 .tombol-tutup {
-  background: none;
-  border: none;
-  font-size: 22px;
+  display: grid;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid #eceef2;
+  border-radius: 9px;
+  background: #fff;
+  color: #777b87;
+  font-size: 23px;
   cursor: pointer;
-  color: #6b7280;
+}
+
+.tombol-tutup:hover {
+  background: #fbf3f5;
+  color: #991e32;
+}
+
+.form-kelompok {
+  min-width: 0;
+  margin-bottom: 19px;
+}
+
+.form-kelompok label {
+  display: block;
+  margin-bottom: 8px;
+  color: #414450;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.wajib {
+  color: #d73545;
+}
+
+.form-dua {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
 }
 
 .modal-tombol {
   display: flex;
-  gap: 10px;
   justify-content: flex-end;
-  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 25px;
+  padding-top: 18px;
+  border-top: 1px solid #eff0f4;
 }
 
 .modal-tombol button {
-  padding: 10px 24px;
-  border-radius: 8px;
+  min-height: 40px;
+  padding: 10px 19px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 650;
 }
 
+/* Quill: toolbar dan area editor */
+
 .editor-rich {
+  overflow: hidden;
+  border: 1px solid #e3e5eb;
+  border-radius: 10px;
   background: #fff;
-  border-radius: 8px;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.editor-rich:focus-within {
+  border-color: #b84b5d;
+  box-shadow: 0 0 0 3px rgba(153, 30, 50, .07);
+}
+
+.editor-rich .ql-toolbar.ql-snow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 9px;
+  border: 0;
+  border-bottom: 1px solid #eceef2;
+  background: #fafbfc;
+}
+
+.editor-rich .ql-container.ql-snow {
+  border: 0;
+  font-family: inherit;
+  font-size: 13px;
 }
 
 .editor-rich .ql-editor {
   min-height: 150px;
-  font-size: 14px;
-  line-height: 1.7;
+  padding: 14px 15px;
+  color: #373a45;
+  font-size: 13px;
+  line-height: 1.8;
 }
 
-.editor-rich .ql-editor ol + p,
-.dp-teks.ql-editor ol + p,
-.dp-daftar-materi.ql-editor ol + p,
-.dp-daftar-keuntungan.ql-editor ol + p,
-.dp-syarat.ql-editor ol + p {
-    padding-left: 3em;
+.editor-rich .ql-editor.ql-blank::before {
+  left: 15px;
+  color: #a4a7b0;
+  font-style: normal;
 }
 
-.editor-rich .ql-toolbar {
-  border-radius: 8px 8px 0 0;
-  background: #fafafa;
+.editor-rich .ql-toolbar button.ql-lanjutNomor,
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 90px;
+  padding: 0 8px;
+  border: 1px solid #e4d4d8;
+  border-radius: 6px;
+  color: #991e32;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
 }
 
-.editor-rich .ql-container {
-  border-radius: 0 0 8px 8px;
+.editor-rich .ql-toolbar button.ql-lanjutNomor::after {
+  content: "Lanjutkan Nomor";
+}
+
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru::after {
+  content: "Mulai dari 1";
+}
+
+.editor-rich .ql-toolbar button.ql-lanjutNomor:hover,
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru:hover {
+  background: #f8e9ed;
+  border-color: #c98995;
+}
+
+.editor-rich .ql-toolbar button.ql-lanjutNomor svg,
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru svg {
+  display: none;
 }
 
 .form-bantuan {
   display: block;
   margin-top: 6px;
-  font-size: 12px;
-  color: #6b7280;
+  color: #8c909b;
+  font-size: 11px;
+}
+
+/* Responsif */
+
+@media (max-width: 760px) {
+  .bar-atas {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .program-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pencarian {
+    max-width: none;
+  }
+
+  .program-toolbar .btn-utama {
+    width: 100%;
+  }
+
+  .program-card-header {
+    padding: 17px;
+  }
+
+  #tabelProgram thead th,
+  #tabelProgram tbody td {
+    padding: 13px 14px;
+  }
 }
 
 @media (max-width: 640px) {
   .form-dua {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
   }
 
+  .modal-latar {
+    padding: 10px;
+  }
+
   .modal-kotak {
-    padding: 18px;
+    max-height: 94vh;
+    padding: 19px;
+    border-radius: 13px;
+  }
+
+  .modal-judul h3 {
+    font-size: 17px;
   }
 
   .editor-rich .ql-editor {
     min-height: 120px;
   }
+
+  .editor-rich .ql-toolbar.ql-snow {
+    padding: 6px;
+  }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .modal-kotak {
+    animation: none;
+  }
 
-/* Tombol tambahan penomoran Quill */
-.editor-rich .ql-toolbar button.ql-lanjutNomor,
-.editor-rich .ql-toolbar button.ql-mulaiNomorBaru {
-    width: auto;
-    min-width: 90px;
-    padding: 0 8px;
-    border: 1px solid #e5e7eb;
-    border-radius: 5px;
-    margin: 0 3px;
-    color: #991e32;
-    font-size: 11px;
-    font-weight: 600;
-    white-space: nowrap;
+  .btn-utama,
+  .btn-sm,
+  .form-input {
+    transition: none;
+  }
 }
 
-.editor-rich .ql-toolbar button.ql-lanjutNomor::after {
-    content: "Lanjutkan Nomor";
-}
-
-.editor-rich .ql-toolbar button.ql-mulaiNomorBaru::after {
-    content: "Mulai dari 1";
-}
-
-.editor-rich .ql-toolbar button.ql-lanjutNomor:hover,
-.editor-rich .ql-toolbar button.ql-mulaiNomorBaru:hover {
-    background: #f3e9ec;
-    border-color: #991e32;
-}
 
 </style>
 

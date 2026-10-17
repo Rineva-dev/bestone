@@ -1,131 +1,1453 @@
 {% extends "admin/base_admin.html" %}
+
 {% block judul %}{{ periode.nama }} — Pendaftar{% endblock %}
-{% block judul_halaman %}Detail: {{ periode.nama }}{% endblock %}
+{% block judul_halaman %}Detail Gelombang{% endblock %}
+
 {% block isi %}
-<!-- === KEMBALI + INFO GELOMBANG === -->
-<div class="bar-atas">
-  <a href="{{ url_for('admin_pendaftar.pendaftar') }}" class="btn-sm btn-abu">← Kembali ke Daftar Gelombang</a>
-  {% if periode.link_grup_wa %}
-    <a href="{{ periode.link_grup_wa }}" target="_blank" class="btn-sm btn-wa">💬 Buka Grup WA</a>
-  {% endif %}
-</div>
 
-<!-- === INFO GELOMBANG === -->
-<div class="kartu-biasa mb-6">
-  <div class="grid md:grid-cols-2 gap-6">
-    <div>
-      <h3 class="text-lg font-semibold mb-3">Informasi Gelombang</h3>
-      <table class="tabel-info">
-        <tr><th>Nama</th><td>{{ periode.nama }}</td></tr>
-        <tr><th>Tanggal Daftar</th><td>
-          {% if periode.mulai and periode.selesai %}
-            {{ periode.mulai.strftime('%d %b %Y') }} s.d {{ periode.selesai.strftime('%d %b %Y') }}
-          {% else %}-{% endif %}
-        </td></tr>
-        <tr><th>Program Dibuka</th><td>{{ periode.program_dibuka }}</td></tr>
-        <tr><th>Status</th><td>
+<div class="detail-gelombang">
+
+  <!-- HEADER HALAMAN -->
+  <header class="dg-header">
+    <div class="dg-header-kiri">
+      <a href="{{ url_for('admin_pendaftar.pendaftar') }}" class="dg-btn-kembali">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M19 12H5M12 19l-7-7 7-7"
+                stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Kembali ke Gelombang</span>
+      </a>
+
+      <div class="dg-judul-wrapper">
+        <div class="dg-eyebrow">
+          <span class="dg-eyebrow-dot"></span>
+          DETAIL PENDAFTARAN
+        </div>
+
+        <h1>{{ periode.nama }}</h1>
+        <p>Kelola informasi gelombang dan pantau status pendaftar.</p>
+      </div>
+    </div>
+
+    {% if periode.link_grup_wa %}
+    <a href="{{ periode.link_grup_wa }}"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="dg-btn-wa">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M20.1 11.7a8.1 8.1 0 0 1-12 7.1L4 20l1.2-4a8.1 8.1 0 1 1 14.9-4.3Z"
+              stroke="currentColor" stroke-width="1.7"
+              stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M8.8 8.2c.2-.4.4-.4.7-.4h.4c.2 0 .3.1.4.4l.7 1.6c.1.2 0 .4-.1.6l-.5.6c-.2.2-.2.3 0 .5.5.9 1.2 1.6 2.1 2.1.2.1.4.1.5-.1l.7-.8c.2-.2.4-.2.6-.1l1.6.8c.2.1.3.3.2.5-.1.5-.4 1-.9 1.2-.5.3-1.1.3-1.7.1-1-.3-2.2-1-3.2-2-1.1-1.1-1.7-2.3-1.9-3.1-.2-.7 0-1.4.4-1.9Z"
+              fill="currentColor"/>
+      </svg>
+      Buka Grup WhatsApp
+      <svg class="dg-icon-luar" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M14 5h5v5M19 5l-8 8"
+              stroke="currentColor" stroke-width="1.7"
+              stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"
+              stroke="currentColor" stroke-width="1.7"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    {% endif %}
+  </header>
+
+
+  <!-- RINGKASAN -->
+  <section class="dg-ringkasan">
+
+    <!-- INFORMASI GELOMBANG -->
+    <article class="dg-card dg-card-info">
+      <div class="dg-card-heading">
+        <div class="dg-card-icon dg-icon-merah">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"
+                  stroke="currentColor" stroke-width="1.7"/>
+            <path d="M7.5 3.5v3M16.5 3.5v3M3.5 9.5h17"
+                  stroke="currentColor" stroke-width="1.7"
+                  stroke-linecap="round"/>
+            <path d="m9 14 2 2 4-4"
+                  stroke="currentColor" stroke-width="1.7"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div>
+          <h2>Informasi Gelombang</h2>
+          <p>Periode dan program pendaftaran</p>
+        </div>
+      </div>
+
+      <div class="dg-info-list">
+        <div class="dg-info-row">
+          <span class="dg-info-label">Nama gelombang</span>
+          <strong class="dg-info-value">{{ periode.nama }}</strong>
+        </div>
+
+        <div class="dg-info-row">
+          <span class="dg-info-label">Periode pendaftaran</span>
+          <strong class="dg-info-value">
+            {% if periode.mulai and periode.selesai %}
+              {{ periode.mulai.strftime('%d %b %Y') }}
+              <span class="dg-sampai">—</span>
+              {{ periode.selesai.strftime('%d %b %Y') }}
+            {% else %}
+              —
+            {% endif %}
+          </strong>
+        </div>
+
+        <div class="dg-info-row">
+          <span class="dg-info-label">Program dibuka</span>
+          <strong class="dg-info-value">{{ periode.program_dibuka }}</strong>
+        </div>
+
+        <div class="dg-info-row dg-info-row-status">
+          <span class="dg-info-label">Status gelombang</span>
           {% if periode.sedang_aktif %}
-            <span class="label-status aktif">Sedang Dibuka</span>
+            <span class="dg-badge dg-badge-aktif">
+              <span class="dg-status-dot"></span>
+              Sedang Dibuka
+            </span>
           {% else %}
-            <span class="label-status tutup">Tertutup / Belum Mulai</span>
+            <span class="dg-badge dg-badge-tutup">
+              <span class="dg-status-dot"></span>
+              Tertutup / Belum Mulai
+            </span>
           {% endif %}
-        </td></tr>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- INFORMASI BIAYA -->
+    <article class="dg-card dg-card-biaya">
+      <div class="dg-card-heading">
+        <div class="dg-card-icon dg-icon-hijau">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2.5"
+                  stroke="currentColor" stroke-width="1.7"/>
+            <path d="M3 10h18"
+                  stroke="currentColor" stroke-width="1.7"/>
+            <path d="M7 15h3"
+                  stroke="currentColor" stroke-width="1.7"
+                  stroke-linecap="round"/>
+            <circle cx="17" cy="15" r="1.5"
+                    stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+
+        <div>
+          <h2>Ringkasan Biaya</h2>
+          <p>Rincian biaya pendaftaran</p>
+        </div>
+      </div>
+
+      <div class="dg-biaya-list">
+        <div class="dg-biaya-row">
+          <span>Biaya asli</span>
+          <strong>Rp {{ "{:,}".format(periode.biaya or 0) }}</strong>
+        </div>
+
+        <div class="dg-biaya-row">
+          <span>Diskon</span>
+          {% if periode.diskon %}
+            <span class="dg-diskon">-{{ periode.diskon }}%</span>
+          {% else %}
+            <strong class="dg-nilai-netral">—</strong>
+          {% endif %}
+        </div>
+
+        <div class="dg-biaya-pemisah"></div>
+
+        <div class="dg-biaya-total">
+          <div>
+            <span>Total biaya akhir</span>
+            <small>Biaya setelah diskon</small>
+          </div>
+          <strong>Rp {{ "{:,}".format(periode.biaya_akhir) }}</strong>
+        </div>
+      </div>
+
+      {% if periode.diskon %}
+      <div class="dg-promo-note">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M20 13 13 20l-9-9V4h7l9 9Z"
+                stroke="currentColor" stroke-width="1.7"
+                stroke-linejoin="round"/>
+          <circle cx="8" cy="8" r="1.2" fill="currentColor"/>
+        </svg>
+        Diskon {{ periode.diskon }}% diterapkan pada biaya asli.
+      </div>
+      {% endif %}
+    </article>
+
+  </section>
+
+
+  <!-- DAFTAR PENDAFTAR -->
+  <section class="dg-card dg-card-pendaftar">
+
+    <div class="dg-pendaftar-heading">
+      <div class="dg-pendaftar-title">
+        <div class="dg-card-icon dg-icon-ungu">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"
+                  stroke="currentColor" stroke-width="1.7"
+                  stroke-linecap="round"/>
+            <circle cx="10" cy="7.5" r="3.5"
+                    stroke="currentColor" stroke-width="1.7"/>
+            <path d="M16 4.3a3.5 3.5 0 0 1 0 6.8M17 15h.5a3.5 3.5 0 0 1 3.5 3.5V20"
+                  stroke="currentColor" stroke-width="1.7"
+                  stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div>
+          <div class="dg-pendaftar-title-line">
+            <h2>Daftar Pendaftar</h2>
+            <span class="dg-count">{{ daftar_pendaftar|length }}</span>
+          </div>
+          <p>Daftar peserta yang mendaftar pada gelombang ini.</p>
+        </div>
+      </div>
+
+      <div class="dg-total-pendaftar">
+        <span class="dg-total-dot"></span>
+        {{ daftar_pendaftar|length }} pendaftar terdaftar
+      </div>
+    </div>
+
+
+    <div class="dg-tabel-scroll">
+      <table class="dg-tabel">
+        <thead>
+          <tr>
+            <th class="dg-th-no">No.</th>
+            <th>ID Pendaftar</th>
+            <th>Nama Lengkap</th>
+            <th>WhatsApp</th>
+            <th>Program</th>
+            <th>Waktu Daftar</th>
+            <th>Pembayaran</th>
+            <th class="dg-th-aksi">Aksi</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% if daftar_pendaftar %}
+            {% for p in daftar_pendaftar %}
+            <tr>
+              <td class="dg-nomor">{{ loop.index }}</td>
+
+              <td>
+                {% if p.sudah_bayar %}
+                  <span class="dg-id-pendaftar">{{ p.id_pendaftar }}</span>
+                {% else %}
+                  <span class="dg-id-belum">Belum dibuat</span>
+                {% endif %}
+              </td>
+
+              <td>
+                <div class="dg-nama-pendaftar">{{ p.nama }}</div>
+              </td>
+
+              <td>
+                <a href="https://wa.me/{{ p.whatsapp | replace('-','') | replace(' ','') }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="dg-link-wa">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20.1 11.7a8.1 8.1 0 0 1-12 7.1L4 20l1.2-4a8.1 8.1 0 1 1 14.9-4.3Z"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.8 8.2c.2-.4.4-.4.7-.4h.4c.2 0 .3.1.4.4l.7 1.6c.1.2 0 .4-.1.6l-.5.6c-.2.2-.2.3 0 .5.5.9 1.2 1.6 2.1 2.1.2.1.4.1.5-.1l.7-.8c.2-.2.4-.2.6-.1l1.6.8c.2.1.3.3.2.5-.1.5-.4 1-.9 1.2-.5.3-1.1.3-1.7.1-1-.3-2.2-1-3.2-2-1.1-1.1-1.7-2.3-1.9-3.1-.2-.7 0-1.4.4-1.9Z"
+                          fill="currentColor"/>
+                  </svg>
+                  {{ p.whatsapp }}
+                </a>
+              </td>
+
+              <td>
+                <span class="dg-program">{{ p.program }}</span>
+              </td>
+
+              <td class="dg-waktu">
+                {{ p.waktu_daftar.strftime('%d/%m/%Y %H:%M') if p.waktu_daftar else '-' }}
+              </td>
+
+              <td>
+                {% if p.sudah_bayar %}
+                  <span class="dg-badge dg-badge-lunas">
+                    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                      <path d="m5 10 3.2 3.2L15 6.5"
+                            stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Sudah Dibayar
+                  </span>
+                {% else %}
+                  <span class="dg-badge dg-badge-menunggu">
+                    <span class="dg-status-dot"></span>
+                    Belum Dibayar
+                  </span>
+                {% endif %}
+              </td>
+
+              <td class="dg-aksi">
+                <div class="dg-aksi-group">
+
+                  <!-- DETAIL -->
+                  <a href="#"
+                    class="dg-btn-aksi dg-btn-detail"
+                    title="Detail gelombang"
+                    aria-label="Detail gelombang">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"
+                            stroke="currentColor" stroke-width="1.7"
+                            stroke-linejoin="round"/>
+                      <circle cx="12" cy="12" r="3"
+                              stroke="currentColor" stroke-width="1.7"/>
+                    </svg>
+                    <span>Detail</span>
+                  </a>
+
+                  <!-- EDIT: GANTI ROUTE SESUAI ROUTE EDIT PENDAFTAR -->
+                  <a href="#"
+                    class="dg-btn-aksi dg-btn-edit"
+                    title="Edit pendaftar"
+                    aria-label="Edit pendaftar">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="m14 6 4 4M4 20l4.2-.9L19 8.3a2.1 2.1 0 0 0-3-3L5.2 16.1 4 20Z"
+                            stroke="currentColor" stroke-width="1.7"
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Edit</span>
+                  </a>
+
+                  <!-- HAPUS: GANTI ROUTE SESUAI ROUTE HAPUS PENDAFTAR -->
+                  <form method="POST"
+                        action="#"
+                        onsubmit="return confirm('Yakin ingin menghapus pendaftar {{ p.nama }}?')">
+                    <button type="submit"
+                            class="dg-btn-aksi dg-btn-hapus"
+                            title="Hapus pendaftar"
+                            aria-label="Hapus pendaftar">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M4 7h16M10 11v6M14 11v6M5.5 7l1 13h11l1-13M9 7V4h6v3"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <span>Hapus</span>
+                    </button>
+                  </form>
+
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+
+          {% else %}
+            <tr>
+              <td colspan="8">
+                <div class="dg-empty">
+                  <div class="dg-empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"
+                            stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round"/>
+                      <circle cx="10" cy="7.5" r="3.5"
+                              stroke="currentColor" stroke-width="1.6"/>
+                      <path d="M17 8h4m-2-2v4"
+                            stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <h3>Belum ada pendaftar</h3>
+                  <p>Pendaftar yang masuk pada gelombang ini akan ditampilkan di sini.</p>
+                </div>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
       </table>
     </div>
-    <div>
-      <h3 class="text-lg font-semibold mb-3">Biaya</h3>
-      <table class="tabel-info">
-        <tr><th>Biaya Asli</th><td>Rp {{ "{:,}".format(periode.biaya or 0) }}</td></tr>
-        <tr><th>Diskon</th><td>{% if periode.diskon %}{{ periode.diskon }}%{% else %}-{% endif %}</td></tr>
-        <tr class="baris-total"><th>Biaya Akhir</th><td><strong>Rp {{ "{:,}".format(periode.biaya_akhir) }}</strong></td></tr>
-      </table>
-    </div>
-  </div>
+
+    <footer class="dg-tabel-footer">
+      <span>
+        Menampilkan <strong>{{ daftar_pendaftar|length }}</strong> pendaftar
+      </span>
+      <span class="dg-footer-secure">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <rect x="4" y="8.5" width="12" height="9" rx="2"
+                stroke="currentColor" stroke-width="1.5"/>
+          <path d="M7 8.5V6a3 3 0 0 1 6 0v2.5"
+                stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round"/>
+        </svg>
+        Data pendaftaran
+      </span>
+    </footer>
+
+  </section>
+
 </div>
 
-<!-- === DAFTAR PENDAFTAR === -->
-<div class="kartu-biasa">
-  <div class="baris-atas mb-4">
-    <h3 class="text-lg font-semibold">Daftar Pendaftar ({{ daftar_pendaftar|length }} orang)</h3>
-  </div>
-  <div class="tabel-wrapper">
-    <table class="tabel-data">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>ID Pendaftar</th>
-          <th>Nama Lengkap</th>
-          <th>WhatsApp</th>
-          <th>Program</th>
-          <th>Waktu Daftar</th>
-          <th>Pembayaran</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% if daftar_pendaftar %}
-        {% for p in daftar_pendaftar %}
-        <tr>
-          <td>{{ loop.index }}</td>
-          <td class="id-pendaftar">
-            {% if p.sudah_bayar %}
-              <strong>{{ p.id_pendaftar }}</strong>
-            {% else %}
-              <span class="belum-bayar">Belum Bayar</span>
-            {% endif %}
-          </td>
-          <td><strong>{{ p.nama }}</strong></td>
-          <td><a href="https://wa.me/{{ p.whatsapp | replace('-','') | replace(' ','') }}" target="_blank">{{ p.whatsapp }}</a></td>
-          <td>{{ p.program }}</td>
-          <td>{{ p.waktu_daftar.strftime('%d/%m/%Y %H:%M') if p.waktu_daftar else '-' }}</td>
-          <td>
-            {% if p.sudah_bayar %}
-              <span class="label-status sudah-bayar">✓ Sudah Dibayar</span>
-            {% else %}
-              <span class="label-status belum-bayar">Belum Dibayar</span>
-            {% endif %}
-          </td>
-          <td>
-            {% if not p.sudah_bayar %}
-            <form method="POST" action="{{ url_for('admin_pendaftar.konfirmasi_bayar', pendaftar_id=p.id) }}" onsubmit="return confirm('Konfirmasi sudah dibayar? ID akan dibuat otomatis!')">
-              <button type="submit" class="btn-sm btn-hijau">Konfirmasi Bayar</button>
-            </form>
-            {% else %}
-            <span class="btn-sm btn-abu-sudah">Selesai</span>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-        {% else %}
-        <tr>
-          <td colspan="8" class="kosong">Belum ada pendaftar di periode ini</td>
-        </tr>
-        {% endif %}
-      </tbody>
-    </table>
-  </div>
-</div>
 
 <style>
-.bar-atas { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
-.mb-6 { margin-bottom: 24px; }
-.grid { display: grid; }
-.md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.gap-6 { gap: 24px; }
-.tabel-info { width: 100%; border-collapse: collapse; }
-.tabel-info th, .tabel-info td { padding: 8px 4px; text-align: left; border-bottom: 1px solid #f0f0f0; }
-.tabel-info th { font-weight: 500; color: #555; width: 120px; }
-.baris-total { font-weight: bold; color: #991e32; }
-.id-pendaftar { font-family: monospace; font-weight: bold; }
-.belum-bayar { color: #ef4444; font-style: italic; }
-.label-status.sudah-bayar { background: #dcfce7; color: #166534; }
-.label-status.belum-bayar { background: #fef3c7; color: #92400e; }
-.btn-sm { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-block; }
-.btn-abu { background: #e5e7eb; color: #4b5563; }
-.btn-hijau { background: #16a34a; color: white; }
-.btn-abu-sudah { background: #e5e7eb; color: #6b7280; }
-.btn-wa { background: #25D366; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; }
-.label-status.aktif { background: #dcfce7; color: #166534; border-radius: 4px; }
-.label-status.tutup { background: #fef3c7; color: #92400e; border-radius: 4px; }
+/* =========================================================
+   DETAIL GELOMBANG — MODERN SAAS
+   Seluruh selector di-scope dengan .detail-gelombang
+   agar tidak mengganggu komponen halaman admin lainnya.
+========================================================= */
+
+.detail-gelombang {
+  --dg-primary: #991e32;
+  --dg-primary-dark: #781629;
+  --dg-text: #202735;
+  --dg-muted: #778195;
+  --dg-border: #e9edf3;
+  --dg-surface: #ffffff;
+  --dg-bg-soft: #f8f9fc;
+  --dg-radius: 17px;
+
+  width: 100%;
+  min-width: 0;
+  color: var(--dg-text);
+  font-family: inherit;
+  padding-bottom: 24px;
+}
+
+.detail-gelombang,
+.detail-gelombang * {
+  box-sizing: border-box;
+}
+
+.detail-gelombang svg {
+  display: block;
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
+
+/* HEADER */
+
+.dg-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.dg-header-kiri {
+  min-width: 0;
+}
+
+.dg-btn-kembali {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #667085;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+.dg-btn-kembali svg {
+  width: 17px;
+  height: 17px;
+  transition: transform .2s ease;
+}
+
+.dg-btn-kembali:hover {
+  color: var(--dg-primary);
+}
+
+.dg-btn-kembali:hover svg {
+  transform: translateX(-3px);
+}
+
+.dg-judul-wrapper {
+  margin-top: 23px;
+}
+
+.dg-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dg-primary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 9px;
+}
+
+.dg-eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--dg-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(153, 30, 50, .09);
+}
+
+.dg-judul-wrapper h1 {
+  margin: 0;
+  color: #202735;
+  font-size: clamp(25px, 3vw, 33px);
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -.9px;
+  overflow-wrap: anywhere;
+}
+
+.dg-judul-wrapper p {
+  margin: 9px 0 0;
+  color: var(--dg-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.dg-btn-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  flex-shrink: 0;
+  min-height: 43px;
+  padding: 0 16px;
+  border: 1px solid #b9ead0;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #effcf5, #e5f8ed);
+  color: #117a48;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 2px 5px rgba(20, 130, 75, .04);
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.dg-btn-wa:hover {
+  background: #d9f6e5;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(20, 130, 75, .10);
+}
+
+.dg-btn-wa > svg:first-child {
+  width: 19px;
+  height: 19px;
+}
+
+.dg-btn-wa .dg-icon-luar {
+  width: 14px;
+  height: 14px;
+  opacity: .7;
+}
+
+
+/* KARTU RINGKASAN */
+
+.dg-ringkasan {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.dg-card {
+  min-width: 0;
+  background: var(--dg-surface);
+  border: 1px solid var(--dg-border);
+  border-radius: var(--dg-radius);
+  box-shadow:
+    0 2px 4px rgba(22, 34, 51, .015),
+    0 8px 24px rgba(22, 34, 51, .025);
+}
+
+.dg-card-info,
+.dg-card-biaya {
+  padding: 24px;
+}
+
+.dg-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding-bottom: 20px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid #f0f2f6;
+}
+
+.dg-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  flex-shrink: 0;
+}
+
+.dg-card-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.dg-icon-merah {
+  color: #a3223b;
+  background: #fbedf0;
+  border: 1px solid #f8e1e6;
+}
+
+.dg-icon-hijau {
+  color: #147a50;
+  background: #e9f8ef;
+  border: 1px solid #d7f1e1;
+}
+
+.dg-icon-ungu {
+  color: #6550b9;
+  background: #f0edff;
+  border: 1px solid #e6e0ff;
+}
+
+.dg-card-heading h2,
+.dg-pendaftar-title h2 {
+  margin: 0;
+  color: #202735;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 750;
+  letter-spacing: -.2px;
+}
+
+.dg-card-heading p,
+.dg-pendaftar-title > div > p {
+  margin: 4px 0 0;
+  color: #8a93a4;
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+
+
+/* INFORMASI GELOMBANG */
+
+.dg-info-list {
+  padding-top: 7px;
+}
+
+.dg-info-row {
+  display: grid;
+  grid-template-columns: minmax(110px, .82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f3f7;
+}
+
+.dg-info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+
+.dg-info-label {
+  color: #838da0;
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+
+.dg-info-value {
+  color: #343c4d;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.65;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.dg-sampai {
+  color: #a0a7b4;
+  padding: 0 3px;
+}
+
+.dg-info-row-status {
+  align-items: center;
+}
+
+
+/* STATUS */
+
+.dg-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px 9px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.dg-status-dot,
+.dg-total-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+}
+
+.dg-badge-aktif {
+  color: #137447;
+  background: #eaf8f0;
+  border-color: #d6f0e1;
+}
+
+.dg-badge-aktif .dg-status-dot {
+  background: #19a463;
+  box-shadow: 0 0 0 3px rgba(25, 164, 99, .10);
+}
+
+.dg-badge-tutup {
+  color: #946314;
+  background: #fff7e5;
+  border-color: #f5e6bc;
+  white-space: normal;
+}
+
+.dg-badge-tutup .dg-status-dot {
+  background: #d9a12b;
+}
+
+.dg-badge-lunas {
+  color: #147447;
+  background: #eaf8f0;
+  border-color: #d8f0e2;
+}
+
+.dg-badge-lunas svg {
+  width: 14px;
+  height: 14px;
+}
+
+.dg-badge-menunggu {
+  color: #966519;
+  background: #fff7e6;
+  border-color: #f5e8c9;
+}
+
+
+/* BIAYA */
+
+.dg-biaya-list {
+  padding-top: 8px;
+}
+
+.dg-biaya-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+}
+
+.dg-biaya-row > span:first-child {
+  color: #818b9c;
+  font-size: 12px;
+}
+
+.dg-biaya-row > strong {
+  color: #343c4d;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.dg-diskon {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: #e9f8ef;
+  border: 1px solid #d7f1e1;
+  color: #137447;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.dg-biaya-row .dg-nilai-netral {
+  color: #a0a7b4;
+}
+
+.dg-biaya-pemisah {
+  height: 1px;
+  margin: 3px 0 17px;
+  background: repeating-linear-gradient(
+    to right,
+    #e5e9f0 0,
+    #e5e9f0 5px,
+    transparent 5px,
+    transparent 9px
+  );
+}
+
+.dg-biaya-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 17px;
+  border: 1px solid #f0dce1;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff8fa, #fffefe);
+}
+
+.dg-biaya-total > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dg-biaya-total > div > span {
+  color: #5d2634;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.dg-biaya-total small {
+  color: #9a8790;
+  font-size: 10px;
+}
+
+.dg-biaya-total > strong {
+  color: var(--dg-primary);
+  font-size: clamp(16px, 1.6vw, 21px);
+  font-weight: 850;
+  letter-spacing: -.5px;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.dg-promo-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 15px;
+  color: #728071;
+  font-size: 10.5px;
+  line-height: 1.6;
+}
+
+.dg-promo-note svg {
+  width: 15px;
+  height: 15px;
+  color: #238456;
+}
+
+
+/* DAFTAR PENDAFTAR */
+
+.dg-card-pendaftar {
+  overflow: hidden;
+}
+
+.dg-pendaftar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 25px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.dg-pendaftar-title {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+.dg-pendaftar-title-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dg-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 8px;
+  color: var(--dg-primary);
+  background: #fbedf0;
+  border: 1px solid #f5dfe4;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.dg-total-pendaftar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid #e5eaf1;
+  border-radius: 9px;
+  background: #fafbfd;
+  color: #687487;
+  font-size: 10.5px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.dg-total-dot {
+  background: #21a366;
+  box-shadow: 0 0 0 3px rgba(33, 163, 102, .10);
+}
+
+
+/* TABEL */
+
+.dg-tabel-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #d7dce5 transparent;
+}
+
+.dg-tabel-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dg-tabel-scroll::-webkit-scrollbar-thumb {
+  background: #d7dce5;
+  border-radius: 20px;
+}
+
+.dg-tabel {
+  width: 100%;
+  min-width: 1040px;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.dg-tabel thead th {
+  padding: 13px 15px;
+  background: #f8f9fc;
+  border-top: 1px solid #f0f2f6;
+  border-bottom: 1px solid #e9edf3;
+  color: #828c9e;
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .65px;
+  white-space: nowrap;
+}
+
+.dg-tabel thead th:first-child,
+.dg-tabel tbody td:first-child {
+  padding-left: 25px;
+}
+
+.dg-tabel thead th:last-child,
+.dg-tabel tbody td:last-child {
+  padding-right: 25px;
+}
+
+.dg-tabel tbody td {
+  padding: 16px 15px;
+  border-bottom: 1px solid #eff1f5;
+  color: #5b6577;
+  font-size: 11.5px;
+  line-height: 1.6;
+  vertical-align: middle;
+  background: #fff;
+  transition: background .15s ease;
+}
+
+.dg-tabel tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dg-tabel tbody tr:not(:last-child):hover td {
+  background: #fcfcfe;
+}
+
+.dg-th-no {
+  width: 55px;
+}
+
+.dg-th-aksi {
+  width: 145px;
+}
+
+.dg-nomor {
+  color: #9aa3b2 !important;
+  font-size: 11px !important;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.dg-id-pendaftar {
+  display: inline-block;
+  padding: 5px 8px;
+  border: 1px solid #e4e9f2;
+  border-radius: 7px;
+  background: #f7f9fc;
+  color: #47536a;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 10.5px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.dg-id-belum {
+  color: #a17b3a;
+  font-size: 10.5px;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.dg-nama-pendaftar {
+  max-width: 220px;
+  color: #30394a;
+  font-size: 11.5px;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.dg-link-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #168052;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+  transition: color .2s ease;
+}
+
+.dg-link-wa:hover {
+  color: #0b603a;
+  text-decoration: underline;
+}
+
+.dg-link-wa svg {
+  width: 15px;
+  height: 15px;
+}
+
+.dg-program {
+  display: inline-block;
+  max-width: 180px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #f3f5fa;
+  color: #59657b;
+  font-size: 10.5px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.dg-waktu {
+  color: #7e8899 !important;
+  font-size: 10.5px !important;
+  white-space: nowrap;
+}
+
+.dg-aksi form {
+  margin: 0;
+}
+
+.dg-btn-konfirmasi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 33px;
+  padding: 0 10px;
+  border: 1px solid #bde8d0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #effbf4, #e3f7eb);
+  color: #167548;
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 750;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.dg-btn-konfirmasi svg,
+.dg-btn-selesai svg {
+  width: 15px;
+  height: 15px;
+}
+
+.dg-btn-konfirmasi:hover {
+  background: #d7f5e3;
+  box-shadow: 0 4px 10px rgba(22, 117, 72, .10);
+  transform: translateY(-1px);
+}
+
+.dg-btn-konfirmasi:active {
+  transform: translateY(0);
+}
+
+.dg-btn-selesai {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 0 9px;
+  border: 1px solid #e8edf2;
+  border-radius: 8px;
+  background: #f7f9fb;
+  color: #8490a1;
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
+/* EMPTY STATE */
+
+.dg-empty {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 55px 20px;
+  text-align: center;
+}
+
+.dg-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid #e9e8f7;
+  border-radius: 17px;
+  background: #f5f3ff;
+  color: #7765c4;
+  margin-bottom: 16px;
+}
+
+.dg-empty-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.dg-empty h3 {
+  margin: 0;
+  color: #343c4d;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.dg-empty p {
+  max-width: 330px;
+  margin: 8px 0 0;
+  color: #8b94a5;
+  font-size: 11.5px;
+  line-height: 1.8;
+}
+
+
+/* FOOTER TABEL */
+
+.dg-tabel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 15px 25px;
+  border-top: 1px solid #edf0f5;
+  background: #fcfcfe;
+  color: #8992a2;
+  font-size: 10.5px;
+}
+
+.dg-tabel-footer strong {
+  color: #525e71;
+  font-weight: 800;
+}
+
+.dg-footer-secure {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dg-footer-secure svg {
+  width: 14px;
+  height: 14px;
+  color: #98a2b2;
+}
+
+
+/* AKSESIBILITAS */
+
+.detail-gelombang a:focus-visible,
+.detail-gelombang button:focus-visible {
+  outline: 3px solid rgba(153, 30, 50, .22);
+  outline-offset: 3px;
+}
+
+
+/* RESPONSIVE TABLET */
+
+@media (max-width: 1100px) {
+  .dg-ringkasan {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dg-card-info,
+  .dg-card-biaya {
+    padding: 22px;
+  }
+}
+
+
+/* RESPONSIVE HP */
+
+@media (max-width: 640px) {
+  .detail-gelombang {
+    padding-bottom: 16px;
+  }
+
+  .dg-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+
+  .dg-judul-wrapper {
+    margin-top: 20px;
+  }
+
+  .dg-judul-wrapper h1 {
+    font-size: 25px;
+    letter-spacing: -.6px;
+  }
+
+  .dg-judul-wrapper p {
+    font-size: 12px;
+  }
+
+  .dg-btn-wa {
+    align-self: flex-start;
+    min-height: 41px;
+  }
+
+  .dg-ringkasan {
+    gap: 15px;
+    margin-bottom: 18px;
+  }
+
+  .dg-card-info,
+  .dg-card-biaya {
+    padding: 18px 16px;
+    border-radius: 14px;
+  }
+
+  .dg-card-heading {
+    gap: 11px;
+    padding-bottom: 16px;
+  }
+
+  .dg-card-icon {
+    width: 39px;
+    height: 39px;
+    border-radius: 11px;
+  }
+
+  .dg-card-heading h2,
+  .dg-pendaftar-title h2 {
+    font-size: 13px;
+  }
+
+  .dg-card-heading p,
+  .dg-pendaftar-title > div > p {
+    font-size: 10.5px;
+  }
+
+  .dg-info-row {
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+    gap: 10px;
+    padding: 13px 0;
+  }
+
+  .dg-info-label {
+    font-size: 10.5px;
+  }
+
+  .dg-info-value {
+    font-size: 11px;
+  }
+
+  .dg-badge {
+    padding: 5px 7px;
+    font-size: 9px;
+  }
+
+  .dg-biaya-total {
+    gap: 9px;
+    padding: 13px 12px;
+  }
+
+  .dg-biaya-total > strong {
+    font-size: 17px;
+  }
+
+  .dg-pendaftar-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 13px;
+    padding: 18px 16px;
+  }
+
+  .dg-pendaftar-title {
+    gap: 10px;
+  }
+
+  .dg-total-pendaftar {
+    font-size: 10px;
+  }
+
+  .dg-tabel {
+    min-width: 1000px;
+  }
+
+  .dg-tabel thead th:first-child,
+  .dg-tabel tbody td:first-child {
+    padding-left: 16px;
+  }
+
+  .dg-tabel thead th:last-child,
+  .dg-tabel tbody td:last-child {
+    padding-right: 16px;
+  }
+
+  .dg-tabel thead th {
+    padding: 12px 12px;
+    font-size: 9px;
+  }
+
+  .dg-tabel tbody td {
+    padding: 13px 12px;
+  }
+
+  .dg-tabel-footer {
+    padding: 14px 16px;
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail-gelombang *,
+  .detail-gelombang *::before,
+  .detail-gelombang *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}
+
+.dg-aksi-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.dg-aksi-group form {
+  margin: 0;
+}
+
+.dg-btn-aksi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    transform .2s ease;
+}
+
+.dg-btn-aksi svg {
+  width: 14px;
+  height: 14px;
+}
+
+.dg-btn-aksi:hover {
+  transform: translateY(-1px);
+}
+
+/* Detail */
+.dg-btn-detail {
+  color: #52627a;
+  background: #f5f7fb;
+  border-color: #e4e9f1;
+}
+
+.dg-btn-detail:hover {
+  color: #34435a;
+  background: #eaf0f8;
+  border-color: #d6dfed;
+}
+
+/* Edit */
+.dg-btn-edit {
+  color: #245eb5;
+  background: #edf4ff;
+  border-color: #d8e7ff;
+}
+
+.dg-btn-edit:hover {
+  color: #174b99;
+  background: #deebff;
+  border-color: #c4d9ff;
+}
+
+/* Hapus */
+.dg-btn-hapus {
+  color: #b42336;
+  background: #fff0f1;
+  border-color: #f8d9dd;
+}
+
+.dg-btn-hapus:hover {
+  color: #8f1728;
+  background: #ffe1e4;
+  border-color: #f2c1c8;
+}
 </style>
+
 {% endblock %}
