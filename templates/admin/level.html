@@ -122,57 +122,191 @@
 </div>
 
 
-<!-- Modal Tambah -->
+<!-- ================================
+     MODAL TAMBAH LEVEL
+================================ -->
 <div id="modalTambah" class="modal-latar">
   <div class="modal-kotak">
     <div class="modal-judul">
-      <h3>Tambah Level</h3>
-      <button class="tombol-tutup" onclick="tutupModalTambah()">&times;</button>
+      <div class="modal-heading-info">
+        <span class="modal-eyebrow">MANAJEMEN KURSUS</span>
+        <h3>Tambah Level</h3>
+        <p>Tambahkan level baru untuk program kursus.</p>
+      </div>
+
+      <button
+        type="button"
+        class="tombol-tutup"
+        onclick="tutupModalTambah()"
+        aria-label="Tutup modal"
+      >&times;</button>
     </div>
-    <form method="POST" action="{{ url_for('admin_level.tambah') }}" id="formTambah">
-      <div class="form-kelompok">
-        <label>Kode Level <span class="wajib">*</span></label>
-        <input type="text" name="kode" id="tambah-kode" required class="form-input" placeholder="Contoh: A1, A2, B1, B2">
+
+    <form method="POST"
+          action="{{ url_for('admin_level.tambah') }}"
+          id="formTambah"
+          class="form-modal-level">
+
+      <div class="modal-body">
+        <div class="form-section-heading">
+          <span class="form-section-icon">01</span>
+          <div>
+            <h4>Informasi Level</h4>
+            <p>Isi identitas level kursus yang akan ditambahkan.</p>
+          </div>
+        </div>
+
+        <div class="form-kelompok">
+          <label for="tambah-kode">
+            Kode Level <span class="wajib">*</span>
+          </label>
+          <input
+            type="text"
+            name="kode"
+            id="tambah-kode"
+            required
+            class="form-input"
+            placeholder="Contoh: A1, A2, B1, B2"
+            autocomplete="off"
+          >
+          <small class="form-bantuan">
+            Gunakan kode unik untuk membedakan setiap level.
+          </small>
+        </div>
+
+        <div class="form-kelompok">
+          <label for="tambah-nama">
+            Nama Level <span class="wajib">*</span>
+          </label>
+          <input
+            type="text"
+            name="nama"
+            id="tambah-nama"
+            required
+            class="form-input"
+            placeholder="Contoh: Beginner, Intermediate, Advanced"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="form-kelompok">
+          <label for="tambah-keterangan">Keterangan</label>
+          <textarea
+            name="keterangan"
+            id="tambah-keterangan"
+            rows="4"
+            class="form-input"
+            placeholder="Jelaskan kemampuan atau materi pada level ini..."
+          ></textarea>
+          <small class="form-bantuan">
+            Tambahkan deskripsi singkat agar level mudah dipahami.
+          </small>
+        </div>
       </div>
-      <div class="form-kelompok">
-        <label>Nama Level <span class="wajib">*</span></label>
-        <input type="text" name="nama" id="tambah-nama" required class="form-input" placeholder="Contoh: Beginner, Intermediate, Advanced">
-      </div>
-      <div class="form-kelompok">
-        <label>Keterangan</label>
-        <textarea name="keterangan" rows="3" class="form-input" placeholder="Singkat tentang level ini..."></textarea>
-      </div>
+
       <div class="modal-tombol">
-        <button type="button" class="btn-abu" onclick="tutupModalTambah()">Batal</button>
-        <button type="submit" class="btn-utama">Simpan</button>
+        <button
+          type="button"
+          class="btn-batal-modal"
+          onclick="tutupModalTambah()"
+        >Batal</button>
+
+        <button type="submit" class="btn-simpan-modal">
+          <span>Simpan Level</span>
+          <span aria-hidden="true">→</span>
+        </button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Modal Edit -->
+
+<!-- ================================
+     MODAL EDIT LEVEL
+================================ -->
 <div id="modalEdit" class="modal-latar">
   <div class="modal-kotak">
     <div class="modal-judul">
-      <h3>Ubah Level</h3>
-      <button class="tombol-tutup" onclick="tutupModalEdit()">&times;</button>
+      <div class="modal-heading-info">
+        <span class="modal-eyebrow">MANAJEMEN KURSUS</span>
+        <h3>Ubah Level</h3>
+        <p>Perbarui informasi level kursus yang dipilih.</p>
+      </div>
+
+      <button
+        type="button"
+        class="tombol-tutup"
+        onclick="tutupModalEdit()"
+        aria-label="Tutup modal"
+      >&times;</button>
     </div>
-    <form method="POST" id="formEdit">
-      <div class="form-kelompok">
-        <label>Kode Level <span class="wajib">*</span></label>
-        <input type="text" name="kode" id="edit-kode" required class="form-input">
+
+    <form method="POST"
+          id="formEdit"
+          class="form-modal-level">
+
+      <div class="modal-body">
+        <div class="form-section-heading">
+          <span class="form-section-icon">01</span>
+          <div>
+            <h4>Informasi Level</h4>
+            <p>Periksa kembali data sebelum menyimpan perubahan.</p>
+          </div>
+        </div>
+
+        <div class="form-kelompok">
+          <label for="edit-kode">
+            Kode Level <span class="wajib">*</span>
+          </label>
+          <input
+            type="text"
+            name="kode"
+            id="edit-kode"
+            required
+            class="form-input"
+            placeholder="Masukkan kode level"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="form-kelompok">
+          <label for="edit-nama">
+            Nama Level <span class="wajib">*</span>
+          </label>
+          <input
+            type="text"
+            name="nama"
+            id="edit-nama"
+            required
+            class="form-input"
+            placeholder="Masukkan nama level"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="form-kelompok">
+          <label for="edit-keterangan">Keterangan</label>
+          <textarea
+            name="keterangan"
+            id="edit-keterangan"
+            rows="4"
+            class="form-input"
+            placeholder="Jelaskan kemampuan atau materi pada level ini..."
+          ></textarea>
+        </div>
       </div>
-      <div class="form-kelompok">
-        <label>Nama Level <span class="wajib">*</span></label>
-        <input type="text" name="nama" id="edit-nama" required class="form-input">
-      </div>
-      <div class="form-kelompok">
-        <label>Keterangan</label>
-        <textarea name="keterangan" id="edit-keterangan" rows="3" class="form-input"></textarea>
-      </div>
+
       <div class="modal-tombol">
-        <button type="button" class="btn-abu" onclick="tutupModalEdit()">Batal</button>
-        <button type="submit" class="btn-utama">Perbarui</button>
+        <button
+          type="button"
+          class="btn-batal-modal"
+          onclick="tutupModalEdit()"
+        >Batal</button>
+
+        <button type="submit" class="btn-simpan-modal">
+          <span>Simpan Perubahan</span>
+          <span aria-hidden="true">→</span>
+        </button>
       </div>
     </form>
   </div>
@@ -395,7 +529,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 14px;
-  padding: 21px 23px;
+  padding: 0 0 23px;
   border-bottom: 1px solid #edf0f4;
 }
 
@@ -793,6 +927,347 @@
   .modal-tombol button {
     flex: 1;
     padding: 10px 12px;
+  }
+}
+
+
+/* =========================================
+   MODAL LEVEL — SAAS PREMIUM
+   Header dan footer tetap, body yang scroll
+========================================= */
+
+.modal-latar {
+  padding: 20px;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgba(17, 24, 39, .58);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.modal-kotak {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 540px;
+  max-height: min(760px, calc(100dvh - 40px));
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .8);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow:
+    0 28px 80px rgba(15, 23, 42, .20),
+    0 4px 16px rgba(15, 23, 42, .06);
+  animation: levelModalMasuk .22s ease-out;
+}
+
+/* HEADER TETAP DI ATAS */
+.modal-judul {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0;
+  padding: 25px 28px 22px;
+  border-bottom: 1px solid #edf0f4;
+  background: #fff;
+}
+
+.modal-heading-info {
+  min-width: 0;
+}
+
+.modal-eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #991e32;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.modal-judul h3 {
+  margin: 0;
+  color: #202533;
+  font-size: 21px;
+  font-weight: 750;
+  letter-spacing: -.45px;
+  line-height: 1.35;
+}
+
+.modal-heading-info p {
+  margin: 7px 0 0;
+  color: #858c9a;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.tombol-tutup {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  margin-top: 2px;
+  border: 1px solid #e9ecf1;
+  border-radius: 10px;
+  background: #f8f9fb;
+  color: #707888;
+  font-size: 24px;
+  transition: background .18s ease, color .18s ease;
+}
+
+.tombol-tutup:hover {
+  background: #f8e9ec;
+  color: #991e32;
+}
+
+/* FORM MENGISI AREA MODAL */
+.form-modal-level {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* HANYA BODY INI YANG BISA DI-SCROLL */
+.modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 25px 28px;
+  scrollbar-width: thin;
+  scrollbar-color: #d5d9e2 transparent;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #d5d9e2;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #aeb5c3;
+}
+
+/* HEADING BAGIAN FORM */
+.form-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  padding: 14px;
+  border: 1px solid #f0e2e5;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fdf7f8, #fff);
+}
+
+.form-section-icon {
+  display: flex;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #f0dce0;
+  border-radius: 10px;
+  background: #fff;
+  color: #991e32;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.form-section-heading h4 {
+  margin: 0;
+  color: #343b49;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.form-section-heading p {
+  margin: 4px 0 0;
+  color: #858c9a;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+/* INPUT */
+.form-modal-level .form-kelompok {
+  margin-bottom: 21px;
+}
+
+.form-modal-level .form-kelompok:last-child {
+  margin-bottom: 4px;
+}
+
+.form-modal-level .form-kelompok label {
+  margin-bottom: 8px;
+  color: #343b49;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.form-modal-level .form-input {
+  min-height: 45px;
+  padding: 12px 14px;
+  border: 1px solid #dfe3ea;
+  border-radius: 9px;
+  background: #fff;
+  color: #252b38;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  outline: none;
+  transition: border-color .18s ease, box-shadow .18s ease,
+              background .18s ease;
+}
+
+.form-modal-level .form-input:hover {
+  border-color: #cbd1dc;
+}
+
+.form-modal-level .form-input:focus {
+  border-color: #b95b6b;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(153, 30, 50, .09);
+}
+
+.form-modal-level .form-input::placeholder {
+  color: #a1a7b3;
+}
+
+.form-modal-level textarea.form-input {
+  min-height: 115px;
+  resize: vertical;
+}
+
+.form-bantuan {
+  display: block;
+  margin-top: 7px;
+  color: #89909e;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.form-modal-level .wajib {
+  color: #d6324b;
+}
+
+/* FOOTER TETAP DI BAWAH */
+.modal-tombol {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0;
+  padding: 17px 28px 21px;
+  border-top: 1px solid #edf0f4;
+  background: #fff;
+  box-shadow: 0 -5px 16px rgba(20, 30, 50, .025);
+}
+
+.modal-tombol button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 10px 17px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease,
+              box-shadow .18s ease, transform .18s ease;
+}
+
+.btn-batal-modal {
+  border: 1px solid #e0e4eb;
+  background: #fff;
+  color: #596273;
+}
+
+.btn-batal-modal:hover {
+  border-color: #cbd1dc;
+  background: #f7f8fa;
+}
+
+.btn-simpan-modal {
+  border: 1px solid #991e32;
+  background: linear-gradient(135deg, #a5243b, #85172a);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(153, 30, 50, .13);
+}
+
+.btn-simpan-modal:hover {
+  background: linear-gradient(135deg, #951e34, #741324);
+  box-shadow: 0 5px 14px rgba(153, 30, 50, .2);
+  transform: translateY(-1px);
+}
+
+.btn-simpan-modal:active {
+  transform: translateY(0);
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+  .modal-latar {
+    align-items: center;
+    padding: 12px;
+  }
+
+  .modal-kotak {
+    max-height: calc(100dvh - 24px);
+    border-radius: 15px;
+  }
+
+  .modal-judul {
+    padding: 20px 19px 17px;
+  }
+
+  .modal-judul h3 {
+    font-size: 19px;
+  }
+
+  .modal-body {
+    padding: 20px 19px;
+  }
+
+  .modal-tombol {
+    gap: 8px;
+    padding: 14px 19px 17px;
+  }
+
+  .modal-tombol button {
+    flex: 1;
+    padding: 10px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-kotak {
+    animation: none;
+  }
+
+  .modal-kotak *,
+  .modal-kotak *::before,
+  .modal-kotak *::after {
+    transition: none !important;
   }
 }
 

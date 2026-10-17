@@ -1325,3 +1325,93 @@ button, a {
     animation: none;
   }
 }
+
+
+/* =========================================
+   DROPDOWN PROGRAM PADA MENU MOBILE
+   ========================================= */
+
+.bo-mobile-program {
+  border-bottom: 1px solid #f2edef;
+}
+
+.bo-mobile-program-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.bo-mobile-program-toggle:hover,
+.bo-mobile-program-toggle[aria-expanded="true"] {
+  color: var(--bo-maroon);
+  background: #fff4f5;
+}
+
+.bo-mobile-program-chevron {
+  margin-left: auto;
+  color: #9b858d;
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.bo-mobile-program-toggle[aria-expanded="true"]
+.bo-mobile-program-chevron {
+  transform: rotate(180deg);
+}
+
+.bo-mobile-program-list[hidden] {
+  display: none !important;
+}
+
+.bo-mobile-program-list {
+  padding: 4px 0 12px 48px;
+}
+
+.bo-mobile-program-items {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bo-mobile-program-items .bo-program-item {
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.bo-mobile-program-items .bo-program-item::after {
+  display: none;
+}
+
+.bo-mobile-program-items .bo-program-item-nama {
+  font-size: 12px;
+}
+
+.bo-mobile-program-items .bo-program-item-desc {
+  font-size: 11px;
+}
+
+.bo-mobile-program-items .bo-program-item-durasi {
+  margin-top: 5px;
+}
+
+.bo-mobile-all-programs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 11px 12px;
+  color: var(--bo-maroon);
+  background: #fff0f2;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bo-mobile-all-programs:hover {
+  color: var(--bo-maroon-dark);
+  background: #ffe5e9;
+}

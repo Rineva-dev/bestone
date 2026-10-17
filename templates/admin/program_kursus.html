@@ -140,168 +140,360 @@
 
 
 <!-- ================================================== -->
-<!-- MODAL TAMBAH -->
+<!-- MODAL TAMBAH PROGRAM -->
 <!-- ================================================== -->
 <div id="modalTambah" class="modal-latar">
   <div class="modal-kotak modal-lebar">
+
     <div class="modal-judul">
-      <h3>Tambah Program Kursus</h3>
-      <button type="button" class="tombol-tutup" onclick="tutupModalTambah()">&times;</button>
+      <div class="modal-heading-content">
+        <span class="modal-eyebrow">MANAJEMEN KURSUS</span>
+        <h3>Tambah Program Kursus</h3>
+        <p>Buat program baru dan lengkapi informasi pembelajarannya.</p>
+      </div>
+
+      <button
+        type="button"
+        class="tombol-tutup"
+        onclick="tutupModalTambah()"
+        aria-label="Tutup modal">&times;</button>
     </div>
 
-    <form method="POST" action="{{ url_for('admin_program.tambah') }}" id="formTambah">
+    <form method="POST"
+          action="{{ url_for('admin_program.tambah') }}"
+          id="formTambah"
+          class="form-modal-program">
 
-      <div class="form-kelompok">
-        <label>Nama Program <span class="wajib">*</span></label>
-        <input type="text" name="nama" required class="form-input"
-               placeholder="Contoh: Kelas Bahasa Inggris Pemula">
-      </div>
+      <div class="modal-body">
 
-      <div class="form-kelompok">
-        <label>Deskripsi Singkat</label>
-        <input type="text" name="deskripsi_singkat" class="form-input"
-               placeholder="Kalimat pendek yang menarik">
-      </div>
+        <div class="form-section">
+          <div class="form-section-heading">
+            <span class="section-number">01</span>
+            <div>
+              <h4>Informasi Program</h4>
+              <p>Nama dan ringkasan program kursus.</p>
+            </div>
+          </div>
 
-      <div class="form-kelompok">
-        <label>Deskripsi Lengkap</label>
-        <div id="editor-deskripsi" class="editor-rich"></div>
-        <textarea name="deskripsi" id="input-deskripsi" hidden></textarea>
-      </div>
+          <div class="form-kelompok">
+            <label for="tambah-nama">
+              Nama Program <span class="wajib">*</span>
+            </label>
+            <input
+              type="text"
+              id="tambah-nama"
+              name="nama"
+              required
+              class="form-input"
+              placeholder="Contoh: Kelas Bahasa Inggris Pemula">
+          </div>
 
-      <div class="form-kelompok">
-        <label>Materi Pembelajaran</label>
-        <div id="editor-materi" class="editor-rich"></div>
-        <textarea name="materi" id="input-materi" hidden></textarea>
-      </div>
+          <div class="form-kelompok">
+            <label for="tambah-deskripsi-singkat">Deskripsi Singkat</label>
+            <input
+              type="text"
+              id="tambah-deskripsi-singkat"
+              name="deskripsi_singkat"
+              class="form-input"
+              placeholder="Ringkasan singkat yang menarik">
+            <small class="form-bantuan">
+              Ringkasan ini dapat digunakan sebagai pengantar program.
+            </small>
+          </div>
 
-      <div class="form-kelompok">
-        <label>Hasil & Keuntungan</label>
-        <div id="editor-keuntungan" class="editor-rich"></div>
-        <textarea name="keuntungan" id="input-keuntungan" hidden></textarea>
-      </div>
-
-      <div class="form-dua">
-        <div class="form-kelompok">
-          <label>Durasi</label>
-          <input type="number" name="durasi_nilai" class="form-input" placeholder="Contoh: 24">
+          <div class="form-kelompok">
+            <label>Deskripsi Lengkap</label>
+            <div id="editor-deskripsi" class="editor-rich"></div>
+            <textarea name="deskripsi" id="input-deskripsi" hidden></textarea>
+          </div>
         </div>
-        <div class="form-kelompok">
-          <label>Satuan Durasi</label>
-          <select name="durasi_satuan" class="form-input">
-            <option value="">Pilih satuan</option>
-            <option value="bulan">Bulan</option>
-            <option value="minggu">Minggu</option>
-            <option value="pertemuan">Pertemuan</option>
-          </select>
-        </div>
-      </div>
 
-      <div class="form-dua">
-        <div class="form-kelompok">
-          <label>Jadwal</label>
-          <input type="text" name="jadwal" class="form-input" placeholder="Senin–Jumat">
-        </div>
-        <div class="form-kelompok">
-          <label>Metode</label>
-          <input type="text" name="metode" class="form-input" placeholder="Tatap Muka">
-        </div>
-      </div>
+        <div class="form-section">
+          <div class="form-section-heading">
+            <span class="section-number">02</span>
+            <div>
+              <h4>Materi dan Hasil Belajar</h4>
+              <p>Jelaskan materi yang dipelajari dan manfaat program.</p>
+            </div>
+          </div>
 
-      <div class="form-kelompok">
-        <label>Syarat Pendaftaran</label>
-        <div id="editor-syarat" class="editor-rich"></div>
-        <textarea name="syarat" id="input-syarat" hidden></textarea>
+          <div class="form-kelompok">
+            <label>Materi Pembelajaran</label>
+            <div id="editor-materi" class="editor-rich"></div>
+            <textarea name="materi" id="input-materi" hidden></textarea>
+          </div>
+
+          <div class="form-kelompok">
+            <label>Hasil &amp; Keuntungan</label>
+            <div id="editor-keuntungan" class="editor-rich"></div>
+            <textarea name="keuntungan" id="input-keuntungan" hidden></textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-heading">
+            <span class="section-number">03</span>
+            <div>
+              <h4>Jadwal dan Durasi</h4>
+              <p>Atur waktu serta metode pelaksanaan kursus.</p>
+            </div>
+          </div>
+
+          <div class="form-dua">
+            <div class="form-kelompok">
+              <label for="tambah-nilai">Durasi</label>
+              <input
+                type="number"
+                id="tambah-nilai"
+                name="durasi_nilai"
+                min="1"
+                class="form-input"
+                placeholder="Contoh: 24">
+            </div>
+
+            <div class="form-kelompok">
+              <label for="tambah-satuan">Satuan Durasi</label>
+              <select name="durasi_satuan" id="tambah-satuan" class="form-input">
+                <option value="">Pilih satuan</option>
+                <option value="bulan">Bulan</option>
+                <option value="minggu">Minggu</option>
+                <option value="pertemuan">Pertemuan</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-dua">
+            <div class="form-kelompok">
+              <label for="tambah-jadwal">Jadwal</label>
+              <input
+                type="text"
+                id="tambah-jadwal"
+                name="jadwal"
+                class="form-input"
+                placeholder="Contoh: Senin–Jumat">
+            </div>
+
+            <div class="form-kelompok">
+              <label for="tambah-metode">Metode</label>
+              <input
+                type="text"
+                id="tambah-metode"
+                name="metode"
+                class="form-input"
+                placeholder="Contoh: Tatap Muka">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-heading">
+            <span class="section-number">04</span>
+            <div>
+              <h4>Persyaratan Pendaftaran</h4>
+              <p>Tambahkan ketentuan yang perlu diketahui peserta.</p>
+            </div>
+          </div>
+
+          <div class="form-kelompok">
+            <label>Syarat Pendaftaran</label>
+            <div id="editor-syarat" class="editor-rich"></div>
+            <textarea name="syarat" id="input-syarat" hidden></textarea>
+          </div>
+        </div>
+
       </div>
 
       <div class="modal-tombol">
-        <button type="button" class="btn-abu" onclick="tutupModalTambah()">Batal</button>
-        <button type="submit" class="btn-utama">Simpan</button>
+        <button
+          type="button"
+          class="btn-batal-modal"
+          onclick="tutupModalTambah()">Batal</button>
+
+        <button type="submit" class="btn-simpan-modal">
+          <span class="btn-simpan-ikon">✓</span>
+          Simpan Program
+        </button>
       </div>
     </form>
   </div>
 </div>
 
+
 <!-- ================================================== -->
-<!-- MODAL UBAH -->
+<!-- MODAL UBAH PROGRAM -->
 <!-- ================================================== -->
 <div id="modalEdit" class="modal-latar">
   <div class="modal-kotak modal-lebar">
+
     <div class="modal-judul">
-      <h3>Ubah Program Kursus</h3>
-      <button type="button" class="tombol-tutup" onclick="tutupModalEdit()">&times;</button>
+      <div class="modal-heading-content">
+        <span class="modal-eyebrow">MANAJEMEN KURSUS</span>
+        <h3>Ubah Program Kursus</h3>
+        <p>Perbarui informasi dan materi program yang sudah tersedia.</p>
+      </div>
+
+      <button
+        type="button"
+        class="tombol-tutup"
+        onclick="tutupModalEdit()"
+        aria-label="Tutup modal">&times;</button>
     </div>
 
-    <form method="POST" id="formEdit">
+    <form method="POST"
+          id="formEdit"
+          class="form-modal-program">
 
-      <div class="form-kelompok">
-        <label>Nama Program <span class="wajib">*</span></label>
-        <input type="text" name="nama" id="edit-nama" required class="form-input">
-      </div>
+      <div class="modal-body">
 
-      <div class="form-kelompok">
-        <label>Deskripsi Singkat</label>
-        <input type="text" name="deskripsi_singkat" id="edit-deskripsi_singkat" class="form-input">
-      </div>
+        <div class="form-section">
+          <div class="form-section-heading">
+            <span class="section-number">01</span>
+            <div>
+              <h4>Informasi Program</h4>
+              <p>Perbarui nama dan ringkasan program kursus.</p>
+            </div>
+          </div>
 
-      <div class="form-kelompok">
-        <label>Deskripsi Lengkap</label>
-        <div id="edit-editor-deskripsi" class="editor-rich"></div>
-        <textarea name="deskripsi" id="edit-input-deskripsi" hidden></textarea>
-      </div>
+          <div class="form-kelompok">
+            <label for="edit-nama">
+              Nama Program <span class="wajib">*</span>
+            </label>
+            <input
+              type="text"
+              name="nama"
+              id="edit-nama"
+              required
+              class="form-input"
+              placeholder="Nama program kursus">
+          </div>
 
-      <div class="form-kelompok">
-        <label>Materi Pembelajaran</label>
-        <div id="edit-editor-materi" class="editor-rich"></div>
-        <textarea name="materi" id="edit-input-materi" hidden></textarea>
-      </div>
+          <div class="form-kelompok">
+            <label for="edit-deskripsi_singkat">Deskripsi Singkat</label>
+            <input
+              type="text"
+              name="deskripsi_singkat"
+              id="edit-deskripsi_singkat"
+              class="form-input"
+              placeholder="Ringkasan singkat program">
+          </div>
 
-      <div class="form-kelompok">
-        <label>Hasil & Keuntungan</label>
-        <div id="edit-editor-keuntungan" class="editor-rich"></div>
-        <textarea name="keuntungan" id="edit-input-keuntungan" hidden></textarea>
-      </div>
-
-      <div class="form-dua">
-        <div class="form-kelompok">
-          <label>Durasi</label>
-          <input type="number" name="durasi_nilai" id="edit-nilai" class="form-input">
+          <div class="form-kelompok">
+            <label>Deskripsi Lengkap</label>
+            <div id="edit-editor-deskripsi" class="editor-rich"></div>
+            <textarea name="deskripsi" id="edit-input-deskripsi" hidden></textarea>
+          </div>
         </div>
-        <div class="form-kelompok">
-          <label>Satuan Durasi</label>
-          <select name="durasi_satuan" id="edit-satuan" class="form-input">
-            <option value="">Pilih satuan</option>
-            <option value="bulan">Bulan</option>
-            <option value="minggu">Minggu</option>
-            <option value="pertemuan">Pertemuan</option>
-          </select>
-        </div>
-      </div>
 
-      <div class="form-dua">
-        <div class="form-kelompok">
-          <label>Jadwal</label>
-          <input type="text" name="jadwal" id="edit-jadwal" class="form-input">
-        </div>
-        <div class="form-kelompok">
-          <label>Metode</label>
-          <input type="text" name="metode" id="edit-metode" class="form-input">
-        </div>
-      </div>
+        <div class="form-section">
+          <div class="form-section-heading">
+            <span class="section-number">02</span>
+            <div>
+              <h4>Materi dan Hasil Belajar</h4>
+              <p>Perbarui materi serta manfaat yang diperoleh peserta.</p>
+            </div>
+          </div>
 
-      <div class="form-kelompok">
-        <label>Syarat Pendaftaran</label>
-        <div id="edit-editor-syarat" class="editor-rich"></div>
-        <textarea name="syarat" id="edit-input-syarat" hidden></textarea>
+          <div class="form-kelompok">
+            <label>Materi Pembelajaran</label>
+            <div id="edit-editor-materi" class="editor-rich"></div>
+            <textarea name="materi" id="edit-input-materi" hidden></textarea>
+          </div>
+
+          <div class="form-kelompok">
+            <label>Hasil &amp; Keuntungan</label>
+            <div id="edit-editor-keuntungan" class="editor-rich"></div>
+            <textarea name="keuntungan" id="edit-input-keuntungan" hidden></textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-heading">
+            <span class="section-number">03</span>
+            <div>
+              <h4>Jadwal dan Durasi</h4>
+              <p>Perbarui waktu serta metode pelaksanaan kursus.</p>
+            </div>
+          </div>
+
+          <div class="form-dua">
+            <div class="form-kelompok">
+              <label for="edit-nilai">Durasi</label>
+              <input
+                type="number"
+                name="durasi_nilai"
+                id="edit-nilai"
+                min="1"
+                class="form-input"
+                placeholder="Contoh: 24">
+            </div>
+
+            <div class="form-kelompok">
+              <label for="edit-satuan">Satuan Durasi</label>
+              <select name="durasi_satuan" id="edit-satuan" class="form-input">
+                <option value="">Pilih satuan</option>
+                <option value="bulan">Bulan</option>
+                <option value="minggu">Minggu</option>
+                <option value="pertemuan">Pertemuan</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-dua">
+            <div class="form-kelompok">
+              <label for="edit-jadwal">Jadwal</label>
+              <input
+                type="text"
+                name="jadwal"
+                id="edit-jadwal"
+                class="form-input"
+                placeholder="Contoh: Senin–Jumat">
+            </div>
+
+            <div class="form-kelompok">
+              <label for="edit-metode">Metode</label>
+              <input
+                type="text"
+                name="metode"
+                id="edit-metode"
+                class="form-input"
+                placeholder="Contoh: Tatap Muka">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-heading">
+            <span class="section-number">04</span>
+            <div>
+              <h4>Persyaratan Pendaftaran</h4>
+              <p>Perbarui ketentuan pendaftaran peserta.</p>
+            </div>
+          </div>
+
+          <div class="form-kelompok">
+            <label>Syarat Pendaftaran</label>
+            <div id="edit-editor-syarat" class="editor-rich"></div>
+            <textarea name="syarat" id="edit-input-syarat" hidden></textarea>
+          </div>
+        </div>
+
       </div>
 
       <div class="modal-tombol">
-        <button type="button" class="btn-abu" onclick="tutupModalEdit()">Batal</button>
-        <button type="submit" class="btn-utama">Perbarui</button>
+        <button
+          type="button"
+          class="btn-batal-modal"
+          onclick="tutupModalEdit()">Batal</button>
+
+        <button type="submit" class="btn-simpan-modal">
+          <span class="btn-simpan-ikon">✓</span>
+          Perbarui Program
+        </button>
       </div>
     </form>
   </div>
 </div>
+
 
 <style>
 
@@ -470,6 +662,7 @@
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  margin-top: 0 !important;
 }
 
 #tabelProgram {
@@ -808,29 +1001,6 @@
   box-shadow: 0 0 0 3px rgba(153, 30, 50, .07);
 }
 
-.editor-rich .ql-toolbar.ql-snow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-  padding: 9px;
-  border: 0;
-  border-bottom: 1px solid #eceef2;
-  background: #fafbfc;
-}
-
-.editor-rich .ql-container.ql-snow {
-  border: 0;
-  font-family: inherit;
-  font-size: 13px;
-}
-
-.editor-rich .ql-editor {
-  min-height: 150px;
-  padding: 14px 15px;
-  color: #373a45;
-  font-size: 13px;
-  line-height: 1.8;
-}
 
 .editor-rich .ql-editor.ql-blank::before {
   left: 15px;
@@ -868,10 +1038,50 @@
   border-color: #c98995;
 }
 
+
+/* Tombol penomoran khusus Quill */
+.editor-rich .ql-toolbar button.ql-lanjutNomor,
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: auto;
+  min-width: 112px;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid #ead5da;
+  border-radius: 7px;
+  background: #fff;
+  color: #991e32;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+/* Ikon SVG */
 .editor-rich .ql-toolbar button.ql-lanjutNomor svg,
 .editor-rich .ql-toolbar button.ql-mulaiNomorBaru svg {
-  display: none;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
 }
+
+/* Teks tombol */
+.editor-rich .ql-toolbar button.ql-lanjutNomor::after {
+  content: "Lanjutkan Nomor";
+}
+
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru::after {
+  content: "Mulai dari 1";
+}
+
+.editor-rich .ql-toolbar button.ql-lanjutNomor:hover,
+.editor-rich .ql-toolbar button.ql-mulaiNomorBaru:hover {
+  border-color: #c98995;
+  background: #fbf0f2;
+}
+
 
 .form-bantuan {
   display: block;
@@ -953,6 +1163,502 @@
   }
 }
 
+
+/* =========================================
+   MODAL PROGRAM — PREMIUM SAAS
+   Header dan footer tetap, body yang scroll
+========================================= */
+
+.modal-latar {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  background: rgba(20, 22, 31, .58);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+.modal-latar.tampil {
+  display: flex;
+}
+
+.modal-kotak.modal-lebar {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 790px);
+  max-width: 790px;
+  height: min(860px, calc(100dvh - 48px));
+  max-height: calc(100dvh - 48px);
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .8);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow:
+    0 28px 90px rgba(15, 17, 26, .25),
+    0 4px 16px rgba(15, 17, 26, .07);
+  animation: modalProgramMasuk .22s ease-out;
+}
+
+/* Header tidak ikut scroll */
+
+.modal-judul {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0;
+  padding: 25px 30px 23px;
+  border-bottom: 1px solid #eceef3;
+  background: #fff;
+}
+
+.modal-heading-content {
+  min-width: 0;
+}
+
+.modal-eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #991e32;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+}
+
+.modal-judul h3 {
+  margin: 0;
+  color: #222530;
+  font-size: 21px;
+  font-weight: 760;
+  letter-spacing: -.65px;
+  line-height: 1.35;
+}
+
+.modal-heading-content p {
+  color: #858997;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.tombol-tutup {
+  display: grid;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid #e9eaf0;
+  border-radius: 11px;
+  background: #f8f9fb;
+  color: #737785;
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+
+.tombol-tutup:hover {
+  border-color: #efd5da;
+  background: #fbf0f2;
+  color: #991e32;
+}
+
+/* Form mengisi ruang antara header dan footer */
+
+.form-modal-program {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Hanya bagian ini yang dapat di-scroll */
+
+.modal-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 25px 30px 10px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #d6d8e0 transparent;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 7px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  border: 2px solid #fff;
+  border-radius: 10px;
+  background: #d6d8e0;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #b8bbc7;
+}
+
+/* Pembagian kelompok field */
+
+.form-section {
+  min-width: 0;
+  margin-bottom: 27px;
+}
+
+.form-section + .form-section {
+  padding-top: 23px;
+  border-top: 1px solid #f0f1f5;
+}
+
+.form-section-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.section-number {
+  display: grid;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid #f0dce1;
+  border-radius: 10px;
+  background: #fcf4f6;
+  color: #991e32;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.form-section-heading h4 {
+  margin: 1px 0 5px;
+  color: #30323e;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.form-section-heading p {
+  margin: 0;
+  color: #9295a1;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.form-kelompok {
+  min-width: 0;
+  margin-bottom: 21px;
+}
+
+.form-kelompok:last-child {
+  margin-bottom: 12px;
+}
+
+.form-kelompok label {
+  display: block;
+  margin-bottom: 8px;
+  color: #414450;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.wajib {
+  color: #d73545;
+}
+
+.form-modal-program .form-input {
+  min-height: 44px;
+  border-color: #e2e5ec;
+  border-radius: 10px;
+  background-color: #fff;
+  font-size: 12px;
+}
+
+.form-modal-program .form-input:hover {
+  border-color: #cfd2dc;
+}
+
+.form-modal-program .form-input:focus {
+  border-color: #b84b5d;
+  box-shadow: 0 0 0 3px rgba(153, 30, 50, .075);
+}
+
+.form-bantuan {
+  display: block;
+  margin-top: 7px;
+  color: #9295a1;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.form-dua {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* Quill tetap berfungsi dan toolbar boleh membungkus */
+
+.editor-rich {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e1e4eb;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.editor-rich:focus-within {
+  border-color: #b84b5d;
+  box-shadow: 0 0 0 3px rgba(153, 30, 50, .06);
+}
+
+.editor-rich .ql-toolbar.ql-snow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 9px;
+  border: 0;
+  border-bottom: 1px solid #eceef3;
+  background: #f9fafc;
+  flex-shrink: 0;
+}
+
+.editor-rich .ql-container.ql-snow {
+  border: 0;
+  font-family: inherit;
+  font-size: 13px;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editor-rich .ql-editor {
+    height: 150px;
+    min-height: 150px;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    line-height: 1.7;
+    font-size: 13px;
+}
+
+.editor-rich .ql-editor.ql-blank::before {
+  left: 15px;
+  color: #a4a7b0;
+  font-style: normal;
+}
+
+.editor-rich .ql-editor::-webkit-scrollbar {
+    width: 7px;
+}
+
+.editor-rich .ql-editor::-webkit-scrollbar-track {
+    background: #f8f8f8;
+    border-radius: 8px;
+}
+
+.editor-rich .ql-editor::-webkit-scrollbar-thumb {
+    background: #c9c9c9;
+    border-radius: 8px;
+}
+
+.editor-rich .ql-editor::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+/* Tinggi lebih pendek di layar HP */
+@media (max-width: 640px) {
+    .editor-rich .ql-editor {
+        height: 120px;
+        min-height: 120px;
+        max-height: 120px;
+    }
+}
+
+/* Footer tetap di bawah, tidak ikut scroll */
+
+.modal-tombol {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0;
+  padding: 17px 30px;
+  border-top: 1px solid #eceef3;
+  background: #fff;
+  box-shadow: 0 -5px 15px rgba(25, 27, 35, .025);
+}
+
+.modal-tombol button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 41px;
+  padding: 10px 17px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.btn-batal-modal {
+  border: 1px solid #e3e5ec;
+  background: #fff;
+  color: #626674;
+}
+
+.btn-batal-modal:hover {
+  border-color: #d6b0b8;
+  background: #fbf4f5;
+  color: #991e32;
+}
+
+.btn-simpan-modal {
+  border: 1px solid #8c192d;
+  background: linear-gradient(135deg, #a5243b, #85172a);
+  color: #fff;
+  box-shadow: 0 4px 11px rgba(153, 30, 50, .15);
+}
+
+.btn-simpan-modal:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #ad2941, #771326);
+  box-shadow: 0 7px 17px rgba(153, 30, 50, .2);
+}
+
+.btn-simpan-ikon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+@keyframes modalProgramMasuk {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsif */
+
+@media (max-width: 640px) {
+  .modal-latar {
+    align-items: center;
+    padding: 10px;
+  }
+
+  .modal-kotak.modal-lebar {
+    width: 100%;
+    height: calc(100dvh - 20px);
+    max-height: calc(100dvh - 20px);
+    border-radius: 15px;
+  }
+
+  .modal-judul {
+    gap: 12px;
+    padding: 20px 18px 17px;
+  }
+
+  .modal-judul h3 {
+    font-size: 17px;
+  }
+
+  .modal-heading-content p {
+    font-size: 11px;
+  }
+
+  .modal-body {
+    padding: 21px 18px 8px;
+  }
+
+  .form-dua {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .form-section {
+    margin-bottom: 23px;
+  }
+
+  .modal-tombol {
+    gap: 8px;
+    padding: 13px 18px;
+  }
+
+  .modal-tombol button {
+    flex: 1 1 0;
+    padding: 10px 11px;
+  }
+
+  .editor-rich .ql-editor {
+    min-height: 120px;
+  }
+
+  .editor-rich .ql-toolbar.ql-snow {
+    padding: 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  .modal-judul {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  .modal-body {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  .modal-tombol {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  .modal-tombol button {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-kotak.modal-lebar {
+    animation: none;
+  }
+
+  .modal-tombol button,
+  .tombol-tutup {
+    transition: none;
+  }
+}
 
 </style>
 
@@ -1053,6 +1759,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const btnLanjut = toolbar.querySelector('.ql-lanjutNomor');
       const btnBaru = toolbar.querySelector('.ql-mulaiNomorBaru');
+
+      
+      if (btnLanjut) {
+        btnLanjut.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true"
+              fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+            <path d="M8 6h12"/>
+            <path d="M8 12h12"/>
+            <path d="M8 18h12"/>
+            <path d="M3 6h.01"/>
+            <path d="M3 12h.01"/>
+            <path d="M3 18h.01"/>
+            <path d="M17 15l3 3-3 3"/>
+          </svg>
+        `;
+        btnLanjut.type = 'button';
+        btnLanjut.title = 'Lanjutkan penomoran dari daftar sebelumnya';
+        btnLanjut.setAttribute('aria-label', 'Lanjutkan Nomor');
+      }
+
+      if (btnBaru) {
+        btnBaru.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true"
+              fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+            <path d="M8 6h12"/>
+            <path d="M8 12h12"/>
+            <path d="M8 18h12"/>
+            <path d="M3 6h.01"/>
+            <path d="M3 12h.01"/>
+            <path d="M3 18h.01"/>
+            <path d="M12 2v6"/>
+            <path d="M9 5h6"/>
+          </svg>
+        `;
+        btnBaru.type = 'button';
+        btnBaru.title = 'Mulai penomoran baru dari angka 1';
+        btnBaru.setAttribute('aria-label', 'Mulai dari 1');
+      }
+
 
       if (btnLanjut) {
           btnLanjut.type = 'button';
@@ -1380,12 +2129,6 @@ document.addEventListener('DOMContentLoaded', function () {
     modalTambah.classList.remove('tampil');
   };
 
-  modalTambah.addEventListener('click', function (event) {
-    if (event.target === modalTambah) {
-      window.tutupModalTambah();
-    }
-  });
-
   formTambah.addEventListener('submit', function () {
     sinkronkanEditor(formTambah);
   });
@@ -1419,12 +2162,6 @@ document.addEventListener('DOMContentLoaded', function () {
   window.tutupModalEdit = function () {
     modalEdit.classList.remove('tampil');
   };
-
-  modalEdit.addEventListener('click', function (event) {
-    if (event.target === modalEdit) {
-      window.tutupModalEdit();
-    }
-  });
 
   formEdit.addEventListener('submit', function () {
     sinkronkanEditor(formEdit);

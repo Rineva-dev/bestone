@@ -130,11 +130,31 @@
           <i class="fa-solid fa-arrow-up-right-from-square bo-mobile-arrow"></i>
         </a>
 
-        <a href="/program" class="bo-mobile-link" data-nav-path="/program">
-          <span class="bo-mobile-link-icon"><i class="fa-solid fa-book-open"></i></span>
-          <span>Program</span>
-          <i class="fa-solid fa-arrow-up-right-from-square bo-mobile-arrow"></i>
-        </a>
+        
+        <div class="bo-mobile-program">
+          <button
+            type="button"
+            class="bo-mobile-link bo-mobile-program-toggle"
+            id="mobile-program-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-program-list">
+
+            <span class="bo-mobile-link-icon">
+              <i class="fa-solid fa-book-open"></i>
+            </span>
+
+            <span>Program</span>
+
+            <i class="fa-solid fa-chevron-down bo-mobile-program-chevron"></i>
+          </button>
+
+          <div class="bo-mobile-program-list" id="mobile-program-list" hidden>
+            <div class="bo-mobile-program-items" id="mobile-program-items">
+              <div class="bo-program-memuat">Memuat daftar program...</div>
+            </div>
+          </div>
+        </div>
+
 
         <a href="/galeri" class="bo-mobile-link" data-nav-path="/galeri">
           <span class="bo-mobile-link-icon"><i class="fa-regular fa-images"></i></span>
@@ -283,39 +303,92 @@
   <!-- JS Global -->
   <script src="{{ url_for('static', filename='js/base.js') }}"></script>
   <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const wadah = document.getElementById('programDaftar');
-    if (!wadah) return;
+  
+  document.addEventListener('DOMContentLoaded', async function () {
+    const wadahDesktop = document.getElementById('programDaftar');
+    const wadahMobile = document.getElementById('mobile-program-items');
+
+    if (!wadahDesktop && !wadahMobile) return;
+
+    function buatDaftarProgram(programs) {
+      if (!programs || programs.length === 0) {
+        return `
+          <div class="bo-program-kosong">
+            Belum ada program tersedia.
+          </div>
+        `;
+      }
+
+      return programs.map(function (p) {
+        const nama = String(p.nama || '');
+        const kode = encodeURIComponent(String(p.kode || ''));
+        const deskripsi = String(p.deskripsi || '');
+        const durasiNilai = p.durasi_nilai || '';
+        const durasiSatuan = p.durasi_satuan || '';
+
+        return `
+          <a href="/program/${kode}" class="bo-program-item">
+            <div class="bo-program-item-nama">${nama}</div>
+
+            ${deskripsi ? `
+              <div class="bo-program-item-desc">
+                ${deskripsi.length > 50
+                  ? deskripsi.substring(0, 50) + '...'
+                  : deskripsi}
+              </div>
+            ` : ''}
+
+            ${durasiNilai && durasiSatuan ? `
+              <span class="bo-program-item-durasi">
+                ${durasiNilai} ${durasiSatuan}
+              </span>
+            ` : ''}
+          </a>
+        `;
+      }).join('');
+    }
 
     try {
       const res = await fetch('/admin/daftar-untuk-header');
-      if (!res.ok) throw new Error('Gagal memuat');
-      
+
+      if (!res.ok) throw new Error('Gagal memuat daftar program');
+
       const data = await res.json();
-      if (data.programs.length === 0) {
-        wadah.innerHTML = `<div class="bo-program-kosong">
-          Belum ada program tersedia.<br>
-          <a href="/program" style="color:#991E32; font-weight:500;">Lihat halaman Program</a>
-        </div>`;
-        return;
-      }
-      
-      wadah.innerHTML = data.programs.map(p => `
-        <a href="/program/${p.kode}" class="bo-program-item">
-          <div class="bo-program-item-nama">${p.nama}</div>
-          ${p.deskripsi ? `<div class="bo-program-item-desc">${p.deskripsi.length > 50 ? p.deskripsi.substring(0,50)+'...' : p.deskripsi}</div>` : ''}
-          ${p.durasi_nilai && p.durasi_satuan ? `<span class="bo-program-item-durasi">${p.durasi_nilai} ${p.durasi_satuan}</span>` : ''}
-        </a>
-      `).join('');
-      
+      const html = buatDaftarProgram(data.programs);
+
+      if (wadahDesktop) wadahDesktop.innerHTML = html;
+      if (wadahMobile) wadahMobile.innerHTML = html;
     } catch (err) {
-      console.error('Gagal:', err);
-      wadah.innerHTML = `<div class="bo-program-kosong">
-        Gagal memuat.<br>
-        <a href="/program" style="color:#991E32; font-weight:500;">Lihat Semua Program</a>
-      </div>`;
+      console.error('Gagal memuat program:', err);
+
+      const pesanError = `
+        <div class="bo-program-kosong">
+          Gagal memuat daftar program.
+          <br>
+          <a href="/program">Lihat semua program</a>
+        </div>
+      `;
+
+      if (wadahDesktop) wadahDesktop.innerHTML = pesanError;
+      if (wadahMobile) wadahMobile.innerHTML = pesanError;
     }
   });
+
+  // Toggle daftar program pada menu mobile
+  document.addEventListener('DOMContentLoaded', function () {
+    const tombol = document.getElementById('mobile-program-toggle');
+    const daftar = document.getElementById('mobile-program-list');
+
+    if (!tombol || !daftar) return;
+
+    tombol.addEventListener('click', function () {
+      const akanDibuka = daftar.hidden;
+
+      daftar.hidden = !akanDibuka;
+      tombol.setAttribute('aria-expanded', String(akanDibuka));
+    });
+  });
+
   </script>
   {% block scripts %}{% endblock %}
 </body>
