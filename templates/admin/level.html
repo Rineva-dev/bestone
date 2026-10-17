@@ -1481,7 +1481,6 @@ cari.addEventListener('input', () => {
 const modalTambah = document.getElementById('modalTambah');
 document.getElementById('btnBukaTambah').addEventListener('click', () => modalTambah.classList.add('tampil'));
 function tutupModalTambah() { modalTambah.classList.remove('tampil'); }
-modalTambah.addEventListener('click', e => { if (e.target === modalTambah) tutupModalTambah(); });
 
 // === Modal Edit ===
 const modalEdit = document.getElementById('modalEdit');
@@ -1493,7 +1492,6 @@ function bukaModalEdit(btn) {
   modalEdit.classList.add('tampil');
 }
 function tutupModalEdit() { modalEdit.classList.remove('tampil'); }
-modalEdit.addEventListener('click', e => { if (e.target === modalEdit) tutupModalEdit(); });
 
 // === TETAP BUKA MODAL JIKA ADA ERROR ===
 document.addEventListener('DOMContentLoaded', () => {
