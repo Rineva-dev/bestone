@@ -29,16 +29,45 @@ def pendaftar():
 @pendaftar_bp.route('/pendaftar/detail/<int:periode_id>')
 def detail(periode_id):
     cek = cek_login()
-    if cek: return cek
-    
+    if cek:
+        return cek
+
     periode = Periode.query.get_or_404(periode_id)
-    daftar_pendaftar = Pendaftar.query.filter_by(periode_id=periode.id).order_by(Pendaftar.waktu_daftar.desc()).all()
-    
-    return render_template('admin/detail_pendaftar.html',
+
+    # Parameter pagination
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    # Pilihan jumlah data per halaman
+    pilihan_per_page = [10, 15, 25, 50, 100]
+
+    if per_page not in pilihan_per_page:
+        per_page = 10
+
+    # Query pendaftar berdasarkan periode
+    query = Pendaftar.query.filter_by(
+        periode_id=periode.id
+    ).order_by(
+        Pendaftar.waktu_daftar.desc()
+    )
+
+    # Pagination
+    pagination = query.paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False
+    )
+
+    return render_template(
+        'admin/detail_pendaftar.html',
         halaman='pendaftar',
         periode=periode,
-        daftar_pendaftar=daftar_pendaftar
+        daftar_pendaftar=pagination.items,
+        pagination=pagination,
+        per_page=per_page,
+        pilihan_per_page=pilihan_per_page
     )
+
 
 # === TAMBAH GELOMBANG ===
 @pendaftar_bp.route('/pendaftar/periode-baru', methods=['POST'])
@@ -307,10 +336,7 @@ def detail_data(pendaftar_id):
     )
 
 # ===== EDIT DATA PENDAFTAR =====
-@pendaftar_bp.route(
-    '/pendaftar/edit/<int:pendaftar_id>',
-    methods=['GET', 'POST']
-)
+@pendaftar_bp.route('/pendaftar/edit/<int:pendaftar_id>', methods=['GET', 'POST'])
 def edit_pendaftar(pendaftar_id):
     cek = cek_login()
     if cek:
